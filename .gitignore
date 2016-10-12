@@ -15,5 +15,7 @@
 # Simulink Code Generation
 slprj/
 
+*.DS_Store
+
 # Session info
 octave-workspace
