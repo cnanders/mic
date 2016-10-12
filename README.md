@@ -22,7 +22,7 @@ Test classes and scripts.  Every class in components/ and devices/ should have a
 # Recommended project structure
 
 * project
-  * lib
+  * libs
     * mic
     * other-lib-a
     * other-lib-b
@@ -32,6 +32,9 @@ Test classes and scripts.  Every class in components/ and devices/ should have a
   * tests
   	* TestClassA.m
   	* TestClassB.m
+  * README.md (list lib dependencies)
+  * .git
+  * .gitignore (should ignore /lib)
 
 # How to use a specific tag
 
@@ -45,6 +48,8 @@ Test classes and scripts.  Every class in components/ and devices/ should have a
 % Add mic 
 addpath(genpath(fullfile(cPath, 'mic')));
 ```
+# How to propose changes to this repo
 
+Read [this article](http://kbroman.org/github_tutorial/pages/fork.html)
 
 
