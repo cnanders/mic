@@ -1,6 +1,6 @@
 # 1.0.0-beta.2
 
-When beta.2 exists, put changes here
+Added CHANGELOG.md
 
 # 1.0.0-beta.1
 
