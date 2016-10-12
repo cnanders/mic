@@ -1,0 +1,22 @@
+{
+	"delay": 0.5,
+	"units": [
+		{
+			"label": "m",
+			"scale": 1,
+			"offset": 0
+		},
+		{
+			"label": "mm",
+			"scale": 1000,
+			"offset": 0
+		},
+		{
+			"label": "um",
+			"scale": 1000000,
+			"offset": 0
+		}
+	]
+}	
+	
+	

@@ -1,0 +1,17 @@
+{
+	"delay": 0.2,
+	"units": [
+		{
+			"label": "um",
+			"scale": 1000000,
+			"offset": 0
+		},
+		{
+			"label": "m (raw)",
+			"scale": 1,
+			"offset": 0
+		}
+	]
+}	
+	
+	
