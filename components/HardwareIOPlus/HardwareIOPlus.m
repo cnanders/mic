@@ -753,8 +753,7 @@ classdef HardwareIOPlus < HandlePlus
             
             delete(this.apiv);
             
-            if ~isempty(this.api) && ...
-                isvalid(this.api) && ...
+            if ~isempty(this.api) && ... % isvalid(this.api) && ...
                 isa(this.api, 'APIVHardwareIOPlus')
                 delete(this.api)
             end
