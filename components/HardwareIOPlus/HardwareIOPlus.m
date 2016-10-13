@@ -40,10 +40,10 @@ classdef HardwareIOPlus < HandlePlus
     end
 
     properties (SetAccess = private)
-        cName   % name identifier
+        cName = 'CHANGE ME' % name identifier
         lActive     % boolean to tell whether the motor is active or not
         lReady = false  % true when stopped or at its target
-        u8Layout  % {double} to store the layout style
+        u8Layout = uint8(1); % {uint8 1x1} to store the layout style
         % lIsThere 
 
     end
@@ -54,7 +54,7 @@ classdef HardwareIOPlus < HandlePlus
         api         % API to the low level controls.  Must be set after initialized.
         
         clock       % clock 
-        cLabel      % name to be displayed by the UI element
+        cLabel = 'CHANGE ME' % name to be displayed by the UI element
         cDir        % current directory
         cDirSave    
         
@@ -101,15 +101,15 @@ classdef HardwareIOPlus < HandlePlus
         
         uipStores % UIPopupStruct
         
-        lShowZero
-        lShowRel
-        lShowJog
-        lShowDest
-        lShowPlay
-        lShowLabels
-        lShowStores
-        lShowAPI
-        lDisableI
+        lShowZero = true
+        lShowRel = true
+        lShowJog = true
+        lShowDest = true
+        lShowPlay = true
+        lShowLabels = true
+        lShowStores = true
+        lShowAPI = true
+        lDisableI = false
                 
         uitxLabelName
         uitxLabelVal
@@ -132,20 +132,18 @@ classdef HardwareIOPlus < HandlePlus
     
     methods       
         
-        function this = HardwareIOPlus(stParams)  
+        
         %HARDWAREIO Class constructor
-        %@param {struct 1x1} stParams - configuration params 
-        %@param {char 1xm} stParams.cName - the name of the instance.  
+        %@param {char 1xm} cName - the name of the instance.  
         %   Must be unique within the entire project / codebase
-        %@param {clock 1x1} stParams.clock - the clock
-        %@param {char 1x1} stParams.cLabel - the label in the GUI
-        %@param {config 1x1} [stParams.config = new Config()] - the config instance
+        %@param {clock 1x1} clock - the clock
+        %@param {char 1x1} cLabel - the label in the GUI
+        %@param {config 1x1} [config = new Config()] - the config instance
         %   !!! WARNING !!!
         %   DO NOT USE a single Config for multiple HardwareIO instances
         %   because deleting one HardwareIO will delete the reference to
         %   the Config instance that the other Hardware IO is using
-        
-        %@param {function_handle 1x1} [stParams.fhValidateDest =
+        %@param {function_handle 1x1} [fhValidateDest =
         %   this.validateDest()] - a function that returns a
         %   locical that validates if the requested move is allowed.
         %   It is called within moveToDest() and if it returns false, a
@@ -153,22 +151,39 @@ classdef HardwareIOPlus < HandlePlus
         %   allowed.  Is expected that the higher-level class that
         %   implements this (which may access more than one HardwareIO
         %   instance) implements this function
-        %@param {double 1x1} [stParams.u8Layout = uint8(1)] - the layout.  1 = wide, not
+        %@param {double 1x1} [u8Layout = uint8(1)] - the layout.  1 = wide, not
         %   tall. 2 = narrow, twice as tall. 
-        %@param {logical 1x1} [stParams.lShowZero = true]
-        %@param {logical 1x1} [stParams.lShowRel = true]
-        %@param {logical 1x1} [stParams.lShowStores = true]
-        %@param {logical 1x1} [stParams.lShowJog = true]
-        %@param {logical 1x1} [stParams.lShowPlay = true]
-        %@param {logical 1x1} [stParams.lShowDest = true]
-        %@param {logical 1x1} [stParams.lShowLabels = true]
-        %@param {logical 1x1} [stParams.lShowAPI = true] - show the
+        %@param {logical 1x1} [lShowZero = true]
+        %@param {logical 1x1} [lShowRel = true]
+        %@param {logical 1x1} [lShowStores = true]
+        %@param {logical 1x1} [lShowJog = true]
+        %@param {logical 1x1} [lShowPlay = true]
+        %@param {logical 1x1} [lShowDest = true]
+        %@param {logical 1x1} [lShowLabels = true]
+        %@param {logical 1x1} [lShowAPI = true] - show the
         %   clickable toggle / status that shows if is using real API or
         %   virtual API
-        %@param {logical 1x1} [stParams.lDisableI = false] - disable the
+        %@param {logical 1x1} [lDisableI = false] - disable the
         %"I" of HardwareIO (removes jog, play, dest, stores)
-
-        % See also DELETE, INIT, BUILD
+        
+ 
+        
+        
+        function this = HardwareIOPlus(varargin)  
+                    
+            % Default properties
+            
+            this.fhValidateDest = this.validateDest;
+            this.config = Config();
+            
+            
+            % Override properties with varargin
+            
+            for k = 1 : length(varargin)
+                if isprop(this, varargin{k})
+                    this.(varargin{k}) = varargin{k + 1};
+                end
+            end
             
             cPath = mfilename('fullpath');
             cFile = mfilename;
@@ -181,41 +196,12 @@ classdef HardwareIOPlus < HandlePlus
                 'hiop' ...
             );
                 
-                
-            stDefault = struct();
-            stDefault.u8Layout = uint8(1);
-            stDefault.config = Config();
-            stDefault.fhValidateDest = this.validateDest;
-            stDefault.lShowZero = true;
-            stDefault.lShowRel = true;
-            stDefault.lShowJog = true;
-            stDefault.lShowStores = true;
-            stDefault.lShowPlay = true;
-            stDefault.lShowDest = true;
-            stDefault.lShowLabels = true;
-            stDefault.lShowAPI = true;
-            stDefault.lDisableI = false;
-            stParams = mergestruct(stDefault, stParams);
             
-            % Special case if lDisableI = true, force some other defaults
-            
-            if stParams.lDisableI
-               
-                stParams.lShowJog      = false; 
-                stParams.lShowStores   = false; 
-                stParams.lShowPlay     = false; 
-                stParams.lShowDest     = false; 
-            end
-            
-            % Special case set cLabel === cName if not set
-            if ~isfield(stParams, 'cLabel')
-                stParams.cLabel = stParams.cName;
-            end
-
-            % Assign params to properties
-            ceNames = fieldnames(stParams);
-            for k = 1:length(ceNames)
-                this.(ceNames{k}) = stParams.(ceNames{k});
+            if this.lDisableI == true
+                this.lShowJog = false; 
+                this.lShowStores = false; 
+                this.lShowPlay = false; 
+                this.lShowDest = false; 
             end
             
             this.init();
@@ -231,6 +217,13 @@ classdef HardwareIOPlus < HandlePlus
         % See also HARDWAREIO, INIT, DELETE       
 
         
+            
+        
+            if ~isempty(this.clock)
+                this.clock.add(@this.handleClock, this.id(), this.config.dDelay);
+            end
+            
+            
             switch this.u8Layout
                 
                 case 1
@@ -389,6 +382,7 @@ classdef HardwareIOPlus < HandlePlus
                     end
                     
                     % Zero
+                    
                     if this.lShowZero
                         this.uibZero.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeight);
                         dLeft = dLeft + this.dWidthBtn;
@@ -747,8 +741,9 @@ classdef HardwareIOPlus < HandlePlus
             this.save();
             
            % Clean up clock tasks
-            if isvalid(this.clock) && ...
-               this.clock.has(this.id())
+            if ~isempty(this.clock) && ...
+                isvalid(this.clock) && ...
+                this.clock.has(this.id())
                 this.msg('delete() removing clock task'); 
                 this.clock.remove(this.id());
             end
@@ -760,7 +755,7 @@ classdef HardwareIOPlus < HandlePlus
             
             if ~isempty(this.api) && ...
                 isvalid(this.api) && ...
-                isa(this.api, 'APIVHardwareIO')
+                isa(this.api, 'APIVHardwareIOPlus')
                 delete(this.api)
             end
             
@@ -876,7 +871,7 @@ classdef HardwareIOPlus < HandlePlus
         %   If you want the value showed in the display (with the active
         %   display unit and abs/rel state use valCalDisplay()
                         
-            dOut = this.raw2cal(this.dValRaw, cUnit, false);
+            dOut = this.raw2cal(this.getApi().get(), cUnit, false);
             
         end
         
@@ -888,14 +883,14 @@ classdef HardwareIOPlus < HandlePlus
         %
         %   see also VALCAL 
                         
-            dOut = this.raw2cal(this.dValRaw, this.unit().name, this.uitRel.lVal);
+            dOut = this.raw2cal(this.getApi().get(), this.unit().name, this.uitRel.lVal);
             
         end
         
         function dOut = valRaw(this)
-        %VALRAW Get the value (not the destinatino) in raw units. This
+        %VALRAW Get the value (not the destination) in raw units. This
         %value is also accessible with the dValRaw property
-           dOut = this.dValRaw; 
+           dOut = this.getApi().get(); 
         end
         
         
@@ -1127,10 +1122,7 @@ classdef HardwareIOPlus < HandlePlus
             %AW(5/24/13) : populating the destination
             this.uieDest.setVal(this.apiv.get());
 
-            % 2013.07.08 CNA
-            % Using clock instead of timer
-            fh = @this.handleClock;
-            this.clock.add(fh, this.id(), this.config.dDelay);
+            
 
             % event listeners
             %addlistener(this.uibIndex,  'eChange', @this.handleIndex);
@@ -1475,7 +1467,7 @@ classdef HardwareIOPlus < HandlePlus
         
         function api = newAPIV(this)
         %@return {APIVHardwareIO}
-            api = APIVHardwareIO(this.cName, 0, this.clock);
+            api = APIVHardwareIOPlus(this.cName, 0, this.clock);
         end
         
         

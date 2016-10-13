@@ -1,9 +1,9 @@
-classdef APIVHardwareIO < InterfaceAPIHardwareIO
+classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
 
     % apiv
 
     properties (Access = private)
-        cl                      % Clock
+        clock                      % Clock
 
         dPathCycle = 1;         % Resets every move
         dPeriod = 20/1000;
@@ -23,12 +23,12 @@ classdef APIVHardwareIO < InterfaceAPIHardwareIO
             
     methods
         
-        function this = APIVHardwareIO(cName, dPos, cl)
+        function this = APIVHardwareIOPlus(cName, dPos, clock)
 
             this.cName = cName;
             this.dPos = dPos;
             this.dDest = dPos;  
-            this.cl = cl;            
+            this.clock = clock;            
 
         end
 
@@ -48,6 +48,12 @@ classdef APIVHardwareIO < InterfaceAPIHardwareIO
             % handleClock().  handleClock() advances dPathCycle, updating
             % dDest as dPath(dPathCycle).
             
+            if isempty(this.clock)
+                this.dPos = dDest;
+                return;
+            end
+            
+            
             this.dDest = dDest;
             this.dPath = linspace(this.dPos, this.dDest, this.dPathCycles);
             this.dPathCycle = 1;
@@ -57,8 +63,8 @@ classdef APIVHardwareIO < InterfaceAPIHardwareIO
 
             % this.msg(sprintf('%s.moveAbsolute() calling this.c1.add()', this.id()));
 
-            if ~this.cl.has(this.id())
-                this.cl.add(@this.handleClock, this.id(), this.dPeriod);
+            if ~this.clock.has(this.id())
+                this.clock.add(@this.handleClock, this.id(), this.dPeriod);
             else
                 this.msg(sprintf('set() not adding %s', this.id()), 5);
             end
@@ -75,8 +81,8 @@ classdef APIVHardwareIO < InterfaceAPIHardwareIO
             % isReady() returns true
             this.dDest = this.dPos;
             
-            if ~isempty(this.cl)
-                this.cl.remove(this.id());
+            if ~isempty(this.clock)
+                this.clock.remove(this.id());
             end
         end
 
@@ -93,7 +99,7 @@ classdef APIVHardwareIO < InterfaceAPIHardwareIO
 
                 % Do we need to stop the timer?
                 if (this.dPos == this.dDest)
-                    this.cl.remove(this.id());                
+                    this.clock.remove(this.id());                
                 end
 
             catch err
@@ -109,12 +115,12 @@ classdef APIVHardwareIO < InterfaceAPIHardwareIO
 
         function delete(this)
 
-            this.msg('delete()', 7);
+            this.msg('delete()', 5);
 
             % Clean up clock tasks
-            if isvalid(this.cl) && ...
-               this.cl.has(this.id())
-                this.cl.remove(this.id());
+            if isvalid(this.clock) && ...
+               this.clock.has(this.id())
+                this.clock.remove(this.id());
             end
 
             %{
