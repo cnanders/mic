@@ -45,19 +45,13 @@ classdef TestUIPopupStruct < HandlePlus
                     'dVal', 2 ...
                 ) ...
             };
-            %{
-            % CANNOT assign as shown below due to a quirk in the way that
-            the struct() constructor handles values that cell arrays 
-            stParams = struct(...
+            
+            
+            
+            this.uip = UIPopupStruct(...
                 'ceOptions', ceOptions, ...
                 'cLabel', 'This Popup' ...
             );
-            %}
-            
-            stParams = struct();
-            stParams.ceOptions = ceOptions;
-            stParams.cLabel = 'This Popup';
-            this.uip = UIPopupStruct(stParams);
             
             addlistener(this.uip, 'eChange', @this.onChange);
 

@@ -716,45 +716,62 @@ classdef Keithley6482 < HandlePlus
             % struct(field1,val1, ...) constructor due to a weird way that it handles
             % values that are cell arrays.
             
-            stParamsRange = struct();
-            stParamsRange.ceOptions = this.ceRanges;
-            stParamsRange.cLabel = 'Range';
             
-            stParamsAutoRange = struct();
-            stParamsAutoRange.ceOptions = this.ceAutoRanges;
-            stParamsAutoRange.cLabel = 'AutoRange';
+            
+            
             
             stParamsSpeed = struct();
             stParamsSpeed.ceOptions = this.ceSpeeds;
             stParamsSpeed.cLabel = 'ADC Integration Speed';
            
-            stParamsAveragingFilter = struct();
-            stParamsAveragingFilter.ceOptions = this.ceAveragingFilters;
-            stParamsAveragingFilter.cLabel = 'Averaging Filter';
             
-            stParamsMedianFilter = struct();
-            stParamsMedianFilter.ceOptions = this.ceMedianFilters;
-            stParamsMedianFilter.cLabel = 'Median Filter';
+            
+            
                
             % ----- Global
             
-            this.uipSpeed = UIPopupStruct(stParamsSpeed);
+            this.uipSpeed = UIPopupStruct(...
+                'ceOptions', this.ceSpeeds, ...
+                'cLabel', 'ADC Integration Label', ...
+                'lShowLabel', true ...
+            );
             this.uitxSpeed = UIText('---', 'left');
 
             
 
-            % ----- Ch 1
-                        
-            this.uipRange1 = UIPopupStruct(stParamsRange);
-            this.uipAutoRange1 = UIPopupStruct(stParamsAutoRange);
-            this.uipAveragingFilter1 = UIPopupStruct(stParamsAveragingFilter);
+            % ----- Ch 1                        
+            this.uipRange1 = UIPopupStruct(...
+                'ceOptions', this.ceRanges, ...
+                'cLabel', 'Range', ...
+                'lShowLabel', true ...
+            );
+           
+            this.uipAutoRange1 = UIPopupStruct(...
+                'ceOptions', this.ceAutoRanges, ...
+                'cLabel', 'AutoRange', ...
+                'lShowLabel', true ...
+            );
+
+            
+            this.uipAveragingFilter1 = UIPopupStruct(...
+                'ceOptions', this.ceAveragingFilters, ...
+                'cLabel', 'Averaging Filter', ...
+                'lShowLabel', true ...
+            );
+        
             this.uieAveragingFilterSize1 = UIEdit(...
                 'Avg. #', ... % label
                 'u8', ... % type
                 true ... % show label
             );
-            this.uipMedianFilter1 = UIPopupStruct(stParamsMedianFilter);
         
+            
+            this.uipMedianFilter1 = UIPopupStruct(...
+                'ceOptions', this.ceMedianFilters, ...
+                'cLabel', 'Median Filter', ...
+                'lShowLabel', true ...
+            );
+                
             this.uieAveragingFilterSize1.setTooltip('The size of the averaging window [1 - 100]');
             this.uieAveragingFilterSize1.setVal(uint8(1));
             this.uieAveragingFilterSize1.setMin(uint8(1));
@@ -773,15 +790,30 @@ classdef Keithley6482 < HandlePlus
             stParamsAveragingFilter.lShowLabel = false;
             stParamsMedianFilter.lShowLabel = false;
 
-            this.uipRange2 = UIPopupStruct(stParamsRange);
-            this.uipAutoRange2 = UIPopupStruct(stParamsAutoRange);
-            this.uipAveragingFilter2 = UIPopupStruct(stParamsAveragingFilter);
+           
+            
+            this.uipRange2 = UIPopupStruct(...
+                'ceOptions', this.ceRanges ...
+            );
+           
+            this.uipAutoRange2 = UIPopupStruct(...
+                'ceOptions', this.ceAutoRanges ...
+            );
+
+            this.uipAveragingFilter2 = UIPopupStruct(...
+                'ceOptions', this.ceAveragingFilters ...
+            );
+                
+        
             this.uieAveragingFilterSize2 = UIEdit(...
                 'Avg. #', ... % label
                 'u8', ... % type
                 false ... % show label
-            );            this.uipMedianFilter2 = UIPopupStruct(stParamsMedianFilter);
-            
+            );            
+        
+            this.uipMedianFilter2 = UIPopupStruct(...
+                'ceOptions', this.ceMedianFilters ...
+            );
         
             
                         

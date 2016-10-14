@@ -1,3 +1,16 @@
+# 1.0.0-alpha.6
+
+###UiPopupStruct
+- now uses varargin
+
+###Keithley6482
+- support for new UIPopupStruct constructor
+
+###HardwareIOPlus
+- support for new UIPopupStruct constructor
+
+
+
 # 1.0.0-alpha.5
 
 ###HardwareIOPlus 

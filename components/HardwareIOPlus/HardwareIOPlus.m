@@ -179,8 +179,10 @@ classdef HardwareIOPlus < HandlePlus
             
             % Override properties with varargin
             
-            for k = 1 : length(varargin)
+            for k = 1 : 2: length(varargin)
+                % this.msg(sprintf('passed in %s', varargin{k}));
                 if isprop(this, varargin{k})
+                    this.msg(sprintf('settting %s', varargin{k}), 6);
                     this.(varargin{k}) = varargin{k + 1};
                 end
             end
@@ -1105,13 +1107,11 @@ classdef HardwareIOPlus < HandlePlus
             
             
             if ~isempty(this.config.ceStores)
-                stParams = struct();
-                stParams.ceOptions = this.config.ceStores;
-                stParams.cField = 'name';
-                stParams.cLabel = 'Stores';
-                stParams.lShowLabel = false;
-                stParams.cName = sprintf('%s Stores', this.cName);
-                this.uipStores = UIPopupStruct(stParams);
+                this.uipStores = UIPopupStruct(...
+                    'ceOptions', this.config.ceStores, ...
+                    'cField', 'name' ...
+                );
+                
                 addlistener(this.uipStores,   'eChange', @this.onStoresChange);
                 this.uipStores.setTooltip('Go to a stored position');
 
