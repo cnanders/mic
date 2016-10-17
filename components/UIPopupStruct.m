@@ -40,13 +40,13 @@ classdef UIPopupStruct < HandlePlus
         cLabel = '';
         
         % {logical 1x1} show the label?        
-        lShowLabel = false;
+        lShowLabel = true;
         
         % {char 1xm} the tooltip
         cTooltip = 'Tooltip: set me!';
         
         % {logical 1x1} show the tooltip?
-        lShowTooltip = false;
+        lShowTooltip = true;
         
        
         hLabel
