@@ -109,7 +109,7 @@ classdef UIPopupStruct < HandlePlus
                     'HorizontalAlignment', 'left'...
                 );
            
-                dTop = dTop + 15;
+                dTop = dTop + 13;
            end
            
            

@@ -28,17 +28,13 @@ classdef Utils
         
         function c = pathAssets()
             [cPath, cName, cExt] = fileparts(mfilename('fullpath'));
-
-            % Add core
-            c = fullfile(cPath, sprintf('..%s', filesep), 'assets');
+            c = fullfile(cPath, '..', 'assets');
             
         end
         
         function c = pathConfig()
             [cPath, cName, cExt] = fileparts(mfilename('fullpath'));
-
-            % Add core
-            c = fullfile(cPath, sprintf('..%s', filesep), 'config');
+            c = fullfile(cPath, '..', 'config');
             
         end
         

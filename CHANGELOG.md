@@ -1,3 +1,11 @@
+# 1.0.0-alpha.8
+
+- New component HardwareIOText similar to HardwareIOPlus except that it is unitless, therefore has no cal / raw, and sets values using char, not double.
+
+# 1.0.0-alpha.7
+
+Unknown changes
+
 # 1.0.0-alpha.6
 
 ###UiPopupStruct
