@@ -13,7 +13,32 @@ classdef HardwareIOPlus < HandlePlus
     % Hungarian: hio
 
     properties (Constant)
-        dHeight = 24;   % height of the UIElement
+        
+
+        
+    end
+
+    properties      
+        u8UnitIndex = 1;
+    end
+
+    properties (SetAccess = private)
+        cName = 'CHANGE ME' % name identifier
+        lActive = false   % boolean to tell whether the motor is active or not
+        lReady = false  % true when stopped or at its target
+        u8Layout = uint8(1); % {uint8 1x1} to store the layout style
+        % lIsThere 
+
+    end
+
+    properties (Access = protected)
+        
+        dHeight = 26;   % height of the row for controls
+        dHeightBtn = 24;
+        dHeightEdit = 24;
+        dHeightPopup = 24;
+        dHeightLabel = 16;
+        dHeightText = 16;
         
         dWidthName = 50;
         dWidthVal = 75;
@@ -29,26 +54,9 @@ classdef HardwareIOPlus < HandlePlus
         dPad2 = 0;
         dWidthStatus = 5;
         
+        cLabelStores = 'Stores';
         cTooltipAPIOff = 'Connect to the real API / hardware';
         cTooltipAPIOn = 'Disconnect the real API / hardware (go into virtual mode)';
-
-        
-    end
-
-    properties      
-        u8UnitIndex = 1;
-    end
-
-    properties (SetAccess = private)
-        cName = 'CHANGE ME' % name identifier
-        lActive     % boolean to tell whether the motor is active or not
-        lReady = false  % true when stopped or at its target
-        u8Layout = uint8(1); % {uint8 1x1} to store the layout style
-        % lIsThere 
-
-    end
-
-    properties (Access = protected)
         
         apiv        % virtual API (for test and debugging).  Builds its own APIVHardwareIO
         api         % API to the low level controls.  Must be set after initialized.
@@ -239,7 +247,7 @@ classdef HardwareIOPlus < HandlePlus
                     
                     dHeight = this.dHeight;
                     if this.lShowLabels
-                        dHeight = dHeight + 12;
+                        dHeight = dHeight + this.dHeightLabel;
                     end
                     
                     dWidth = this.getWidth();
@@ -283,7 +291,7 @@ classdef HardwareIOPlus < HandlePlus
                     dTop = -1;
                     dTopLabel = -1;
                     if this.lShowLabels
-                        dTop = 12;
+                        dTop = this.dHeightLabel;
                     end
                     
                     dLeft = 0;
@@ -292,34 +300,33 @@ classdef HardwareIOPlus < HandlePlus
                     if (this.lShowAPI)
                         if this.lShowLabels
                             % FIXME
-                            this.uitxLabelAPI.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeight);
+                            this.uitxLabelAPI.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
-                        this.uitAPI.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeight);
+                        this.uitAPI.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn + 5; 
                     end
                     
                     
                     % Name
                     if this.lShowLabels
-                        this.uitxLabelName.build(this.hPanel, dLeft, dTopLabel, this.dWidthName, this.dHeight);
+                        this.uitxLabelName.build(this.hPanel, dLeft, dTopLabel, this.dWidthName, this.dHeightLabel);
                     end
-                    this.uitxName.build(this.hPanel, dLeft, 6 + dTop, this.dWidthName, 12);
+                    this.uitxName.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthName, this.dHeightText);
                     dLeft = dLeft + this.dWidthName;
                     
                     % Val
                     if this.lShowLabels
-                        this.uitxLabelVal.build(this.hPanel, dLeft, dTopLabel, this.dWidthVal, this.dHeight);
+                        this.uitxLabelVal.build(this.hPanel, dLeft, dTopLabel, this.dWidthVal, this.dHeightLabel);
                     end
-                    this.uitxVal.build(this.hPanel, dLeft, 6 + dTop, this.dWidthVal, 12);
-                    dLeft = dLeft + this.dWidthVal;
+                    this.uitxVal.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthVal, this.dHeightText);
+                    dLeft = dLeft + this.dWidthVal + 5;
                                         
                     % Dest
                     if this.lShowDest
-                        dLeft = dLeft + 5;
                         if this.lShowLabels
-                            this.uitxLabelDest.build(this.hPanel, dLeft, dTopLabel, this.dWidthDest, this.dHeight);
+                            this.uitxLabelDest.build(this.hPanel, dLeft, dTopLabel, this.dWidthDest, this.dHeightLabel);
                         end
-                        this.uieDest.build(this.hPanel, dLeft, dTop, this.dWidthDest, this.dHeight);
+                        this.uieDest.build(this.hPanel, dLeft, dTop, this.dWidthDest, this.dHeightEdit);
                         dLeft = dLeft + this.dWidthDest;
                     end
                     
@@ -327,9 +334,9 @@ classdef HardwareIOPlus < HandlePlus
                     % Play
                     if this.lShowPlay
                         if this.lShowLabels
-                            this.uitxLabelPlay.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeight);
+                            this.uitxLabelPlay.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
-                        this.uibtPlay.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeight);
+                        this.uibtPlay.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn;
                         
                     end 
@@ -338,24 +345,24 @@ classdef HardwareIOPlus < HandlePlus
                     if this.lShowJog
                         
                         if this.lShowLabels
-                            this.uitxLabelJogL.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeight);
+                            this.uitxLabelJogL.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
-                        this.uibStepNeg.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeight);
+                        this.uibStepNeg.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn;
                         
                         if this.lShowLabels
-                            this.uitxLabelJog.build(this.hPanel, dLeft, dTopLabel, this.dWidthStep, this.dHeight);
+                            this.uitxLabelJog.build(this.hPanel, dLeft, dTopLabel, this.dWidthStep, this.dHeightLabel);
                         end
-                        this.uieStep.build(this.hPanel, dLeft, dTop, this.dWidthStep, this.dHeight);
+                        this.uieStep.build(this.hPanel, dLeft, dTop, this.dWidthStep, this.dHeightEdit);
                         dLeft = dLeft + this.dWidthStep;
                         
                         
                         
                         
                         if this.lShowLabels
-                            this.uitxLabelJogR.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeight);
+                            this.uitxLabelJogR.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
-                        this.uibStepPos.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeight);
+                        this.uibStepPos.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn;
                         
                     end
@@ -370,7 +377,7 @@ classdef HardwareIOPlus < HandlePlus
                         if this.lShowLabels
                             this.uitxLabelUnit.build(this.hPanel, dLeft, dTopLabel, this.dWidthUnit, this.dHeight);
                         end
-                        this.uipUnit.build(this.hPanel, dLeft, dTop, this.dWidthUnit, this.dHeight);
+                        this.uipUnit.build(this.hPanel, dLeft, dTop, this.dWidthUnit, this.dHeightPopup);
                         dLeft = dLeft + this.dWidthUnit;
                     end
                     
@@ -380,20 +387,20 @@ classdef HardwareIOPlus < HandlePlus
                         if this.lShowLabels
                             this.uitxLabelStores.build(this.hPanel, dLeft, dTopLabel, this.dWidthStores, this.dHeight);
                         end
-                        this.uipStores.build(this.hPanel, dLeft, dTop, this.dWidthStores, this.dHeight);
+                        this.uipStores.build(this.hPanel, dLeft, dTop, this.dWidthStores, this.dHeightPopup);
                         dLeft = dLeft + this.dWidthStores;
                     end
                     
                      % Rel
                     if this.lShowRel
-                        this.uitRel.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeight);
+                        this.uitRel.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn;
                     end
                     
                     % Zero
                     
                     if this.lShowZero
-                        this.uibZero.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeight);
+                        this.uibZero.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn;
                     end
                     
@@ -1167,7 +1174,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelJogL = UIText('', 'center');
             this.uitxLabelJog = UIText('Step', 'center');
             this.uitxLabelJogR = UIText('', 'center');
-            this.uitxLabelStores = UIText('Stores');
+            this.uitxLabelStores = UIText(this.cLabelStores);
             
             this.uitAPI.setTooltip(this.cTooltipAPIOff);
             this.uitxName.setTooltip('The name of this device');
@@ -1460,9 +1467,10 @@ classdef HardwareIOPlus < HandlePlus
             end
 
             dOut = dOut + this.dWidthName;
-            dOut = dOut + this.dWidthVal;
+            dOut = dOut + this.dWidthVal + 5;
+            
             if this.lShowDest
-                dOut = dOut + this.dWidthDest + 5;
+                dOut = dOut + this.dWidthDest;
             end
             if this.lShowPlay
                 dOut = dOut + this.dWidthBtn;
@@ -1484,6 +1492,7 @@ classdef HardwareIOPlus < HandlePlus
                 dOut = dOut + this.dWidthBtn;
             end
             
+            dOut = dOut + 5;
             % dOut = dOut + this.dWidthUnit;
             
         end

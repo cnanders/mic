@@ -17,5 +17,8 @@ slprj/
 
 *.DS_Store
 
+save
+components/save
+
 # Session info
 octave-workspace

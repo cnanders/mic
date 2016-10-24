@@ -1,3 +1,10 @@
+# 1.0.0-alpha.10
+
+- Improved PC formatting of HardwareIOPlus, HardwareIOText. 
+- HardwareIOPlus and HardwareIOText @param {logical 1x1} lActive now defaults to false
+- Moved all of the constant width, height props of HardwareIOPlus and HardwareIOText to protected properties so they are settable with varargin syntax.
+- @param {char 1xm} cLabelStores now settable with varargin to control label over stores PopUp.
+
 # 1.0.0-alpha.9
 
 ###HardwareIOPlus
