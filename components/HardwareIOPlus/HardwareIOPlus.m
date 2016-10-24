@@ -982,6 +982,69 @@ classdef HardwareIOPlus < HandlePlus
         end
         
         
+        function enable(this)
+            
+            this.uitAPI.enable();
+            this.uibtPlay.enable();
+            this.uitRel.enable();
+            this.uibZero.enable();
+            this.uibStepPos.enable();
+            this.uibStepNeg.enable();
+            this.uieDest.enable();
+            this.uieStep.enable();
+            this.uipUnit.enable();
+            this.uitxVal.enable();
+            this.uitxName.enable();
+            this.uipStores.enable();
+
+                            
+            this.uitxLabelName.enable();
+            this.uitxLabelVal.enable();
+            this.uitxLabelUnit.enable();
+            this.uitxLabelDest.enable();
+            this.uitxLabelJog.enable();
+            this.uitxLabelJogL.enable();
+            this.uitxLabelJogR.enable();
+            this.uitxLabelStores.enable();
+            this.uitxLabelPlay.enable();
+            this.uitxLabelAPI.enable();
+            
+            
+        end
+        
+        
+        function disable(this)
+            
+            this.uitAPI.disable();
+            this.uibtPlay.disable();
+            this.uitRel.disable();
+            this.uibZero.disable();
+            this.uibStepPos.disable();
+            this.uibStepNeg.disable();
+            this.uieDest.disable();
+            this.uieStep.disable();
+            this.uipUnit.disable();
+            this.uitxVal.disable();
+            this.uitxName.disable();
+            this.uipStores.disable();
+
+            this.uitxLabelName.disable();
+            this.uitxLabelVal.disable();
+            this.uitxLabelUnit.disable();
+            this.uitxLabelDest.disable();
+            this.uitxLabelJog.disable();
+            this.uitxLabelJogL.disable();
+            this.uitxLabelJogR.disable();
+            this.uitxLabelStores.disable();
+            this.uitxLabelPlay.disable();
+            this.uitxLabelAPI.disable();
+            
+            
+        end
+        
+        
+        
+        
 
     end %methods
     

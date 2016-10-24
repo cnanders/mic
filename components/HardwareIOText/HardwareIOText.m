@@ -435,6 +435,41 @@ classdef HardwareIOText < HandlePlus
             this.uieDest.setVal(cVal);
         end
         
+        
+        function enable(this)
+            this.uieDest.enable();
+            this.uitxVal.enable();
+            this.uitAPI.enable();
+            this.uibtPlay.enable();
+            this.uitxName.enable();
+            this.uipStores.enable();
+            
+            this.uitxLabelName.enable();
+            this.uitxLabelVal.enable();
+            this.uitxLabelDest.enable();
+            this.uitxLabelPlay.enable();
+            this.uitxLabelAPI.enable();
+            this.uitxLabelStores.enable();
+        end
+        
+        
+        
+        function disable(this)
+            this.uieDest.disable();
+            this.uitxVal.disable();
+            this.uitAPI.disable();
+            this.uibtPlay.disable();
+            this.uitxName.disable();
+            this.uipStores.disable();
+            
+            this.uitxLabelName.disable();
+            this.uitxLabelVal.disable();
+            this.uitxLabelDest.disable();
+            this.uitxLabelPlay.disable();
+            this.uitxLabelAPI.disable();
+            this.uitxLabelStores.disable();
+        end
+        
 
     end %methods
     
