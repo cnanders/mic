@@ -134,6 +134,10 @@ classdef HardwareIOPlus < HandlePlus
         uitxLabelStores
         uitxLabelPlay
         uitxLabelAPI
+        
+        % {char 1xm} storage of the last display value.  Used to emit
+        % eChange events
+        cValPrev = '...' 
     end
     
 
@@ -830,20 +834,8 @@ classdef HardwareIOPlus < HandlePlus
                 % argument in the input list. For example, the input list
                 % ('%6.4f', pi) is equivalent to ('%*.*f', 6, 4, pi).
                 
-                switch this.cConversion
-                    case 'f'
-                        this.uitxVal.cVal = sprintf(...
-                            '%.*f', ...
-                            this.unit().precision, ...
-                            this.valCalDisplay() ...
-                        );
-                    case 'e'
-                        this.uitxVal.cVal = sprintf(...
-                            '%.*e', ...
-                            this.unit().precision, ...
-                            this.valCalDisplay() ...
-                        );
-                end
+                this.updateDisplayValue();
+                
                                 
                 % 2014.05.19 
                 % Need to update a property lIsThere which is true when
@@ -1195,7 +1187,7 @@ classdef HardwareIOPlus < HandlePlus
             this.apiv = this.newAPIV();
             
             
-            if ~isempty(this.config.ceStores)
+            % if ~isempty(this.config.ceStores)
                 this.uipStores = UIPopupStruct(...
                     'ceOptions', this.config.ceStores, ...
                     'lShowLabel', false, ...
@@ -1206,7 +1198,7 @@ classdef HardwareIOPlus < HandlePlus
                 this.uipStores.setTooltip('Go to a stored position');
 
                 
-            end
+            % end
                         
             %AW(5/24/13) : populating the destination
             this.uieDest.setVal(this.apiv.get());
@@ -1274,7 +1266,7 @@ classdef HardwareIOPlus < HandlePlus
         end
         
         function onDestChange(this, src, evt)
-            notify('eChange');
+            % notify(this, 'eChange');
         end
         
         function onStepChange(this, src, evt)
@@ -1349,6 +1341,34 @@ classdef HardwareIOPlus < HandlePlus
                     
         end
 
+        function updateDisplayValue(this)
+            
+           switch this.cConversion
+                case 'f'
+                    
+                    cVal = sprintf(...
+                        '%.*f', ...
+                        this.unit().precision, ...
+                        this.valCalDisplay() ...
+                    );
+                case 'e'
+                    cVal = sprintf(...
+                        '%.*e', ...
+                        this.unit().precision, ...
+                        this.valCalDisplay() ...
+                    );
+           end 
+            
+           
+           if ~strcmp(this.cValPrev, cVal)
+               notify(this, 'eChange');
+           end
+           
+           this.uitxVal.cVal = cVal;
+           this.cValPrev = cVal;
+            
+        end
+        
         function updatePlayButton(this)
             
             % UIButtonTobble

@@ -105,6 +105,10 @@ classdef HardwareIOText < HandlePlus
         uitxLabelStores
         uitxLabelPlay
         uitxLabelAPI
+        
+        % {char 1xm} storage of the last display value.  Used to emit
+        % eChange events
+        cValPrev = '...'
     end
     
 
@@ -420,7 +424,11 @@ classdef HardwareIOText < HandlePlus
         %   HardwareIO.HandleClock()
         %   updates the position reading and the hio status (=/~moving)
         
-            this.uitxVal.cVal = this.getApi().get();
+            cVal = this.getApi().get();
+            if ~strcmp(this.cValPrev, cVal)
+                notify(this, 'eChange');
+            end
+            this.uitxVal.cVal = cVal;
             
         end 
         
@@ -548,7 +556,7 @@ classdef HardwareIOText < HandlePlus
 
             this.apiv = this.newAPIV();
             
-            if ~isempty(this.config.ceStores)
+            % if ~isempty(this.config.ceStores)
                 this.uipStores = UIPopupStruct(...
                     'ceOptions', this.config.ceStores, ...
                     'lShowLabel', false, ...
@@ -557,7 +565,7 @@ classdef HardwareIOText < HandlePlus
                 
                 addlistener(this.uipStores,   'eChange', @this.onStoresChange);
                 this.uipStores.setTooltip('Go to a stored position');                
-            end
+            % end
                         
             addlistener(this.uieDest,   'eChange', @this.onDestChange);
             %AW(5/24/13) : populating the destination
@@ -600,7 +608,7 @@ classdef HardwareIOText < HandlePlus
         end
         
         function onDestChange(this, src, evt)
-            notify('eChange');
+            % notify(this, 'eChange');
         end
                 
         function onPlayChange(this, src, evt)

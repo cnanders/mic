@@ -1,9 +1,12 @@
+#1.0.0-alpha.13
 
+###HardwareIOPlus, HardwareIOText,
+- Now notify {event} eChange only when the value changes
 
 #1.0.0-alpha.12
 
 ###HardwareIOPlus, HardwareIOText,
-- Now notify {event} eChange when the destination value changes
+- Now notify {event} eChange when the destination changes
 
 
 #1.0.0-alpha.11
