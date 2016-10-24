@@ -1,3 +1,11 @@
+
+
+#1.0.0-alpha.12
+
+###HardwareIOPlus, HardwareIOText,
+- Now notify {event} eChange when the destination value changes
+
+
 #1.0.0-alpha.11
 
 ###HardwareIOPlus, HardwareIOText, UIButtonToggle

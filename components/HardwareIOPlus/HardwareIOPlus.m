@@ -140,6 +140,7 @@ classdef HardwareIOPlus < HandlePlus
     events
         
         eUnitChange
+        eChange
     end
 
     
@@ -1223,6 +1224,7 @@ classdef HardwareIOPlus < HandlePlus
             addlistener(this.uitRel,   'eChange', @this.onRelChange);
             addlistener(this.uipUnit,   'eChange', @this.onUnitChange);
 
+            addlistener(this.uieDest, 'eChange', @this.onDestChange);
             addlistener(this.uieStep, 'eChange', @this.onStepChange);
             addlistener(this.uibStepPos, 'eChange', @this.onStepPosPress);
             addlistener(this.uibStepNeg, 'eChange', @this.onStepNegPress);
@@ -1270,6 +1272,11 @@ classdef HardwareIOPlus < HandlePlus
             this.moveToDest();
             
         end
+        
+        function onDestChange(this, src, evt)
+            notify('eChange');
+        end
+        
         function onStepChange(this, src, evt)
             this.updateStepTooltips();
         end

@@ -111,6 +111,7 @@ classdef HardwareIOText < HandlePlus
     events
         
         eUnitChange
+        eChange
     end
 
     
@@ -558,6 +559,7 @@ classdef HardwareIOText < HandlePlus
                 this.uipStores.setTooltip('Go to a stored position');                
             end
                         
+            addlistener(this.uieDest,   'eChange', @this.onDestChange);
             %AW(5/24/13) : populating the destination
             this.uieDest.setVal(this.apiv.get());
             
@@ -597,6 +599,9 @@ classdef HardwareIOText < HandlePlus
             this.moveToDest();
         end
         
+        function onDestChange(this, src, evt)
+            notify('eChange');
+        end
                 
         function onPlayChange(this, src, evt)
             this.moveToDest();
