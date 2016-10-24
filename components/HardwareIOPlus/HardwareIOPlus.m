@@ -101,6 +101,11 @@ classdef HardwareIOPlus < HandlePlus
         
         uipStores % UIPopupStruct
         
+        % {char 1xm} - string format for value. See formatSpec. 'e', 'f'
+        % asupported as of 2016.10.24.  To add support for other formats,
+        % search for uitxVal.cVal and add more to the switch block.
+        cConversion = 'f'; 
+        lShowUnit = true;
         lShowZero = true
         lShowRel = true
         lShowJog = true
@@ -361,11 +366,13 @@ classdef HardwareIOPlus < HandlePlus
                     
                     
                     % Unit
-                    if this.lShowLabels
-                        this.uitxLabelUnit.build(this.hPanel, dLeft, dTopLabel, this.dWidthUnit, this.dHeight);
+                    if this.lShowUnit
+                        if this.lShowLabels
+                            this.uitxLabelUnit.build(this.hPanel, dLeft, dTopLabel, this.dWidthUnit, this.dHeight);
+                        end
+                        this.uipUnit.build(this.hPanel, dLeft, dTop, this.dWidthUnit, this.dHeight);
+                        dLeft = dLeft + this.dWidthUnit;
                     end
-                    this.uipUnit.build(this.hPanel, dLeft, dTop, this.dWidthUnit, this.dHeight);
-                    dLeft = dLeft + this.dWidthUnit;
                     
                     % Stores
                     if this.lShowStores && ...
@@ -434,8 +441,10 @@ classdef HardwareIOPlus < HandlePlus
                     right = this.dWidth2;
                     
                     % Unit
-                    right = right + 2 * this.dPad2 - this.dWidthUnit - this.dPad2;                     
-                    this.uipUnit.build(this.hPanel, right, dTop, this.dWidthUnit, this.dHeight);
+                    if this.lShowUnit
+                        right = right + 2 * this.dPad2 - this.dWidthUnit - this.dPad2;                     
+                        this.uipUnit.build(this.hPanel, right, dTop, this.dWidthUnit, this.dHeight);
+                    end
 
                     
                     right = right - 75 - 3;
@@ -813,11 +822,20 @@ classdef HardwareIOPlus < HandlePlus
                 % argument in the input list. For example, the input list
                 % ('%6.4f', pi) is equivalent to ('%*.*f', 6, 4, pi).
                 
-                this.uitxVal.cVal = sprintf(...
-                    '%.*f', ...
-                    this.unit().precision, ...
-                    this.valCalDisplay() ...
-                );
+                switch this.cConversion
+                    case 'f'
+                        this.uitxVal.cVal = sprintf(...
+                            '%.*f', ...
+                            this.unit().precision, ...
+                            this.valCalDisplay() ...
+                        );
+                    case 'e'
+                        this.uitxVal.cVal = sprintf(...
+                            '%.*e', ...
+                            this.unit().precision, ...
+                            this.valCalDisplay() ...
+                        );
+                end
                                 
                 % 2014.05.19 
                 % Need to update a property lIsThere which is true when
@@ -1452,6 +1470,10 @@ classdef HardwareIOPlus < HandlePlus
             if this.lShowJog
                 dOut = dOut + 2 * this.dWidthBtn + this.dWidthStep;
             end
+            
+            if this.lShowUnit
+                dOut = dOut + this.dWidthUnit;
+            end
             if this.lShowStores && ~isempty(this.config.ceStores)
                 dOut = dOut + this.dWidthStores;
             end
@@ -1461,7 +1483,8 @@ classdef HardwareIOPlus < HandlePlus
             if this.lShowZero
                 dOut = dOut + this.dWidthBtn;
             end
-            dOut = dOut + this.dWidthUnit;
+            
+            % dOut = dOut + this.dWidthUnit;
             
         end
         
