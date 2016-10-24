@@ -1,5 +1,14 @@
+# 1.0.0-alpha.9
+
+###HardwareIOPlus
+- New @prop {logical 1x1} [lShowUnit = true] allows hiding the unit dropdown
+- New @prop {char 1x1 | 1xm} [cConversion = 'f'] allows setting the string conversion of the value.  'f' for floating point and 'e' for exponential are currently supported
+- To set either of these new properties, assignn them in the constructor with varargin syntax.
+
+
 # 1.0.0-alpha.8
 
+### HardwareIOText
 - New component HardwareIOText similar to HardwareIOPlus except that it is unitless, therefore has no cal / raw, and sets values using char, not double.
 
 # 1.0.0-alpha.7
