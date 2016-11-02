@@ -13,7 +13,7 @@ classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
     properties
 
         cName;
-        dPos
+        dVal
         dDest
         dPath 
         dPathCycles = 10;      % Number of task periods to move through path
@@ -23,22 +23,22 @@ classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
             
     methods
         
-        function this = APIVHardwareIOPlus(cName, dPos, clock)
+        function this = APIVHardwareIOPlus(cName, dVal, clock)
 
             this.cName = cName;
-            this.dPos = dPos;
-            this.dDest = dPos;  
+            this.dVal = dVal;
+            this.dDest = dVal;  
             this.clock = clock;            
 
         end
 
         function dReturn = get(this)
-            dReturn = this.dPos;
+            dReturn = this.dVal;
         end
 
 
         function lIsReady = isReady(this)
-            lIsReady = this.dPos == this.dDest;
+            lIsReady = this.dVal == this.dDest;
         end
         
         
@@ -49,13 +49,13 @@ classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
             % dDest as dPath(dPathCycle).
             
             if isempty(this.clock)
-                this.dPos = dDest;
+                this.dVal = dDest;
                 return;
             end
             
             
             this.dDest = dDest;
-            this.dPath = linspace(this.dPos, this.dDest, this.dPathCycles);
+            this.dPath = linspace(this.dVal, this.dDest, this.dPathCycles);
             this.dPathCycle = 1;
 
             % 2013.07.08 CNA
@@ -79,7 +79,7 @@ classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
 
             % Set destination to current position so subsequent calls to
             % isReady() returns true
-            this.dDest = this.dPos;
+            this.dDest = this.dVal;
             
             if ~isempty(this.clock)
                 this.clock.remove(this.id());
@@ -93,12 +93,12 @@ classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
 
 
                 % Update pos
-                this.dPos = this.dPath(this.dPathCycle);
+                this.dVal = this.dPath(this.dPathCycle);
                 
-                this.msg(sprintf('handleClock() updating dPos to %1.3f', this.dPos), 5);
+                this.msg(sprintf('handleClock() updating dVal to %1.3f', this.dVal), 5);
 
                 % Do we need to stop the timer?
-                if (this.dPos == this.dDest)
+                if (this.dVal == this.dDest)
                     this.clock.remove(this.id());                
                 end
 

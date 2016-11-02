@@ -137,7 +137,13 @@ classdef HardwareIOPlus < HandlePlus
         
         % {char 1xm} storage of the last display value.  Used to emit
         % eChange events
-        cValPrev = '...' 
+        cValPrev = '...'
+        
+        % {char 1xm} - type to use for UIEdit for the destination
+        % This ended up opening up a can of worms.  All of the raw/cal
+        % logic assumes we are dealing with doubles, not uint or int.  For
+        % now, I'm going to cast all values as double
+        % cTypeDest = 'd'
     end
     
 
@@ -644,8 +650,6 @@ classdef HardwareIOPlus < HandlePlus
         %   See also SETDESTCAL, SETDESTRAW, MOVE
         
             if this.fhValidateDest() ~= true
-                   
-                
                 return;
             end
             
@@ -665,9 +669,7 @@ classdef HardwareIOPlus < HandlePlus
             % property is accessed before handleClock() has a chance to
             % update its value from the device API.
             
-            this.lReady = false; 
-            
-        
+            this.lReady = false;         
             dRaw = this.cal2raw(this.uieDest.val(), this.unit().name, this.uitRel.lVal);
             this.getApi().set(dRaw);
                        
@@ -825,8 +827,14 @@ classdef HardwareIOPlus < HandlePlus
                 %TODO : this should be refactored in a readRaw function
                 %see HardwareO for example
                 %make sure diode etc have it also
+               
+                % 2016.11.02 CNA always cast as double.  Underlying unit
+                % may not be double
                 
-                this.dValRaw = this.getApi().get();                
+                this.dValRaw = this.getApi().get();  
+                
+                % Temp
+                % this.msg(sprintf('%1.3f', this.destCalDisplay()));
                       
                 % update uitxVal
                 
@@ -1211,6 +1219,7 @@ classdef HardwareIOPlus < HandlePlus
             
             % addlistener(this.uitPlay,   'eChange', @this.handleUI);
             
+            addlistener(this.uieDest, 'eEnter', @this.onDestEnter);
             addlistener(this.uitAPI,   'eChange', @this.onAPIChange);
             addlistener(this.uibtPlay,   'eChange', @this.onPlayChange);
             addlistener(this.uitRel,   'eChange', @this.onRelChange);
@@ -1267,6 +1276,11 @@ classdef HardwareIOPlus < HandlePlus
         
         function onDestChange(this, src, evt)
             % notify(this, 'eChange');
+        end
+        
+        function onDestEnter(this, src, evt)
+            % this.msg('onDestEnter');
+            this.moveToDest();
         end
         
         function onStepChange(this, src, evt)

@@ -145,6 +145,8 @@ classdef HandlePlus < handle
         %   cID = handlePlus.id()
             if isprop(this, 'cName')
                 cID =  sprintf('%s-%s', class(this), this.cName);
+            elseif isprop(this, 'cLabel')
+                cID =  sprintf('%s-%s', class(this), this.cLabel);
             else
                 cID = class(this);
             end

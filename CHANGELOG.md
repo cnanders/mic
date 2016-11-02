@@ -1,3 +1,11 @@
+#1.0.0-alpha.15
+
+###UIEdit
+- Now nofies event eEnter when user releases the Enter key while the UI has focus (onKeyRelease)
+
+###HardwareIOPlus
+- Now calls moveToDest() when the user releases the Enter key when the destination has focus
+
 #1.0.0-alpha.14
 
 ###HardwareIOPlus

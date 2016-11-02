@@ -50,7 +50,7 @@ for n = 1:length(ceVars)
                 ceVars{n}, ...
                 class(eval(ceVars{n})) ...
             );
-            % delete(eval(ceVars{n}));
+            delete(eval(ceVars{n}));
             % eval(ceVars{n}).delete();
         end
             
