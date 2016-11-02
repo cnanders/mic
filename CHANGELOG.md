@@ -1,3 +1,18 @@
+#1.0.0-alpha.14
+
+###HardwareIOPlus
+- Updated APIInterface with return values on get and isReady
+
+###HardwareIOText
+- Updated APIInterface with return value on get
+- Fixed bug that called depricated setValRaw method in turnOn method
+
+###Keithley6482
+- Finalized APIInterface
+- Built API
+- Built APIV
+- improved tests to call several methods of the class
+
 #1.0.0-alpha.13
 
 ###HardwareIOPlus, HardwareIOText,

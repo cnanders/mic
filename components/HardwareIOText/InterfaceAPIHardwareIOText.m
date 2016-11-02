@@ -2,8 +2,8 @@ classdef InterfaceAPIHardwareIOText < HandlePlus
 
     methods (Abstract)
         
-       get(this) % retrieve value
-       set(this, cVap) % set new vap8e
+       c = get(this) % retrieve value
+       set(this, cVal) % set new vap8e
         
     end
     
