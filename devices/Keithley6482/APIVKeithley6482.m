@@ -14,11 +14,16 @@ classdef APIVKeithley6482 < InterfaceKeithley6482
         ceAverageState = {'OFF', 'OFF'}
         ceAverageAdvancedState = {'OFF', 'OFF'}
         ceAverageMode = {'MOVING', 'MOVING'}
-        u8AverageCount = uint8([10, 10])
+        u8AverageCount = [10, 10] % uint8 causes problems with HIOP
         ceMedianState = {'OFF', 'OFF'}
-        u8MedianRank = uint8([3, 3])
+        u8MedianRank = [3, 3] % uint8 causes problems with HIOP
         dRange = [20e-6, 20e-6]
         ceAutoRangeState
+        
+        % {double 1x1} - mean reported current 
+        dMean = 10e-6;
+        % {double 1x1} - standard deviation of reported current
+        dSig = 1e-6;
     end
 
     methods
@@ -201,20 +206,19 @@ classdef APIVKeithley6482 < InterfaceKeithley6482
         % @param {double 1x1} dVal - the range: 2e-9, 20e-9, 200e-9, etc.
         function setAutoRangeUpperLimit(this, u8Ch, dVal)
         end
+        
+        function d = getSingleMeasurement(this)
+           d = [this.dMean + this.dSig*randn(1), this.dMean + this.dSig*randn(1)]; 
+        end
+        
+        
 
         
 
     end
 
 
-    methods (Access = protected)
-
-        function handleClock(this)
-
-
-        end
-
-    end
+   
  end %class
     
 

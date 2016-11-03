@@ -1,0 +1,11 @@
+{
+	"delay": 1,
+	"units": [
+		{
+			"name": "ms",
+			"slope": 1000,
+			"offset": 0,
+			"precision": 3
+		}
+	]
+}	

@@ -30,7 +30,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         end
         
         function c = identity(this)
-            cCommand = '*IDN?'
+            cCommand = '*IDN?';
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
         end
@@ -107,6 +107,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
             cCommand = sprintf(':sense%u:average?', u8Ch)
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
+            c = this.stateText(c);
         end
         
         
@@ -120,6 +121,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
             cCommand = sprintf(':sense%u:average:advanced?', u8Ch);
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
+            c = this.stateText(c);
         end
         
         
@@ -151,7 +153,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         function u8 = getAverageCount(this, u8Ch)
             cCommand = sprintf(':sense%u:average:count?', u8Ch)
             fprintf(this.s, cCommand);
-            u8 = uint8(str2double(fscanf(this.s)));
+            u8 = str2double(fscanf(this.s));
         end
         
         % Set the median filter state of a channel
@@ -167,6 +169,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
             cCommand = sprintf(':sense%u:median?', u8Ch)
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
+            c = this.stateText(c);
         end
         
         % Set the median filter rank of a channel
@@ -181,7 +184,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         function u8 = getMedianRank(this, u8Ch)
             cCommand = sprintf(':sense%u:median:rank?', u8Ch)
             fprintf(this.s, cCommand);
-            u8 = uint8(str2double(fscanf(this.s)));
+            u8 = str2double(fscanf(this.s));
         end
         
 
@@ -229,6 +232,39 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         
         function delete(this)
             this.disconnect();
+        end
+                
+        % @return {double 1x2} - ch1 and ch2 current
+        function d = getSingleMeasurement(this)
+           cCommand = ':measure?';
+           fprintf(this.s, cCommand);
+           c = fscanf(this.s); % {char 1xm} '+6.925672E-07,+3.245491E-10'
+           ce = strsplit(c, ','); % {cell 1x2} {'+6.925672E-07', '+3.245491E-10'}
+           d = str2double(ce); % {double 1x2} [6.925672e-07 3.245491e-10]
+        end
+        
+        
+        
+    end
+    
+    
+    methods (Access = private)
+        
+        % The SPCI state? commands return a {char 1xm} representation of 1
+        % or 0 followed by the terminator.  The 6517A terminator is CR/LF,
+        % which is equivalent to \r\n in matlab. This method converts the
+        % {char 1xm} response, for example '1\r\n' or '0\r\n' (except the char
+        % doesn't actually equal this, you have to wrap sprintf around it
+        % for \r\n to convert.) to 'on' or 'off', respectively
+        % @param {char 1xm} - response from SPCI
+        % @return {char 1xm} - 'on' or 'off'
+           
+        function c = stateText(this, cIn)
+            if strcmp(cIn, sprintf('1\r\n'))
+                c = 'on';
+            else
+                c = 'off';
+            end  
         end
         
     end

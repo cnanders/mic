@@ -1,0 +1,13 @@
+{
+	"delay": 1,
+	"stores": [
+		{
+			"name": "On",
+			"val": "on"
+		},
+        {
+			"name": "Off",
+			"val": "off"
+		}
+	]
+}	

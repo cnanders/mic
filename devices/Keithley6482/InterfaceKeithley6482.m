@@ -130,6 +130,13 @@ classdef InterfaceKeithley6482 < HandlePlus
         % @param {double 1x1} dVal - the range: 2e-9, 20e-9, 200e-9, etc.
         setAutoRangeUpperLimit(this, u8Ch, dVal)
         
+        
+        % d = getDataLatest(this, u8Ch)
+        % d = getDataFresh(this, u8Ch)
+        
+        % @return {double 1x2} - ch1 and ch2 current
+        d = getSingleMeasurement(this)
+        
        
       
         
