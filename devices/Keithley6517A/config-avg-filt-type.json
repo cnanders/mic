@@ -1,0 +1,17 @@
+{
+	"delay": 1,
+	"stores": [
+		{
+			"name": "None",
+			"val": "none"
+		},
+        	{
+			"name": "Scalar",
+			"val": "scalar"
+		},
+		{
+			"name": "Advanced",
+			"val": "advanced"
+		}
+	]
+}	
