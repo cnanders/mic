@@ -48,6 +48,12 @@ classdef HardwareIOText < HandlePlus
         
         dWidthStatus = 5;
         
+        cLabelAPI = 'API'
+        cLabelName = 'Name';
+        cLabelValue = 'Value';
+        cLabelDest = 'Goal'
+        cLabelPlay = 'Go'
+        cLabelStores = 'Stores';
         cTooltipAPIOff = 'Connect to the real API / hardware';
         cTooltipAPIOn = 'Disconnect the real API / hardware (go into virtual mode)';
 
@@ -234,7 +240,7 @@ classdef HardwareIOText < HandlePlus
             dTop = -1;
             dTopLabel = -1;
             if this.lShowLabels
-                dTop = 12;
+                dTop = this.dHeightLabel;
             end
 
             dLeft = 0;
@@ -574,13 +580,14 @@ classdef HardwareIOText < HandlePlus
             addlistener(this.uitAPI,   'eChange', @this.onAPIChange);
             addlistener(this.uibtPlay,   'eChange', @this.onPlayChange);
 
-                        
-            this.uitxLabelName = UIText('Name');
-            this.uitxLabelVal = UIText('Value', 'Right');
-            this.uitxLabelDest = UIText('Goal');
-            this.uitxLabelPlay = UIText('Go');
-            this.uitxLabelAPI = UIText('API', 'center');
-            this.uitxLabelStores = UIText('Stores');
+                
+            
+            this.uitxLabelName = UIText(this.cLabelName);
+            this.uitxLabelVal = UIText(this.cLabelValue, 'Right');
+            this.uitxLabelDest = UIText(this.cLabelDest);
+            this.uitxLabelPlay = UIText(this.cLabelPlay);
+            this.uitxLabelAPI = UIText(this.cLabelAPI, 'center');
+            this.uitxLabelStores = UIText(this.cLabelStores);
             
             this.uitAPI.setTooltip(this.cTooltipAPIOff);
             this.uitxName.setTooltip('The name of this device');

@@ -54,7 +54,16 @@ classdef HardwareIOPlus < HandlePlus
         dPad2 = 0;
         dWidthStatus = 5;
         
-        cLabelStores = 'Stores';
+        cLabelAPI = 'API'
+        cLabelName = 'Name';
+        cLabelValue = 'Value';
+        cLabelDest = 'Goal'
+        cLabelPlay = 'Go'
+        cLabelStores = 'Stores'
+        cLabelUnit = 'Unit'
+        cLabelJogL = '';
+        cLabelJog = 'Step';
+        cLabelJogR = '';
         cTooltipAPIOff = 'Connect to the real API / hardware';
         cTooltipAPIOn = 'Disconnect the real API / hardware (go into virtual mode)';
         
@@ -199,8 +208,7 @@ classdef HardwareIOPlus < HandlePlus
             
             this.fhValidateDest = this.validateDest;
             this.config = Config();
-            
-            
+                       
             % Override properties with varargin
             
             for k = 1 : 2: length(varargin)
@@ -1230,16 +1238,18 @@ classdef HardwareIOPlus < HandlePlus
             addlistener(this.uibStepPos, 'eChange', @this.onStepPosPress);
             addlistener(this.uibStepNeg, 'eChange', @this.onStepNegPress);
             addlistener(this.uibZero, 'eChange', @this.onZeroPress);
-                        
-            this.uitxLabelName = UIText('Name');
-            this.uitxLabelVal = UIText('Value', 'Right');
-            this.uitxLabelUnit = UIText('Unit');
-            this.uitxLabelDest = UIText('Goal');
-            this.uitxLabelPlay = UIText('Go');
-            this.uitxLabelAPI = UIText('API', 'center');
-            this.uitxLabelJogL = UIText('', 'center');
-            this.uitxLabelJog = UIText('Step', 'center');
-            this.uitxLabelJogR = UIText('', 'center');
+                 
+           
+            
+            this.uitxLabelName = UIText(this.cLabelName);
+            this.uitxLabelVal = UIText(this.cLabelValue, 'Right');
+            this.uitxLabelUnit = UIText(this.cLabelUnit);
+            this.uitxLabelDest = UIText(this.cLabelDest);
+            this.uitxLabelPlay = UIText(this.cLabelPlay);
+            this.uitxLabelAPI = UIText(this.cLabelAPI, 'center');
+            this.uitxLabelJogL = UIText(this.cLabelJogL, 'center');
+            this.uitxLabelJog = UIText(this.cLabelJog, 'center');
+            this.uitxLabelJogR = UIText(this.cLabelJogR, 'center');
             this.uitxLabelStores = UIText(this.cLabelStores);
             
             this.uitAPI.setTooltip(this.cTooltipAPIOff);

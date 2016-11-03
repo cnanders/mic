@@ -1,3 +1,11 @@
+#1.0.0-alpha.16
+
+###HardwareOPlus
+- Fixed bug in constructor.  Now works with varargin.  Since HardwareOPlus is a HardwareIOPlus with limited functionality, this was a bug.
+
+###HardwareOPlus, IOPlus, IOText
+- Now have settable properties for the values of each label
+
 #1.0.0-alpha.15
 
 ###UIEdit

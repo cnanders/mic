@@ -47,6 +47,11 @@ classdef TestUIPopupStruct < HandlePlus
                     'cVal', n ...
                );
                ceOptions{n} = stOption;
+               
+               fprintf('{\n');
+               fprintf('"name": "%d",\n', n);
+               fprintf('"raw": %d\n', n);
+               fprintf('},\n');
   
             end
             
