@@ -1,40 +1,55 @@
-#1.0.0-alpha.16
+# 1.0.0-alpha.19
 
-###HardwareOPlus
-- Fixed bug in constructor.  Now works with varargin.  Since HardwareOPlus is a HardwareIOPlus with limited functionality, this was a bug.
+### Keithley6482
+- Rebuilt the UI as a 2-channel version of Keithley 6517A
 
-###HardwareOPlus, IOPlus, IOText
+# 1.0.0-alpha.18
+
+### Keithley6517A
+- Added tests from DCT codebase.
+
+# 1.0.0-alpha.17
+
+### Keithley6517A
+- Added this device from DCT codebase.  The API uses the MATLAB Instrument Control Toolbox and talks to the device using SCPI (Standard Commands for Programmable Instruments).
+
+# 1.0.0-alpha.16
+
+### HardwareOPlus
+- Fixed bug in constructor.  Now works with varargin.  Since HardwareOPlus is a HardwareIOPlus with limited functionality, since changing HardwareIOPlus to varargin input HardwareOPlus was not working correctly. 
+
+### HardwareOPlus, IOPlus, IOText
 - Now have settable properties for the values of each label
 
-#1.0.0-alpha.15
+# 1.0.0-alpha.15
 
-###UIEdit
+### UIEdit
 - Now nofies event eEnter when user releases the Enter key while the UI has focus (onKeyRelease)
 
-###HardwareIOPlus
+### HardwareIOPlus
 - Now calls moveToDest() when the user releases the Enter key when the destination has focus
 
-#1.0.0-alpha.14
+# 1.0.0-alpha.14
 
-###HardwareIOPlus
+### HardwareIOPlus
 - Updated APIInterface with return values on get and isReady
 
-###HardwareIOText
+### HardwareIOText
 - Updated APIInterface with return value on get
 - Fixed bug that called depricated setValRaw method in turnOn method
 
-###Keithley6482
+### Keithley6482
 - Finalized APIInterface
 - Built API
 - Built APIV
 - improved tests to call several methods of the class
 
-#1.0.0-alpha.13
+# 1.0.0-alpha.13
 
-###HardwareIOPlus, HardwareIOText,
+### HardwareIOPlus, HardwareIOText,
 - Now notify {event} eChange only when the value changes
 
-#1.0.0-alpha.12
+# 1.0.0-alpha.12
 
 ###HardwareIOPlus, HardwareIOText,
 - Now notify {event} eChange when the destination changes
@@ -42,12 +57,12 @@
 
 #1.0.0-alpha.11
 
-###HardwareIOPlus, HardwareIOText, UIButtonToggle
+### HardwareIOPlus, HardwareIOText, UIButtonToggle
 - enable, disable methods now supported to dis/enable UI programatically
 
 # 1.0.0-alpha.10
 
-###HardwareIOPlus, HardwareIOText
+### HardwareIOPlus, HardwareIOText
 - Improved formatting on Windows
 - @param {logical 1x1} lActive now defaults to false
 - Moved all of the constant width, height props to protected properties so they are settable with varargin syntax.
@@ -55,7 +70,7 @@
 
 # 1.0.0-alpha.9
 
-###HardwareIOPlus
+### HardwareIOPlus
 - New @prop {logical 1x1} [lShowUnit = true] allows hiding the unit dropdown
 - New @prop {char 1x1 | 1xm} [cConversion = 'f'] allows setting the string conversion of the value.  'f' for floating point and 'e' for exponential are currently supported
 - To set either of these new properties, assignn them in the constructor with varargin syntax.
@@ -72,20 +87,20 @@ Unknown changes
 
 # 1.0.0-alpha.6
 
-###UiPopupStruct
+### UiPopupStruct
 - now uses varargin
 
-###Keithley6482
+### Keithley6482
 - support for new UIPopupStruct constructor
 
-###HardwareIOPlus
+### HardwareIOPlus
 - support for new UIPopupStruct constructor
 
 
 
 # 1.0.0-alpha.5
 
-###HardwareIOPlus 
+### HardwareIOPlus 
 - now uses varargin for constructor
 - valCal, valCalDisplay, and valRaw now force a call to api.get() instead of using dValRaw that is updated with the clock
 - clock task added in build() and only if clock is not empty [ ]
