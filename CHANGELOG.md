@@ -1,3 +1,9 @@
+
+# 1.0.0-alpha.18
+
+### Keithley6517A
+- Added tests from DCT codebase.
+
 # 1.0.0-alpha.17
 
 ### Keithley6517A
