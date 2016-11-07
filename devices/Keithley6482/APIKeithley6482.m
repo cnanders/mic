@@ -66,7 +66,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
                 return;
             end
             
-            cCommand = sprintf(':current:nplcycles %1.3f', dPLC)
+            cCommand = sprintf(':current:nplcycles %1.3f', dPLC);
             fprintf(this.s, cCommand);
             
         end
@@ -85,12 +85,18 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         end
         
         function d = getIntegrationPeriodPLC(this)
-            cCommand = ':current:nplcycles?'
+            cCommand = ':current:nplcycles?';
             fprintf(this.s, cCommand);
             d = str2double(fscanf(this.s));
         end
         
-        
+        % --------
+        % UPDATE
+        %
+        % I didn't realize that the ADC, Average Filter, and Median Filter
+        % Settings are global to both channels.  The API below still works,
+        % but know that if you set channel 2, it is the same as setting 1,
+        % which is really setting both channels
         
         % Enable or disable the digital averaging filter 
         % @param {char 1xm} cVal - the state: "ON" of "OFF"
@@ -104,7 +110,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         
         % @return {char 1xm} "ON" or "OFF"
         function c = getAverageState(this, u8Ch)
-            cCommand = sprintf(':sense%u:average?', u8Ch)
+            cCommand = sprintf(':sense%u:average?', u8Ch);
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
             c = this.stateText(c);
@@ -113,7 +119,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         
         
         function setAverageAdvancedState(this, u8Ch, cVal)
-            cCommand = sprintf(':sense%u:average:advanced %s', u8Ch, cVal)
+            cCommand = sprintf(':sense%u:average:advanced %s', u8Ch, cVal);
             fprintf(this.s, cCommand);
         end
         
@@ -131,12 +137,12 @@ classdef APIKeithley6482 < InterfaceKeithley6482
             % [:SENSe[1]]:CURRent[:DC]:AVERage:TCONtrol <name>
             % REPeat
             % MOVing
-            cCommand = sprintf(':sense%u:average:tcontrol %s', u8Ch, cVal)
+            cCommand = sprintf(':sense%u:average:tcontrol %s', u8Ch, cVal);
             fprintf(this.s, cCommand);
         end
         
         function c = getAverageMode(this, u8Ch)
-            cCommand = sprintf(':sense%u:average:tcontrol?', u8Ch)
+            cCommand = sprintf(':sense%u:average:tcontrol?', u8Ch);
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
         end
@@ -145,13 +151,13 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         % @param {uint8) u8Val - the count (1 to 100)
         function setAverageCount(this, u8Ch, u8Val) 
             % [:SENSe[1]]:CURRent[:DC]:AVERage:COUNt <n>
-            cCommand = sprintf(':sense%u:average:count %u', u8Ch, u8Val)
+            cCommand = sprintf(':sense%u:average:count %u', u8Ch, u8Val);
             fprintf(this.s, cCommand);
 
         end
         
         function u8 = getAverageCount(this, u8Ch)
-            cCommand = sprintf(':sense%u:average:count?', u8Ch)
+            cCommand = sprintf(':sense%u:average:count?', u8Ch);
             fprintf(this.s, cCommand);
             u8 = str2double(fscanf(this.s));
         end
@@ -160,13 +166,13 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         % @param {char 1xm} cVal - the state: "ON" of "OFF"
         function setMedianState(this, u8Ch, cVal)
             % [:SENSe[1]]:CURRent[:DC]:MEDian[:STATe] <b>
-            cCommand = sprintf(':sense%u:median %s', u8Ch, cVal)
+            cCommand = sprintf(':sense%u:median %s', u8Ch, cVal);
             fprintf(this.s, cCommand);
         end
         
         
         function c = getMedianState(this, u8Ch)
-            cCommand = sprintf(':sense%u:median?', u8Ch)
+            cCommand = sprintf(':sense%u:median?', u8Ch);
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
             c = this.stateText(c);
@@ -177,12 +183,12 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         % 7, 9, 11 samples, respectively]
         function setMedianRank(this, u8Ch, u8Val)
             % [:SENSe[1]]:CURRent[:DC]:MEDian:RANK <NRf>
-            cCommand = sprintf(':sense%u:median:rank %u', u8Ch, u8Val)
+            cCommand = sprintf(':sense%u:median:rank %u', u8Ch, u8Val);
             fprintf(this.s, cCommand);
         end
         
         function u8 = getMedianRank(this, u8Ch)
-            cCommand = sprintf(':sense%u:median:rank?', u8Ch)
+            cCommand = sprintf(':sense%u:median:rank?', u8Ch);
             fprintf(this.s, cCommand);
             u8 = str2double(fscanf(this.s));
         end
@@ -194,7 +200,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         % will accommodate that expected reading.
         function setRange(this, u8Ch, dAmps)
            % [:SENSe[1]]:CURRent[:DC]:RANGe[:UPPer] <n> 
-           cCommand = sprintf(':sense%u:current:range %1.3e', u8Ch, dAmps)
+           cCommand = sprintf(':sense%u:current:range %1.3e', u8Ch, dAmps);
            fprintf(this.s, cCommand);
 
         end
@@ -213,9 +219,10 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         end
         
         function c = getAutoRangeState(this, u8Ch)
-            cCommand = sprintf(':sense%u:current:range:auto?', u8Ch)
+            cCommand = sprintf(':sense%u:current:range:auto?', u8Ch);
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
+            c = this.stateText(c);
         end
             
         
@@ -244,6 +251,16 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         end
         
         
+        function d = read(this, u8Ch)
+           cCommand = sprintf(':FORM:ELEM CURR%u', u8Ch);
+           fprintf(this.s, cCommand);
+           cCommand = ':read?';
+           fprintf(this.s, cCommand);
+           c = fscanf(this.s); % {char 1xm} '+6.925672E-07
+           d = str2double(c);
+        end
+        
+        
         
     end
     
@@ -260,11 +277,22 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         % @return {char 1xm} - 'on' or 'off'
            
         function c = stateText(this, cIn)
-            if strcmp(cIn, sprintf('1\r\n'))
-                c = 'on';
-            else
-                c = 'off';
-            end  
+            
+            switch this.terminator
+                case 'CR'
+                    if strcmp(cIn, sprintf('1\r'))
+                        c = 'on';
+                    else
+                        c = 'off';
+                    end
+                case 'CR/LF'
+                    if strcmp(cIn, sprintf('1\r\n'))
+                        c = 'on';
+                    else
+                        c = 'off';
+                    end
+            end
+                    
         end
         
     end

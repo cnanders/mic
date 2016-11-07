@@ -122,6 +122,8 @@ classdef HardwareIOPlus < HandlePlus
         % asupported as of 2016.10.24.  To add support for other formats,
         % search for uitxVal.cVal and add more to the switch block.
         cConversion = 'f'; 
+        lShowName = true;
+        lShowVal = true;
         lShowUnit = true;
         lShowZero = true
         lShowRel = true
@@ -327,18 +329,23 @@ classdef HardwareIOPlus < HandlePlus
                     
                     
                     % Name
-                    if this.lShowLabels
-                        this.uitxLabelName.build(this.hPanel, dLeft, dTopLabel, this.dWidthName, this.dHeightLabel);
+                    if this.lShowName
+                        if this.lShowLabels
+                            this.uitxLabelName.build(this.hPanel, dLeft, dTopLabel, this.dWidthName, this.dHeightLabel);
+                        end
+                        this.uitxName.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthName, this.dHeightText);
+                        dLeft = dLeft + this.dWidthName;
                     end
-                    this.uitxName.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthName, this.dHeightText);
-                    dLeft = dLeft + this.dWidthName;
                     
+                   
                     % Val
-                    if this.lShowLabels
-                        this.uitxLabelVal.build(this.hPanel, dLeft, dTopLabel, this.dWidthVal, this.dHeightLabel);
+                    if this.lShowVal
+                        if this.lShowLabels
+                            this.uitxLabelVal.build(this.hPanel, dLeft, dTopLabel, this.dWidthVal, this.dHeightLabel);
+                        end
+                        this.uitxVal.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthVal, this.dHeightText);
+                        dLeft = dLeft + this.dWidthVal + 5;
                     end
-                    this.uitxVal.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthVal, this.dHeightText);
-                    dLeft = dLeft + this.dWidthVal + 5;
                                         
                     % Dest
                     if this.lShowDest
@@ -1580,8 +1587,13 @@ classdef HardwareIOPlus < HandlePlus
                dOut = dOut + this.dWidthBtn;
             end
 
-            dOut = dOut + this.dWidthName;
-            dOut = dOut + this.dWidthVal + 5;
+            if this.lShowName
+                dOut = dOut + this.dWidthName;
+            end
+            
+            if this.lShowVal
+                dOut = dOut + this.dWidthVal + 5;
+            end
             
             if this.lShowDest
                 dOut = dOut + this.dWidthDest;

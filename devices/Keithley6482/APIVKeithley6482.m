@@ -211,6 +211,11 @@ classdef APIVKeithley6482 < InterfaceKeithley6482
            d = [this.dMean + this.dSig*randn(1), this.dMean + this.dSig*randn(1)]; 
         end
         
+        function d = read(this, u8Ch)
+            d = this.dMean + this.dSig*randn(1);
+        end
+            
+        
         
 
         

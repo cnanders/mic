@@ -1,9 +1,13 @@
+# 1.0.0-alpha.20
+
+### Keithley6482
+- Realized that ADC period, average filter, and median filter apply globally to both channels.  Updated UI to reflect this.
+- Changed API to implement READ? SPCI command instead of MEASure?.  MEASure calls another function which sets auto range to on on both channels.  Not what we want.
+
 # 1.0.0-alpha.19
 
 ### Keithley6482
 - Rebuilt the UI as a 2-channel version of Keithley 6517A
-
-
 
 # 1.0.0-alpha.18
 

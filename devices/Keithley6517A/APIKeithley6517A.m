@@ -292,11 +292,22 @@ classdef APIKeithley6517A < InterfaceKeithley6517A
         % @return {char 1xm} - 'on' or 'off'
            
         function c = stateText(this, cIn)
-            if strcmp(cIn, sprintf('1\r\n'))
-                c = 'on';
-            else
-                c = 'off';
-            end  
+            
+            switch this.terminator
+                case 'CR'
+                    if strcmp(cIn, sprintf('1\r'))
+                        c = 'on';
+                    else
+                        c = 'off';
+                    end
+                case 'CR/LF'
+                    if strcmp(cIn, sprintf('1\r\n'))
+                        c = 'on';
+                    else
+                        c = 'off';
+                    end
+            end
+                    
         end
         
     end

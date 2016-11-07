@@ -1,4 +1,4 @@
-classdef Keithley6482 < HandlePlus
+classdef oldKeithley6482 < HandlePlus
     
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
@@ -211,7 +211,7 @@ classdef Keithley6482 < HandlePlus
             
     methods
         
-        function this = Keithley6482(stParams)
+        function this = oldKeithley6482(stParams)
         %Keithley6482 constructor
         %@param {struct 1x1} stParams - configuration params 
         %@param {char 1xm} stParams.cName - the name of the instance.  

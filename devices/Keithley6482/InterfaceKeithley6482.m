@@ -135,11 +135,12 @@ classdef InterfaceKeithley6482 < HandlePlus
         % d = getDataFresh(this, u8Ch)
         
         % @return {double 1x2} - ch1 and ch2 current
-        d = getSingleMeasurement(this)
+        % d = getSingleMeasurement(this)
         
-       
-      
-        
+        % @param {uint8 1x1} u8Ch - the channel (1 or 2)
+        % @return {double 1x1} dVal - current
+        d = read(this, u8Ch)
+               
     end
     
 end

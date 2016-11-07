@@ -11,8 +11,7 @@ classdef APIHOData2 < InterfaceAPIHardwareO
         end
         
         function d = get(this) % retrieve value
-            d = this.api.getDataLatest();
-            d = d(2);
+            d = this.api.read(2);
         end
         
     end
