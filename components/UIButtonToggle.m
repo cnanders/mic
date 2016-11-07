@@ -192,7 +192,21 @@ classdef UIButtonToggle < HandlePlus
                 set(this.hUI, 'TooltipString', this.cTooltip);
             end
             
+         end
+        
+        function enable(this)
+            if ishandle(this.hUI)
+                set(this.hUI, 'Enable', 'on');
+            end
         end
+        
+        function disable(this)
+            if ishandle(this.hUI)
+                set(this.hUI, 'Enable', 'off');
+            end
+            
+        end
+         
         
 
     end

@@ -1,0 +1,45 @@
+{
+	"delay": 1,
+	"units": [
+		{
+			"name": "A",
+			"slope": 1,
+			"offset": 0,
+			"precision": 3
+		}
+	],
+    "stores": [
+        {
+            "name": "20 mA",
+            "raw": 20e-3
+        },
+        {
+            "name": "2 mA",
+            "raw": 2e-3
+        },
+        {
+            "name": "200 uA",
+            "raw": 200e-6
+        }, 
+        {
+            "name": "20 uA",
+            "raw": 20e-6
+        },
+         {
+            "name": "2 uA",
+            "raw": 2e-6
+        }, 
+        {
+            "name": "200 nA",
+            "raw": 200e-9
+        },
+        {
+            "name": "20 nA",
+            "raw": 20e-9
+        }, 
+        {
+            "name": "2 nA",
+            "raw": 2e-9
+        }
+    ]
+}	

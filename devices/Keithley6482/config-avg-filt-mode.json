@@ -1,0 +1,13 @@
+{
+	"delay": 1,
+	"stores": [
+		{
+			"name": "Moving",
+			"val": "moving"
+		},
+        	{
+			"name": "Repeat",
+			"val": "repeat"
+		}
+	]
+}	

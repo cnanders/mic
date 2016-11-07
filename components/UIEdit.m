@@ -33,7 +33,6 @@ classdef UIEdit < HandlePlus
 
 
     properties (Access = private)
-        cLabel
         cType
         cHorizontalAlignment
         lShowLabel
@@ -51,12 +50,13 @@ classdef UIEdit < HandlePlus
         xVal    % mixed type to store typecast version of cData
         xMin 
         xMax
-
+        cLabel
     end
 
 
     events
       eChange  
+      eEnter
     end
 
     %%
@@ -118,6 +118,7 @@ classdef UIEdit < HandlePlus
                 'TooltipString', this.cTooltip, ...
                 'ButtonDownFcn',@this.uie_ButtonDownFcn, ...
                 'KeyPressFcn',@this.uie_keyPressFcn, ...
+                'KeyReleaseFcn', @this.onKeyRelease, ...
                 'HorizontalAlignment', this.cHorizontalAlignment ...
             );
         
@@ -539,8 +540,14 @@ classdef UIEdit < HandlePlus
 
                this.cData = xVal;
            else
-               msg = sprintf('cType = %s.  You passed a %s', this.cType, class(xVal));
-               msgbox(msg, 'UIEdit.setVal() invalid type', 'error');
+               cMsg = sprintf(...
+                   '%s ERROR: cType = %s.  You passed a %s', ...
+                   this.id(), ...
+                   this.cType, ...
+                   class(xVal)...
+               );
+               this.msg(cMsg);
+               msgbox(cMsg, 'UIEdit.setVal() invalid type', 'error');
            end
 
         end
@@ -550,7 +557,11 @@ classdef UIEdit < HandlePlus
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          %nothing
 
-
+         function onKeyRelease(this, src, evt)
+             if uint8(evt.Character') == 13
+            	notify(this, 'eEnter');
+             end
+         end
          function uie_keyPressFcn(this, src, evt)
         %      switch evt.Key
         %          case {'uparrow', 'i'}
@@ -564,6 +575,9 @@ classdef UIEdit < HandlePlus
         %this.hUI
             Utils.keyboard_navigation(src, evt)
         %      end
+        
+        
+            
          end
 
         function uie_ButtonDownFcn(this, src, evt)

@@ -83,7 +83,8 @@ classdef UIText < HandlePlus
                    class(cVal) ...
                    );
                cTitle = 'UIText.set.sVal() error';
-               msgbox(cMsg, cTitle, 'warn');
+               % msgbox(cMsg, cTitle, 'warn');
+               error(cMsg);
            end
            
            % ui

@@ -11,15 +11,17 @@ classdef TestUIPopupStruct < HandlePlus
         
         uip
         
+        
     end
     
     properties (SetAccess = private)
-    
+        cName = 'TestUIPopopStuct';
     end
     
     properties (Access = private)
         
         hFigure
+        clock
     end
     
         
@@ -35,6 +37,25 @@ classdef TestUIPopupStruct < HandlePlus
         
         function this = TestUIPopupStruct()
              
+            num = 100;
+            ceOptions = cell(1, num);
+            this.clock = Clock('master');
+            for n = 1:num
+                
+               stOption = struct( ...
+                    'cLabel', sprintf('Val %1.0f', n), ...
+                    'cVal', n ...
+               );
+               ceOptions{n} = stOption;
+               
+               fprintf('{\n');
+               fprintf('"name": "%d",\n', n);
+               fprintf('"raw": %d\n', n);
+               fprintf('},\n');
+  
+            end
+            
+            %{
             ceOptions = {
                 struct( ...
                     'cLabel', 'Blah 1', ...
@@ -45,6 +66,7 @@ classdef TestUIPopupStruct < HandlePlus
                     'dVal', 2 ...
                 ) ...
             };
+            %}
             
             
             
@@ -54,10 +76,15 @@ classdef TestUIPopupStruct < HandlePlus
             );
             
             addlistener(this.uip, 'eChange', @this.onChange);
+            
+            this.clock.add(@this.onClock, this.id(), 0.5);
 
             
         end
         
+        function onClock(this, src, evt)
+            this.uip.u8Selected = uint8(6);
+        end
         function onChange(this, src, evt)
             
             this.uip.val()
@@ -81,6 +108,8 @@ classdef TestUIPopupStruct < HandlePlus
         
         function delete(this)
             this.msg('delete', 5);
+            this.clock.remove(this.id());
+            delete(this.clock);
         end
                
     end
