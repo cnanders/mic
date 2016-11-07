@@ -1,3 +1,10 @@
+# 1.0.0-alpha.21
+
+### UIEdit
+- Temporarily disabling KeyReleaseFcn callback and channeling the handler through KeyPressFcn which works in earlier versions of MATLAB.
+- Update to HardwarePlus.checkDir() for better type checking (forces === 7 check) and it now displays a message whenever it creates a directory.
+
+
 # 1.0.0-alpha.20
 
 ### Keithley6482

@@ -18,7 +18,7 @@ classdef APIVKeithley6482 < InterfaceKeithley6482
         ceMedianState = {'OFF', 'OFF'}
         u8MedianRank = [3, 3] % uint8 causes problems with HIOP
         dRange = [20e-6, 20e-6]
-        ceAutoRangeState
+        ceAutoRangeState = {'OFF', 'OFF'}
         
         % {double 1x1} - mean reported current 
         dMean = 10e-6;

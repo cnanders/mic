@@ -721,7 +721,7 @@ classdef HardwareIOPlus < HandlePlus
             % set(this.hImage, 'Visible', 'off');
                         
             % Update destination values to match device values
-            this.setDestRaw(this.api.get());
+            % this.setDestRaw(this.api.get());
             
             % Kill the APIV
             if ~isempty(this.apiv) && ...
