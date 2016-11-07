@@ -271,8 +271,10 @@ classdef HandlePlus < handle
         %CHECKDIR Check that the dir at cPath exists. Make if needed
 
             
-        
-            if (~exist(cPath, 'dir'))
+            
+            if (exist(cPath, 'dir') ~= 7)
+                cMsg = sprintf('checkDir() creating dir %s', cPath);
+                this.msg(cMsg);
                 mkdir(cPath);
             end
             
