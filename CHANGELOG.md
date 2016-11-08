@@ -1,3 +1,8 @@
+# 1.0.0-alpha.23
+
+- Moved tests into component and devide folders so they are easier to find.  Now a component or device folder contains its tests.
+
+
 # 1.0.0-alpha.22
 
 ### Keithley6482
