@@ -1,3 +1,8 @@
+# 1.0.0-alpha.22
+
+### Keithley6482
+- Updates to appearance.  Made it more closely resemble the display on the physical unit
+
 # 1.0.0-alpha.21
 
 ### UIEdit
