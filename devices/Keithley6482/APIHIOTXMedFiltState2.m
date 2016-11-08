@@ -1,4 +1,4 @@
-classdef APIHIOTXMedFiltState2 < InterfaceAPIHardwareIOText
+classdef ApiHiotxMedFiltState2 < InterfaceApiHardwareIOText
     
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef APIHIOTXMedFiltState2 < InterfaceAPIHardwareIOText
     
     methods
         
-        function this = APIHIOTXMedFiltState2(api) 
+        function this = ApiHiotxMedFiltState2(api) 
             this.api = api;
         end
         

@@ -1,4 +1,4 @@
-classdef APIVKeithley6517A < InterfaceKeithley6517A
+classdef ApivKeithley6517A < InterfaceKeithley6517A
 
     properties % (Access = private)
      
@@ -25,7 +25,7 @@ classdef APIVKeithley6517A < InterfaceKeithley6517A
     
     methods 
         
-        function this = APIVKeithley6517A()            
+        function this = ApivKeithley6517A()            
         end
         
         function init(this)
@@ -38,7 +38,7 @@ classdef APIVKeithley6517A < InterfaceKeithley6517A
         end
         
         function c = identity(this)
-            c = 'APIVKeithley6517A';
+            c = 'ApivKeithley6517A';
         end
         
         function setFunctionToAmps(this)

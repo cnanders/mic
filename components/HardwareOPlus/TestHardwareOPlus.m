@@ -50,10 +50,10 @@ classdef TestHardwareOPlus < HandlePlus
                 'lShowZero', true, ...
                 'lShowRel', true, ...
                 'lShowLabels', false, ...
-                'lShowAPI', true ...
+                'lShowApi', true ...
             );  
        
-            % For development, set real API to APIV
+            % For development, set real Api to Apiv
             
             stParams = struct();
             stParams.cName = sprintf('%s-real', this.ho.cName);
@@ -62,7 +62,7 @@ classdef TestHardwareOPlus < HandlePlus
             stParams.dMean = 5;
             stParams.dSig = 0.5;
             
-            apiv = APIVHardwareO(stParams);
+            apiv = ApivHardwareO(stParams);
             this.ho.setApi(apiv);
             
         end

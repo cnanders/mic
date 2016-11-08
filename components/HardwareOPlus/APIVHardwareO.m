@@ -1,4 +1,4 @@
-classdef APIVHardwareO < InterfaceAPIHardwareO
+classdef ApivHardwareO < InterfaceApiHardwareO
 
     % apivho
 
@@ -21,7 +21,7 @@ classdef APIVHardwareO < InterfaceAPIHardwareO
             
     methods
         
-        function this = APIVHardwareO(stParams)
+        function this = ApivHardwareO(stParams)
         % @param {struct 1x1} stParams - config information
         % @param {char 1xm} stParams.cName - the name of the instance.  
         %   Must be unique within the entire project / codebase
@@ -62,7 +62,7 @@ classdef APIVHardwareO < InterfaceAPIHardwareO
             
         function delete(this)
 
-            this.msg('APIVHardwareO.delete()');
+            this.msg('ApivHardwareO.delete()');
 
             % Clean up clock tasks
             if isvalid(this.clock) && ...

@@ -1,4 +1,4 @@
-classdef APIHIOAvgFiltSize < InterfaceAPIHardwareIO
+classdef ApiHioAvgFiltSize < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef APIHIOAvgFiltSize < InterfaceAPIHardwareIO
     
     methods
 
-        function this = APIHIOAvgFiltSize(api) 
+        function this = ApiHioAvgFiltSize(api) 
             this.api = api;
         end
         

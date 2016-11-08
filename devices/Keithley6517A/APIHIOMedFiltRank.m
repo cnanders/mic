@@ -1,4 +1,4 @@
-classdef APIHIOMedFiltRank < InterfaceAPIHardwareIO
+classdef ApiHioMedFiltRank < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef APIHIOMedFiltRank < InterfaceAPIHardwareIO
     
     methods
 
-        function this = APIHIOMedFiltRank(api) 
+        function this = ApiHioMedFiltRank(api) 
             this.api = api;
         end
         

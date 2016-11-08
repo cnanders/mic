@@ -1,4 +1,4 @@
-classdef APIHIOTXAvgFiltType2 < InterfaceAPIHardwareIOText
+classdef ApiHiotxAvgFiltType2 < InterfaceApiHardwareIOText
     
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef APIHIOTXAvgFiltType2 < InterfaceAPIHardwareIOText
     
     methods
         
-        function this = APIHIOTXAvgFiltType2(api) 
+        function this = ApiHiotxAvgFiltType2(api) 
             this.api = api;
         end
         

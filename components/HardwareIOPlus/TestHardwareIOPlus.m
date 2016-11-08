@@ -53,9 +53,9 @@ classdef TestHardwareIOPlus < HandlePlus
             );
             %  this.hio = HardwareIOPlus();
        
-            % For development, set real API to virtual
+            % For development, set real Api to virtual
             cName = sprintf('%s-real', this.hio.cName);
-            apiv = APIVHardwareIOPlus(cName, 0, this.clock);
+            apiv = ApivHardwareIOPlus(cName, 0, this.clock);
             this.hio.setApi(apiv);
             
         end

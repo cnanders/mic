@@ -1,4 +1,4 @@
-classdef APIHOData2 < InterfaceAPIHardwareO
+classdef ApiHoData2 < InterfaceApiHardwareO
     
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef APIHOData2 < InterfaceAPIHardwareO
     
     methods
         
-        function this = APIHOData2(api) 
+        function this = ApiHoData2(api) 
             this.api = api;
         end
         

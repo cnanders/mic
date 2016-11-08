@@ -1,4 +1,4 @@
-classdef APIKeithley6482 < InterfaceKeithley6482
+classdef ApiKeithley6482 < InterfaceKeithley6482
 
     properties % (Access = private)
      
@@ -13,7 +13,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
     end
     methods 
         
-        function this = APIKeithley6482()            
+        function this = ApiKeithley6482()            
         end
         
         function init(this)
@@ -94,7 +94,7 @@ classdef APIKeithley6482 < InterfaceKeithley6482
         % UPDATE
         %
         % I didn't realize that the ADC, Average Filter, and Median Filter
-        % Settings are global to both channels.  The API below still works,
+        % Settings are global to both channels.  The Api below still works,
         % but know that if you set channel 2, it is the same as setting 1,
         % which is really setting both channels
         

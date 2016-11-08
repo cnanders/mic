@@ -23,8 +23,8 @@ classdef TestKeithley6482 < HandlePlus
                 'clock', this.clock ...
             );
         
-            % Set the API
-            this.keithley6482.setApi(APIVKeithley6482);
+            % Set the Api
+            this.keithley6482.setApi(ApivKeithley6482);
             
         end
         

@@ -1,4 +1,4 @@
-classdef APIVKeithley6482 < InterfaceKeithley6482
+classdef ApivKeithley6482 < InterfaceKeithley6482
 
     
     properties
@@ -28,13 +28,13 @@ classdef APIVKeithley6482 < InterfaceKeithley6482
 
     methods
 
-        function this = APIVKeithley6482()
+        function this = ApivKeithley6482()
 
         end
         
         % Create the serial port object associated with the COM serial
         %  port the device is attached to and configure baud rate and
-        %  terminator. Will set property "s" of the API class
+        %  terminator. Will set property "s" of the Api class
         function init(this)
         end
         

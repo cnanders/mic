@@ -1,4 +1,4 @@
-classdef APIHIOTXAutoRangeState2 < InterfaceAPIHardwareIOText
+classdef ApiHiotxAutoRangeState2 < InterfaceApiHardwareIOText
     
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef APIHIOTXAutoRangeState2 < InterfaceAPIHardwareIOText
     
     methods
         
-        function this = APIHIOTXAutoRangeState2(api) 
+        function this = ApiHiotxAutoRangeState2(api) 
             this.api = api;
         end
         

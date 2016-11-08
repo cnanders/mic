@@ -1,13 +1,10 @@
-purge
 
 [cPath, cName, cExt] = fileparts(mfilename('fullpath'));
 
-% Add core
-addpath(genpath(fullfile(cPath, '..', 'components')));
+% Add mic
+addpath(genpath(fullfile(cPath, '..', '..')));
 
-% Add functions
-addpath(genpath(fullfile(cPath, '..', 'functions')));
-
+purge
 
 h = figure;
 test = TestHardwareIOPlus();

@@ -1,4 +1,4 @@
-classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
+classdef ApivHardwareIOPlus < InterfaceApiHardwareIO
 
     % apiv
 
@@ -23,7 +23,7 @@ classdef APIVHardwareIOPlus < InterfaceAPIHardwareIO
             
     methods
         
-        function this = APIVHardwareIOPlus(cName, dVal, clock)
+        function this = ApivHardwareIOPlus(cName, dVal, clock)
 
             this.cName = cName;
             this.dVal = dVal;

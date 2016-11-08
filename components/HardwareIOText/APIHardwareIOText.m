@@ -1,4 +1,4 @@
-classdef APIHardwareIOText < InterfaceAPIHardwareIOText
+classdef ApiHardwareIOText < InterfaceApiHardwareIOText
 
     % apiv
 
@@ -13,7 +13,7 @@ classdef APIHardwareIOText < InterfaceAPIHardwareIOText
             
     methods
         
-        function this = APIHardwareIOText()
+        function this = ApiHardwareIOText()
 
         end
 

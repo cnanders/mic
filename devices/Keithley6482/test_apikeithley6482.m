@@ -5,7 +5,7 @@ addpath(genpath(fullfile(cPath, '..', '..')));
 
 purge();
 
-api = APIKeithley6482();
+api = ApiKeithley6482();
 api.init()
 api.connect()
 api.identity()

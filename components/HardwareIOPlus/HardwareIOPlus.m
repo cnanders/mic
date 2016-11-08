@@ -54,7 +54,7 @@ classdef HardwareIOPlus < HandlePlus
         dPad2 = 0;
         dWidthStatus = 5;
         
-        cLabelAPI = 'API'
+        cLabelApi = 'Api'
         cLabelName = 'Name';
         cLabelValue = 'Value';
         cLabelDest = 'Goal'
@@ -64,11 +64,11 @@ classdef HardwareIOPlus < HandlePlus
         cLabelJogL = '';
         cLabelJog = 'Step';
         cLabelJogR = '';
-        cTooltipAPIOff = 'Connect to the real API / hardware';
-        cTooltipAPIOn = 'Disconnect the real API / hardware (go into virtual mode)';
+        cTooltipApiOff = 'Connect to the real Api / hardware';
+        cTooltipApiOn = 'Disconnect the real Api / hardware (go into virtual mode)';
         
-        apiv        % virtual API (for test and debugging).  Builds its own APIVHardwareIO
-        api         % API to the low level controls.  Must be set after initialized.
+        apiv        % virtual Api (for test and debugging).  Builds its own ApivHardwareIO
+        api         % Api to the low level controls.  Must be set after initialized.
         
         clock       % clock 
         cLabel = 'CHANGE ME' % name to be displayed by the UI element
@@ -79,7 +79,7 @@ classdef HardwareIOPlus < HandlePlus
         uieDest     % textbox to input the desired position
         uieStep     % textbox to input the desired step in disp units
         uitxVal     % label to display the current value
-        uitAPI      % toggle for real / virtual API
+        uitApi      % toggle for real / virtual Api
         uibIndex    % button to perform a homing sequence
         
         
@@ -132,7 +132,7 @@ classdef HardwareIOPlus < HandlePlus
         lShowPlay = true
         lShowLabels = true
         lShowStores = true
-        lShowAPI = true
+        lShowApi = true
         lDisableI = false
                 
         uitxLabelName
@@ -144,7 +144,7 @@ classdef HardwareIOPlus < HandlePlus
         uitxLabelJogR
         uitxLabelStores
         uitxLabelPlay
-        uitxLabelAPI
+        uitxLabelApi
         
         % {char 1xm} storage of the last display value.  Used to emit
         % eChange events
@@ -195,9 +195,9 @@ classdef HardwareIOPlus < HandlePlus
         %@param {logical 1x1} [lShowPlay = true]
         %@param {logical 1x1} [lShowDest = true]
         %@param {logical 1x1} [lShowLabels = true]
-        %@param {logical 1x1} [lShowAPI = true] - show the
-        %   clickable toggle / status that shows if is using real API or
-        %   virtual API
+        %@param {logical 1x1} [lShowApi = true] - show the
+        %   clickable toggle / status that shows if is using real Api or
+        %   virtual Api
         %@param {logical 1x1} [lDisableI = false] - disable the
         %"I" of HardwareIO (removes jog, play, dest, stores)
         
@@ -317,13 +317,13 @@ classdef HardwareIOPlus < HandlePlus
                     
                     dLeft = 0;
                     
-                    % API toggle
-                    if (this.lShowAPI)
+                    % Api toggle
+                    if (this.lShowApi)
                         if this.lShowLabels
                             % FIXME
-                            this.uitxLabelAPI.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                            this.uitxLabelApi.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
-                        this.uitAPI.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                        this.uitApi.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn + 5; 
                     end
                     
@@ -659,7 +659,7 @@ classdef HardwareIOPlus < HandlePlus
         function moveToDest(this)
         %MOVETODEST Performs the HIO motion to the destination shown in the
         %GUI display.  It converts from the display units to raw and tells
-        %the API 
+        %the Api 
         %   HardwareIO.moveToDest()
         %
         %   See also SETDESTCAL, SETDESTRAW, MOVE
@@ -682,7 +682,7 @@ classdef HardwareIOPlus < HandlePlus
                
             % Need to manually set this for the situation where the lReady
             % property is accessed before handleClock() has a chance to
-            % update its value from the device API.
+            % update its value from the device Api.
             
             this.lReady = false;         
             dRaw = this.cal2raw(this.uieDest.val(), this.unit().name, this.uitRel.lVal);
@@ -708,22 +708,22 @@ classdef HardwareIOPlus < HandlePlus
         
         
         function turnOn(this)
-        %TURNON Turns the motor on, actually using the API to control the 
+        %TURNON Turns the motor on, actually using the Api to control the 
         %   HardwareIO.turnOn()
         %
         % See also TURNOFF
 
             this.lActive = true;
             
-            this.uitAPI.lVal = true;
-            this.uitAPI.setTooltip(this.cTooltipAPIOn);
+            this.uitApi.lVal = true;
+            this.uitApi.setTooltip(this.cTooltipApiOn);
             % set(this.hPanel, 'BackgroundColor', this.dColorOn);
             % set(this.hImage, 'Visible', 'off');
                         
             % Update destination values to match device values
             % this.setDestRaw(this.api.get());
             
-            % Kill the APIV
+            % Kill the Apiv
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
@@ -739,15 +739,15 @@ classdef HardwareIOPlus < HandlePlus
         %
         % See also TURNON
         
-            % CA 2014.04.14: Make sure APIV is available
+            % CA 2014.04.14: Make sure Apiv is available
             
             if isempty(this.apiv)
-                this.apiv = this.newAPIV();
+                this.apiv = this.newApiv();
             end
             
             this.lActive = false;
-            this.uitAPI.lVal = false;
-            this.uitAPI.setTooltip(this.cTooltipAPIOff);
+            this.uitApi.lVal = false;
+            this.uitApi.setTooltip(this.cTooltipApiOff);
             % set(this.hImage, 'Visible', 'on');
             % set(this.hPanel, 'BackgroundColor', this.dColorOff);
         end
@@ -788,20 +788,20 @@ classdef HardwareIOPlus < HandlePlus
                 this.clock.remove(this.id());
             end
             
-            % The APIV instances have clock tasks so need to delete them
+            % The Apiv instances have clock tasks so need to delete them
             % first
             
             delete(this.apiv);
             
             if ~isempty(this.api) && ... % isvalid(this.api) && ...
-                isa(this.api, 'APIVHardwareIOPlus')
+                isa(this.api, 'ApivHardwareIOPlus')
                 delete(this.api)
             end
             
             delete(this.uieDest);  
             delete(this.uieStep);
             delete(this.uitxVal);
-            delete(this.uitAPI);
+            delete(this.uitApi);
             delete(this.uibIndex);
 
             delete(this.uibtPlay);
@@ -823,7 +823,7 @@ classdef HardwareIOPlus < HandlePlus
             delete(this.uitxLabelJogR);
             delete(this.uitxLabelStores);
             delete(this.uitxLabelPlay);
-            delete(this.uitxLabelAPI);
+            delete(this.uitxLabelApi);
             
             
           
@@ -875,7 +875,7 @@ classdef HardwareIOPlus < HandlePlus
                     this.lReady = this.getApi().isReady();
                     this.updatePlayButton()
                 else
-                    % The API(V) doesn't implement isReady since this is a
+                    % The Api(V) doesn't implement isReady since this is a
                     % HardwareIO
                 end
                 
@@ -1000,7 +1000,7 @@ classdef HardwareIOPlus < HandlePlus
         
         function enable(this)
             
-            this.uitAPI.enable();
+            this.uitApi.enable();
             this.uibtPlay.enable();
             this.uitRel.enable();
             this.uibZero.enable();
@@ -1023,7 +1023,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelJogR.enable();
             this.uitxLabelStores.enable();
             this.uitxLabelPlay.enable();
-            this.uitxLabelAPI.enable();
+            this.uitxLabelApi.enable();
             
             
         end
@@ -1031,7 +1031,7 @@ classdef HardwareIOPlus < HandlePlus
         
         function disable(this)
             
-            this.uitAPI.disable();
+            this.uitApi.disable();
             this.uibtPlay.disable();
             this.uitRel.disable();
             this.uibZero.disable();
@@ -1053,7 +1053,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelJogR.disable();
             this.uitxLabelStores.disable();
             this.uitxLabelPlay.disable();
-            this.uitxLabelAPI.disable();
+            this.uitxLabelApi.disable();
             
             
         end
@@ -1102,7 +1102,7 @@ classdef HardwareIOPlus < HandlePlus
             st1 = struct();
             st1.lAsk        = true;
             st1.cTitle      = 'Switch?';
-            st1.cQuestion   = 'Do you want to change from the virtual API to the real API?';
+            st1.cQuestion   = 'Do you want to change from the virtual Api to the real Api?';
             st1.cAnswer1    = 'Yes of course!';
             st1.cAnswer2    = 'No not yet.';
             st1.cDefault    = st1.cAnswer2;
@@ -1111,12 +1111,12 @@ classdef HardwareIOPlus < HandlePlus
             st2 = struct();
             st2.lAsk        = true;
             st2.cTitle      = 'Switch?';
-            st2.cQuestion   = 'Do you want to change from the real API to the virtual API?';
+            st2.cQuestion   = 'Do you want to change from the real Api to the virtual Api?';
             st2.cAnswer1    = 'Yes of course!';
             st2.cAnswer2    = 'No not yet.';
             st2.cDefault    = st2.cAnswer2;
 
-            this.uitAPI = UIToggle( ...
+            this.uitApi = UIToggle( ...
                 'enable', ...   % (off) not active
                 'disable', ...  % (on) active
                 true, ...
@@ -1207,7 +1207,7 @@ classdef HardwareIOPlus < HandlePlus
             % Name (on the left)
             this.uitxName = UIText(this.cLabel);
 
-            this.apiv = this.newAPIV();
+            this.apiv = this.newApiv();
             
             
             % if ~isempty(this.config.ceStores)
@@ -1235,7 +1235,7 @@ classdef HardwareIOPlus < HandlePlus
             % addlistener(this.uitPlay,   'eChange', @this.handleUI);
             
             addlistener(this.uieDest, 'eEnter', @this.onDestEnter);
-            addlistener(this.uitAPI,   'eChange', @this.onAPIChange);
+            addlistener(this.uitApi,   'eChange', @this.onApiChange);
             addlistener(this.uibtPlay,   'eChange', @this.onPlayChange);
             addlistener(this.uitRel,   'eChange', @this.onRelChange);
             addlistener(this.uipUnit,   'eChange', @this.onUnitChange);
@@ -1253,13 +1253,13 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelUnit = UIText(this.cLabelUnit);
             this.uitxLabelDest = UIText(this.cLabelDest);
             this.uitxLabelPlay = UIText(this.cLabelPlay);
-            this.uitxLabelAPI = UIText(this.cLabelAPI, 'center');
+            this.uitxLabelApi = UIText(this.cLabelApi, 'center');
             this.uitxLabelJogL = UIText(this.cLabelJogL, 'center');
             this.uitxLabelJog = UIText(this.cLabelJog, 'center');
             this.uitxLabelJogR = UIText(this.cLabelJogR, 'center');
             this.uitxLabelStores = UIText(this.cLabelStores);
             
-            this.uitAPI.setTooltip(this.cTooltipAPIOff);
+            this.uitApi.setTooltip(this.cTooltipApiOff);
             this.uitxName.setTooltip('The name of this device');
             this.uitxVal.setTooltip('The value of this device');
             this.uieStep.setTooltip('Change the goal increment value.  Use < > to step goal.');
@@ -1276,7 +1276,7 @@ classdef HardwareIOPlus < HandlePlus
             
         end
         
-        function onAPIChange(this, src, evt)
+        function onApiChange(this, src, evt)
             if src.lVal
                 this.turnOn();
             else
@@ -1583,7 +1583,7 @@ classdef HardwareIOPlus < HandlePlus
         function dOut = getWidth(this)
             dOut = 0;
                     
-            if this.lShowAPI
+            if this.lShowApi
                dOut = dOut + this.dWidthBtn;
             end
 
@@ -1623,9 +1623,9 @@ classdef HardwareIOPlus < HandlePlus
             
         end
         
-        function api = newAPIV(this)
-        %@return {APIVHardwareIO}
-            api = APIVHardwareIOPlus(this.cName, 0, this.clock);
+        function api = newApiv(this)
+        %@return {ApivHardwareIO}
+            api = ApivHardwareIOPlus(this.cName, 0, this.clock);
         end
         
         

@@ -1,4 +1,4 @@
-classdef InterfaceAPIHardwareO < HandlePlus
+classdef InterfaceApiHardwareO < HandlePlus
 
     methods (Abstract)
         
