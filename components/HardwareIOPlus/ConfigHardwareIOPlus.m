@@ -1,4 +1,4 @@
-classdef Config < HandlePlus
+classdef ConfigHardwareIOPlus < HandlePlus
         
     properties (Constant)
                
@@ -44,7 +44,7 @@ classdef Config < HandlePlus
     methods
         
         
-        function this = Config(cPath)
+        function this = ConfigHardwareIOPlus(cPath)
         %CONFIG Loads a JSON configuration file
         %   @param {char} [cPath = this.cPathJsonDefault] - path to a JSON
         %       configuration file
@@ -58,9 +58,7 @@ classdef Config < HandlePlus
 
                 this.cPathJsonDefault = fullfile(...
                     cFilePath, ...
-                    '..', ...
-                    'config', ...
-                    'default.json' ...
+                    'config-default-stores.json' ...
                 );
                 cPath = this.cPathJsonDefault;
                 this.msg(...

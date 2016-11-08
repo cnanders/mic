@@ -24,7 +24,7 @@ classdef TestKeithley6517A < HandlePlus
             );
         
             % Set the API
-            this.keithley6517a.setApi(APIKeithley6517A);
+            this.keithley6517a.setApi(APIVKeithley6517A);
             
         end
         

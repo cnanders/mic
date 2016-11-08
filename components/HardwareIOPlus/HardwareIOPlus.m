@@ -209,7 +209,7 @@ classdef HardwareIOPlus < HandlePlus
             % Default properties
             
             this.fhValidateDest = this.validateDest;
-            this.config = Config();
+            this.config = ConfigHardwareIOPlus();
                        
             % Override properties with varargin
             

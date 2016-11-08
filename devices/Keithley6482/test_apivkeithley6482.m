@@ -1,11 +1,7 @@
 [cPath, cName, cExt] = fileparts(mfilename('fullpath'));
 
-% Add core
-addpath(genpath(fullfile(cPath, '..', 'components')));
-addpath(genpath(fullfile(cPath, '..', 'devices')));
-
-% Add functions
-addpath(genpath(fullfile(cPath, '..', 'functions')));
+% Add library to path
+addpath(genpath(fullfile(cPath, '..', '..')));
 
 purge;
 

@@ -32,15 +32,8 @@ classdef TestHardwareIOPlus < HandlePlus
         
         function this = TestHardwareIOPlus()
               
-            this.clock = Clock('master');
-           
-            cPathConfig = fullfile(...
-                Utils.pathConfig(), ...
-                'hiop', ...
-                'default-stores.json' ...
-            );
-        
-            this.config = Config(cPathConfig);
+            this.clock = Clock('master');           
+            this.config = ConfigHardwareIOPlus();
             
             
              %'lShowLabels', false, ...

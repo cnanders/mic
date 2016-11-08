@@ -24,7 +24,7 @@ classdef TestKeithley6482 < HandlePlus
             );
         
             % Set the API
-            this.keithley6482.setApi(APIKeithley6482);
+            this.keithley6482.setApi(APIVKeithley6482);
             
         end
         

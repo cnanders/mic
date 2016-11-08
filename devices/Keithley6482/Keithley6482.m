@@ -522,20 +522,22 @@ classdef Keithley6482 < HandlePlus
             cPathMedFiltState = fullfile(this.cPathConfig, 'config-med-filt-state.json');
             cPathMedFiltRank = fullfile(this.cPathConfig, 'config-med-filt-rank.json');
             
-            configData = Config(cPathConfigData);
-            configRange = Config(cPathConfigRange);
+            configData = ConfigHardwareIOPlus(cPathConfigData);
+            configRange = ConfigHardwareIOPlus(cPathConfigRange);
             configAutoRangeState = ConfigHardwareIOText(cPathAutoRangeState);
-            configADCPeriod = Config(cPathADCPeriod);
+            
+            configData2 = ConfigHardwareIOPlus(cPathConfigData);
+            configRange2 = ConfigHardwareIOPlus(cPathConfigRange);
+            configAutoRangeState2 = ConfigHardwareIOText(cPathAutoRangeState);
+            
+            configADCPeriod = ConfigHardwareIOPlus(cPathADCPeriod);
             configAvgFiltState = ConfigHardwareIOText(cPathAvgFiltState);
             configAvgFiltMode = ConfigHardwareIOText(cPathAvgFiltMode);
-            configAvgFiltSize = Config(cPathAvgFiltSize);
+            configAvgFiltSize = ConfigHardwareIOPlus(cPathAvgFiltSize);
             configMedFiltState = ConfigHardwareIOText(cPathMedFiltState);
-            configMedFiltRank = Config(cPathMedFiltRank);
+            configMedFiltRank = ConfigHardwareIOPlus(cPathMedFiltRank);
             
-            configData2 = Config(cPathConfigData);
             
-            configRange2 = Config(cPathConfigRange);
-            configAutoRangeState2 = ConfigHardwareIOText(cPathAutoRangeState);
             %{
             configAvgFiltState2 = ConfigHardwareIOText(cPathAvgFiltState);
             configAvgFiltMode2 = ConfigHardwareIOText(cPathAvgFiltMode);
