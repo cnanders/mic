@@ -1,3 +1,7 @@
+# 1.0.0-alpha.25
+
+- HardwareIOPlus, HardwareIOText, HardwareOPlus, Keithley6482, Keithley6517A all migrating away from upper-case acronyms in class names and method names.   For example APIHIOTXAutoRangeState became ApiHiotxAutoRangeState for easier readibility.  
+
 # 1.0.0-alpha.24
 
 ### Config
