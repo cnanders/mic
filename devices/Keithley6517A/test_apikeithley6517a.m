@@ -8,7 +8,7 @@ addpath(genpath(fullfile(cPath, '..', 'classes')));
 
 purge;
 
-api = ApiKeithley6517A();
+api = ApiKeithley6517a();
 api.init()
 api.connect()
 api.setFunctionToAmps();

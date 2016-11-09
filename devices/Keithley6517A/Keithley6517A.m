@@ -1,4 +1,4 @@
-classdef Keithley6517A < HandlePlus
+classdef Keithley6517a < HandlePlus
     
     
     
@@ -33,8 +33,8 @@ classdef Keithley6517A < HandlePlus
     
     properties (SetAccess = private)
         
-        cName = 'Keithley6517A';
-        cLabel = 'Keithley6517A';
+        cName = 'Keithley6517a';
+        cLabel = 'Keithley6517a';
         lActive = false
         
     end
@@ -85,7 +85,7 @@ classdef Keithley6517A < HandlePlus
             
     methods
         
-        function this = Keithley6517A(varargin)
+        function this = Keithley6517a(varargin)
 
             % Override properties with varargin
             
@@ -106,16 +106,16 @@ classdef Keithley6517A < HandlePlus
             this.api.init();
             this.api.connect();
             
-            this.hoData.setApi(ApiHoData(this.api));
-            this.hioRange.setApi(ApiHioRange(this.api));
-            this.hiotxAutoRangeState.setApi(ApiHiotxAutoRangeState(this.api));
-            this.hioADCPeriod.setApi(ApiHioADCPeriod(this.api));
-            this.hiotxAvgFiltState.setApi(ApiHiotxAvgFiltState(this.api));
-            this.hiotxAvgFiltType.setApi(ApiHiotxAvgFiltType(this.api));
-            this.hiotxAvgFiltMode.setApi(ApiHiotxAvgFiltMode(this.api));
-            this.hioAvgFiltSize.setApi(ApiHioAvgFiltSize(this.api));
-            this.hiotxMedFiltState.setApi(ApiHiotxMedFiltState(this.api));
-            this.hioMedFiltRank.setApi(ApiHioMedFiltRank(this.api));
+            this.hoData.setApi(ApiKeithley6517aData(this.api));
+            this.hioRange.setApi(ApiKeithley6517aRange(this.api));
+            this.hiotxAutoRangeState.setApi(ApiKeithley6517aAutoRangeState(this.api));
+            this.hioADCPeriod.setApi(ApiKeithley6517aAdcPeriod(this.api));
+            this.hiotxAvgFiltState.setApi(ApiKeithley6517aAvgFiltState(this.api));
+            this.hiotxAvgFiltType.setApi(ApiKeithley6517aAvgFiltType(this.api));
+            this.hiotxAvgFiltMode.setApi(ApiKeithley6517aAvgFiltMode(this.api));
+            this.hioAvgFiltSize.setApi(ApiKeithley6517aAvgFiltSize(this.api));
+            this.hiotxMedFiltState.setApi(ApiKeithley6517aMedFiltState(this.api));
+            this.hioMedFiltRank.setApi(ApiKeithley6517aMedFiltRank(this.api));
             
         end
         
@@ -602,7 +602,7 @@ classdef Keithley6517A < HandlePlus
             
         function api = newApiv(this)
         %@return {AIVKeithley6482}
-            api = ApivKeithley6517A;
+            api = ApivKeithley6517a;
         end
         
         function onAutoRangeStateChange(this, src, evt)

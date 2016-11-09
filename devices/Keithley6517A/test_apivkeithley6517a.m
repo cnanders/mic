@@ -8,7 +8,7 @@ addpath(genpath(fullfile(cPath, '..', 'classes')));
 
 purge;
 
-api = ApivKeithley6517A();
+api = ApivKeithley6517a();
 api.init()
 api.connect()
 

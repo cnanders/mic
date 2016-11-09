@@ -1,4 +1,4 @@
-classdef ApiHioMedFiltRank2 < InterfaceApiHardwareIO
+classdef ApiKeithley6482AdcPeriod < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,12 +6,12 @@ classdef ApiHioMedFiltRank2 < InterfaceApiHardwareIO
     
     methods
 
-        function this = ApiHioMedFiltRank2(api) 
+        function this = ApiKeithley6482AdcPeriod(api) 
             this.api = api;
         end
         
         function d = get(this) % retrieve value
-            d = this.api.getMedianRank(2);
+            d = this.api.getIntegrationPeriod();
         end
         
         
@@ -20,7 +20,7 @@ classdef ApiHioMedFiltRank2 < InterfaceApiHardwareIO
         end
         
         function set(this, dDest) % set new destination and move to it
-            this.api.setMedianRank(2, uint8(dDest))
+            this.api.setIntegrationPeriod(dDest);
         end
         
         function stop(this) % stop motion to destination

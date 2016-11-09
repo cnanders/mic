@@ -1,4 +1,4 @@
-classdef ApiHioADCPeriod < InterfaceApiHardwareIO
+classdef ApiKeithley6517aAvgFiltSize < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,12 +6,12 @@ classdef ApiHioADCPeriod < InterfaceApiHardwareIO
     
     methods
 
-        function this = ApiHioADCPeriod(api) 
+        function this = ApiKeithley6517aAvgFiltSize(api) 
             this.api = api;
         end
         
         function d = get(this) % retrieve value
-            d = this.api.getIntegrationPeriod();
+            d = this.api.getAverageCount();
         end
         
         
@@ -20,7 +20,7 @@ classdef ApiHioADCPeriod < InterfaceApiHardwareIO
         end
         
         function set(this, dDest) % set new destination and move to it
-            this.api.setIntegrationPeriod(dDest);
+            this.api.setAverageCount(uint8(dDest))
         end
         
         function stop(this) % stop motion to destination

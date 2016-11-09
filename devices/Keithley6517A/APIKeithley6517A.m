@@ -1,4 +1,4 @@
-classdef ApiKeithley6517A < InterfaceKeithley6517A
+classdef ApiKeithley6517a < InterfaceKeithley6517a
 
     properties % (Access = private)
      
@@ -12,7 +12,7 @@ classdef ApiKeithley6517A < InterfaceKeithley6517A
     end
     methods 
         
-        function this = ApiKeithley6517A(varargin)   
+        function this = ApiKeithley6517a(varargin)   
             % Override properties with varargin
             for k = 1 : 2: length(varargin)
                 % this.msg(sprintf('passed in %s', varargin{k}));

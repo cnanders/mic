@@ -130,26 +130,26 @@ classdef Keithley6482 < HandlePlus
             this.api.init();
             this.api.connect();
             
-            this.hoData.setApi(ApiHoData(this.api));
-            this.hioRange.setApi(ApiHioRange(this.api));
-            this.hiotxAutoRangeState.setApi(ApiHiotxAutoRangeState(this.api));
-            this.hioADCPeriod.setApi(ApiHioADCPeriod(this.api));
-            this.hiotxAvgFiltState.setApi(ApiHiotxAvgFiltState(this.api));
-            this.hiotxAvgFiltMode.setApi(ApiHiotxAvgFiltMode(this.api));
-            this.hioAvgFiltSize.setApi(ApiHioAvgFiltSize(this.api));
-            this.hiotxMedFiltState.setApi(ApiHiotxMedFiltState(this.api));
-            this.hioMedFiltRank.setApi(ApiHioMedFiltRank(this.api));
+            this.hoData.setApi(ApiKeithley6482Data(this.api));
+            this.hioRange.setApi(ApiKeithley6482Range(this.api));
+            this.hiotxAutoRangeState.setApi(ApiKeithley6482AutoRangeState(this.api));
+            this.hioADCPeriod.setApi(ApiKeithley6482AdcPeriod(this.api));
+            this.hiotxAvgFiltState.setApi(ApiKeithley6482AvgFiltState(this.api));
+            this.hiotxAvgFiltMode.setApi(ApiKeithley6482AvgFiltMode(this.api));
+            this.hioAvgFiltSize.setApi(ApiKeithley6482AvgFiltSize(this.api));
+            this.hiotxMedFiltState.setApi(ApiKeithley6482MedFiltState(this.api));
+            this.hioMedFiltRank.setApi(ApiKeithley6482MedFiltRank(this.api));
             
-            this.hoData2.setApi(ApiHoData2(this.api));
+            this.hoData2.setApi(ApiKeithley6482Data2(this.api));
             
-            this.hioRange2.setApi(ApiHioRange2(this.api));
-            this.hiotxAutoRangeState2.setApi(ApiHiotxAutoRangeState2(this.api));
+            this.hioRange2.setApi(ApiKeithley6482Range2(this.api));
+            this.hiotxAutoRangeState2.setApi(ApiKeithley6482AutoRangeState2(this.api));
             %{
-            this.hiotxAvgFiltState2.setApi(ApiHiotxAvgFiltState2(this.api));
-            this.hiotxAvgFiltMode2.setApi(ApiHiotxAvgFiltMode2(this.api));
-            this.hioAvgFiltSize2.setApi(ApiHioAvgFiltSize2(this.api));
-            this.hiotxMedFiltState2.setApi(ApiHiotxMedFiltState2(this.api));
-            this.hioMedFiltRank2.setApi(ApiHioMedFiltRank2(this.api));
+            this.hiotxAvgFiltState2.setApi(ApiKeithley6482AvgFiltState2(this.api));
+            this.hiotxAvgFiltMode2.setApi(ApiKeithley6482AvgFiltMode2(this.api));
+            this.hioAvgFiltSize2.setApi(ApiKeithley6482AvgFiltSize2(this.api));
+            this.hiotxMedFiltState2.setApi(ApiKeithley6482MedFiltState2(this.api));
+            this.hioMedFiltRank2.setApi(ApiKeithley6482MedFiltRank2(this.api));
             %}
             
         end

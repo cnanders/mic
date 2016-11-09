@@ -1,4 +1,4 @@
-classdef InterfaceKeithley6517A < HandlePlus
+classdef InterfaceKeithley6517a < HandlePlus
 
     methods (Abstract)
         

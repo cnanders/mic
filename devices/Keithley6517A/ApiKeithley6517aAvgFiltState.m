@@ -1,4 +1,4 @@
-classdef ApiHiotxMedFiltState < InterfaceApiHardwareIOText
+classdef ApiKeithley6517aAvgFiltState < InterfaceApiHardwareIOText
     
     properties (Access = private)
         api
@@ -6,16 +6,16 @@ classdef ApiHiotxMedFiltState < InterfaceApiHardwareIOText
     
     methods
         
-        function this = ApiHiotxMedFiltState(api) 
+        function this = ApiKeithley6517aAvgFiltState(api) 
             this.api = api;
         end
         
         function c = get(this) % retrieve value
-            c = this.api.getMedianState();
+            c = this.api.getAverageState();
         end
             
         function set(this, cVal) % set new value
-            this.api.setMedianState(cVal);
+            this.api.setAverageState(cVal);
         end
         
         

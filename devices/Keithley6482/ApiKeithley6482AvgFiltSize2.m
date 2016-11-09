@@ -1,4 +1,4 @@
-classdef ApiHioRange2 < InterfaceApiHardwareIO
+classdef ApiKeithley6482AvgFiltSize2 < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,12 +6,12 @@ classdef ApiHioRange2 < InterfaceApiHardwareIO
     
     methods
 
-        function this = ApiHioRange2(api) 
+        function this = ApiKeithley6482AvgFiltSize2(api) 
             this.api = api;
         end
         
         function d = get(this) % retrieve value
-            d = this.api.getRange(2);
+            d = this.api.getAverageCount(2);
         end
         
         
@@ -20,7 +20,7 @@ classdef ApiHioRange2 < InterfaceApiHardwareIO
         end
         
         function set(this, dDest) % set new destination and move to it
-            this.api.setRange(2, dDest);
+            this.api.setAverageCount(2, uint8(dDest))
         end
         
         function stop(this) % stop motion to destination

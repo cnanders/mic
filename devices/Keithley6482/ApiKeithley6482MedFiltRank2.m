@@ -1,4 +1,4 @@
-classdef ApiHioMedFiltRank < InterfaceApiHardwareIO
+classdef ApiKeithley6482MedFiltRank2 < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,12 +6,12 @@ classdef ApiHioMedFiltRank < InterfaceApiHardwareIO
     
     methods
 
-        function this = ApiHioMedFiltRank(api) 
+        function this = ApiKeithley6482MedFiltRank2(api) 
             this.api = api;
         end
         
         function d = get(this) % retrieve value
-            d = this.api.getMedianRank(1);
+            d = this.api.getMedianRank(2);
         end
         
         
@@ -20,7 +20,7 @@ classdef ApiHioMedFiltRank < InterfaceApiHardwareIO
         end
         
         function set(this, dDest) % set new destination and move to it
-            this.api.setMedianRank(1, uint8(dDest))
+            this.api.setMedianRank(2, uint8(dDest))
         end
         
         function stop(this) % stop motion to destination

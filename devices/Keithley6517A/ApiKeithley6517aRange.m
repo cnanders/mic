@@ -1,4 +1,4 @@
-classdef ApiHioRange < InterfaceApiHardwareIO
+classdef ApiKeithley6517aRange < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef ApiHioRange < InterfaceApiHardwareIO
     
     methods
 
-        function this = ApiHioRange(api) 
+        function this = ApiKeithley6517aRange(api) 
             this.api = api;
         end
         

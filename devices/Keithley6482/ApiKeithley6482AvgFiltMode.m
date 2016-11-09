@@ -1,4 +1,4 @@
-classdef ApiHiotxAutoRangeState < InterfaceApiHardwareIOText
+classdef ApiKeithley6482AvgFiltMode < InterfaceApiHardwareIOText
     
     properties (Access = private)
         api
@@ -6,16 +6,16 @@ classdef ApiHiotxAutoRangeState < InterfaceApiHardwareIOText
     
     methods
         
-        function this = ApiHiotxAutoRangeState(api) 
+        function this = ApiKeithley6482AvgFiltMode(api) 
             this.api = api;
         end
         
         function c = get(this) % retrieve value
-            c = this.api.getAutoRangeState();
+            c = this.api.getAverageMode(1);
         end
             
         function set(this, cVal) % set new value
-            this.api.setAutoRangeState(cVal);
+            this.api.setAverageMode(1, cVal);
         end
         
         

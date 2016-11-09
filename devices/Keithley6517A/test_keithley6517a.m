@@ -1,10 +1,9 @@
-purge
-
 [cPath, cName, cExt] = fileparts(mfilename('fullpath'));
 
 % Add mic
-addpath(genpath(fullfile(cPath, '..', 'libs', 'mic')));
+addpath(genpath(fullfile(cPath, '..', '..')));
 
+purge
 
-test = TestKeithley6517A();
+test = TestKeithley6517a();
 test.build();

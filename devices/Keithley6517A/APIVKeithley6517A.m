@@ -1,4 +1,4 @@
-classdef ApivKeithley6517A < InterfaceKeithley6517A
+classdef ApivKeithley6517a < InterfaceKeithley6517a
 
     properties % (Access = private)
      
@@ -25,7 +25,7 @@ classdef ApivKeithley6517A < InterfaceKeithley6517A
     
     methods 
         
-        function this = ApivKeithley6517A()            
+        function this = ApivKeithley6517a()            
         end
         
         function init(this)

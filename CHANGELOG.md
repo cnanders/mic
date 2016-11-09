@@ -1,3 +1,8 @@
+# 1.0.0-alpha.26
+
+### Keithley6482, Keithley6517A
+- Disambiguated names of API wrappers.  In general, it is good practice to have verbose names for API wrappers.  I'm using ApiKeithley6482AutoRangeState, for exampele, for the API that implements InterfaceHardwareIOText.
+
 # 1.0.0-alpha.25
 
 - HardwareIOPlus, HardwareIOText, HardwareOPlus, Keithley6482, Keithley6517A all migrating away from upper-case acronyms in class names and method names.   For example APIHIOTXAutoRangeState became ApiHiotxAutoRangeState for easier readibility.  

@@ -1,5 +1,5 @@
-classdef TestKeithley6517A < HandlePlus
-    %TESTKEITHLEY6517A Summary of this class goes here
+classdef TestKeithley6517a < HandlePlus
+    %TESTKEITHLEY6517a Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
@@ -16,15 +16,15 @@ classdef TestKeithley6517A < HandlePlus
     
     methods
         
-        function this = TestKeithley6517A()
+        function this = TestKeithley6517a()
         
             this.clock = Clock('master');
-            this.keithley6517a = Keithley6517A(...
+            this.keithley6517a = Keithley6517a(...
                 'clock', this.clock ...
             );
         
             % Set the Api
-            this.keithley6517a.setApi(ApivKeithley6517A);
+            this.keithley6517a.setApi(ApivKeithley6517a);
             
         end
         

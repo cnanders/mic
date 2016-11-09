@@ -1,4 +1,4 @@
-classdef ApiHioADCPeriod < InterfaceApiHardwareIO
+classdef ApiKeithley6517aAdcPeriod < InterfaceApiHardwareIO
 
     properties (Access = private)
         api
@@ -6,7 +6,7 @@ classdef ApiHioADCPeriod < InterfaceApiHardwareIO
     
     methods
 
-        function this = ApiHioADCPeriod(api) 
+        function this = ApiKeithley6517aAdcPeriod(api) 
             this.api = api;
         end
         
