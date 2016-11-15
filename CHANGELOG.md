@@ -1,3 +1,8 @@
+# 1.0.0-alpha.27
+
+### Keithley6482, Keithley6517A
+Fixing case errors in class names due to git case insensivity that occurred in 1.0.0-alpha.26 release
+
 # 1.0.0-alpha.26
 
 ### Keithley6482, Keithley6517A
