@@ -5,7 +5,7 @@ classdef InterfaceAPIHardwareIOToggle < HandlePlus
        % Get the state of the toggle
        % @param {logical 1x1} lVal
        % @return {logical 1x1}
-       get(this)
+       l = get(this)
        
        % Set the state of the toggle
        % @param {logical 1x1} lVal

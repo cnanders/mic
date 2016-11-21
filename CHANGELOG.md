@@ -1,3 +1,11 @@
+# 1.0.0-alpha.29
+
+### Keithley6517A
+- Major changes to visual appearance
+
+### HardwareIOToggle
+- Minor changes 
+
 # 1.0.0-alpha.28
 
 ### HardwareIOPlus, HardwareIOText, HardwareOPlus
