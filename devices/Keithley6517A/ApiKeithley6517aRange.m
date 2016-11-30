@@ -1,4 +1,4 @@
-classdef ApiKeithley6517aRange < InterfaceApiHardwareIO
+classdef ApiKeithley6517aRange < InterfaceApiHardwareIOPlus
 
     properties (Access = private)
         api

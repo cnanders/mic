@@ -1,4 +1,4 @@
-classdef ApiKeithley6482MedFiltRank < InterfaceApiHardwareIO
+classdef ApiKeithley6482MedFiltRank < InterfaceApiHardwareIOPlus
 
     properties (Access = private)
         api

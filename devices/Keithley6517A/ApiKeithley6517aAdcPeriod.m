@@ -1,4 +1,4 @@
-classdef ApiKeithley6517aAdcPeriod < InterfaceApiHardwareIO
+classdef ApiKeithley6517aAdcPeriod < InterfaceApiHardwareIOPlus
 
     properties (Access = private)
         api

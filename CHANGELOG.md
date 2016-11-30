@@ -1,3 +1,8 @@
+# 1.0.0-alpha.30
+
+- Renamed components/HardwareIOPlus/InterfaceHardwareIO to InterfaceHardwareIOPlus to fix namespace conflict with components/HardwareIO/InterfaceHardwareIO
+- In devices folder, all APIs that implemented InterfaceHardwareIO were switched to HardwareIOPlus
+
 # 1.0.0-alpha.29
 
 ### Keithley6517A
