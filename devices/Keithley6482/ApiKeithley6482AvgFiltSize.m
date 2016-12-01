@@ -1,4 +1,4 @@
-classdef ApiKeithley6482AvgFiltSize < InterfaceApiHardwareIO
+classdef ApiKeithley6482AvgFiltSize < InterfaceApiHardwareIOPlus
 
     properties (Access = private)
         api

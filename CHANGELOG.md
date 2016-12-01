@@ -1,9 +1,17 @@
-# 1.0.0-alpha.30
+# 1.0.0-alpha.30.1
+
+### NOT STABLE RELEASE
+
 ### Keithley6517A
 - Fixed bug referncing this.terminator instead of this.cTerminator
 
 ### Clock
 - Added second optional paramater in constrictor to set the period
+
+# 1.0.0-alpha.30
+- Renamed components/HardwareIOPlus/InterfaceHardwareIO to InterfaceHardwareIOPlus to fix namespace conflict with components/HardwareIO/InterfaceHardwareIO
+- In devices folder, all APIs that implemented InterfaceHardwareIO were switched to HardwareIOPlus
+
 
 # 1.0.0-alpha.29
 
