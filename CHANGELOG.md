@@ -1,3 +1,10 @@
+# 1.0.0-alpha.30
+### Keithley6517A
+- Fixed bug referncing this.terminator instead of this.cTerminator
+
+### Clock
+- Added second optional paramater in constrictor to set the period
+
 # 1.0.0-alpha.29
 
 ### Keithley6517A

@@ -1,10 +1,8 @@
 [cPath, cName, cExt] = fileparts(mfilename('fullpath'));
 
 % Add mic
-addpath(genpath(fullfile(cPath, '..', 'libs', 'mic')));
+addpath(genpath(fullfile(cPath, '..', '..')));
 
-% Add classes
-addpath(genpath(fullfile(cPath, '..', 'classes')));
 
 purge;
 
@@ -15,6 +13,7 @@ api.setFunctionToAmps();
 
 cIdentity = api.identity()
 
+%{
 api.setIntegrationPeriod(100e-3)
 dPeriod = api.getIntegrationPeriod()
 
@@ -41,3 +40,5 @@ api.setMedianRank(3)
 
 cMedianState = api.getMedianState()
 u8MedianRank = api.getMedianRank()
+
+%}
