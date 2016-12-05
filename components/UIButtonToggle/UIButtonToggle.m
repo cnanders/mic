@@ -10,8 +10,6 @@ classdef UIButtonToggle < HandlePlus
     % The visual state can only be changed programatically.  This is used
     % for the play/pause button of HardwareIO
 
-    
-
     properties (Constant)
 
     end

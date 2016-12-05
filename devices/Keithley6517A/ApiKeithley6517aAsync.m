@@ -1,6 +1,17 @@
 classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
 
     % Can only use ASCII format with RS232.  Need GPIB to use other formats
+    % Main problem with the Keithley6517A instrument is that the time it
+    % takes to fill the outpub buffer is 30 ms - 40 ms and if serial
+    % communication is synchronous, it block matlab this entire timel.
+    %
+    % The asynchronous API executes all read queries in an asynchronous,
+    % event-based loop, populating a 1-value internal buffer with the last
+    % received value that it can then instantaneously serve to the consumer
+    % whenever it is requested. 
+    %
+    % The frequency of device polling can be controlled with the dDelay
+    % property
         
     properties % (Access = private)
      
@@ -17,14 +28,13 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         % {timer 1x1}
         timer
         
-        % {cell 1xm of char 1xm} each structure is a query command to issue to
-        % instrument and expected data type
-        
+        % {cell 1xm of char 1xm} list of query commands to issue to
+        % instrument.  See also cecResponses
         cecQueries = {...
-            ':curr:aver?', ... %state
-            ':curr:aver:type?', ... % type (none, scal, adv)
-            ':curr:aver:tcon?', ... % mode (moving, window)
-            ':curr:aver:coun?', ... % count
+            ':curr:aver?', ... % avg filt state
+            ':curr:aver:type?', ... % avg filt type (none, scal, adv)
+            ':curr:aver:tcon?', ... % avg filt mode (moving, window)
+            ':curr:aver:coun?', ... % avg filt count
             ':data:lat?', ... % data latest 
             ':data:fres?', ... % data fresh
             ':curr:aper?', ... % integration time
@@ -39,8 +49,14 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         % communication with instrument
         cecResponses = cell(1, 12);
     
+        % {uint8 1x1} index of cecQueries being executed now
         u8Query = 1;
-        dDelay = 1;
+        
+        % {double 1x1} poling delay in seconds.  Each time onBytesAvailable
+        % is invoked (whenever the result is available), a new timer is
+        % started with this start delay, before invoking onTimer(), which 
+        % begins the next read cycle
+        dDelay = .001;
         
     end
     methods 
@@ -100,13 +116,10 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function onBytesAvailable(this, obj, event)
             
-            
-            datetime(event.Data.AbsTime);
             % disp('onBytesAvailable');
             
             % Read
             % tic
-            % this.cecResponses{this.u8Query} 
             this.cecResponses{this.u8Query} = fscanf(this.s);
             % c = fread(this.s, this.s.BytesAvailable);
             % time = toc;
@@ -114,11 +127,12 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
             
             % Update command index
             this.updateQuery();
+            
+            % Timer-based next query
             stop(this.timer);
             start(this.timer);
-            % Possibly start a single-tick, that on execute executes the
-            % next command
             
+            % Direct (no timer) next query
             % this.nextQuery();
                         
         end
@@ -142,14 +156,14 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
             % tic
             fprintf(this.s, this.cecQueries{this.u8Query});
             % time = toc;
-            %{
-            fprintf('Query time = %1.1f ms for %s\n', ...
-                time * 1000, ...
-                this.cecQueries{this.u8Query} ...
-            );
-            %}
             
-            % Issue async read command.  Once the linefed has been read
+%             fprintf('Query time = %1.1f ms for %s\n', ...
+%                 time * 1000, ...
+%                 this.cecQueries{this.u8Query} ...
+%             );
+            
+            
+            % Issue async read command.  Once terminator has been read
             % from the instrument and placed in the input buffer, the
             % onBytesAvailable callback will be executed
             readasync(this.s)

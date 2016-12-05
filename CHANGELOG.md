@@ -1,3 +1,9 @@
+# 1.0.0-alpha.30.3
+
+### NOT STABLE RELEASE
+
+In the process of making backwards compatible with 2009b.  And eventually want to try going back to 2008a, where OOP was first introduced.  isprop() functions differently in 2009b then in 2013a, which is the last place it was tested.
+
 # 1.0.0-alpha.30.2
 
 ### NOT STABLE RELEASE

@@ -25,8 +25,8 @@ classdef TestKeithley6517a < HandlePlus
             );
         
             % Set the Api
-            % this.api = ApiKeithley6517a();
-            % this.keithley6517a.setApi(this.api);
+            this.api = ApiKeithley6517aAsync();
+            this.keithley6517a.setApi(this.api);
             
         end
         

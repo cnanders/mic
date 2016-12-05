@@ -214,9 +214,9 @@ classdef HardwareIOPlus < HandlePlus
             % Override properties with varargin
             
             for k = 1 : 2: length(varargin)
-                % this.msg(sprintf('passed in %s', varargin{k}));
+                this.msg(sprintf('passed in %s', varargin{k}));
                 if isprop(this, varargin{k})
-                    this.msg(sprintf('settting %s', varargin{k}), 6);
+                    this.msg(sprintf('settting %s', varargin{k}), 3);
                     this.(varargin{k}) = varargin{k + 1};
                 end
             end
@@ -251,8 +251,6 @@ classdef HardwareIOPlus < HandlePlus
         %   HardwareIO.build(hParent, dLeft, dTop)
         %
         % See also HARDWAREIO, INIT, DELETE       
-
-        
             
         
             if ~isempty(this.clock)
@@ -838,6 +836,7 @@ classdef HardwareIOPlus < HandlePlus
         %   updates the position reading and the hio status (=/~moving)
         
             try
+                
                 %AW 2014-9-9
                 %TODO : this should be refactored in a readRaw function
                 %see HardwareO for example
@@ -1055,6 +1054,16 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelPlay.disable();
             this.uitxLabelApi.disable();
             
+            
+        end
+        
+        
+        function api = getApi(this)
+            if this.lActive
+                api = this.api;
+            else
+                api = this.apiv;
+            end 
             
         end
         
@@ -1320,11 +1329,13 @@ classdef HardwareIOPlus < HandlePlus
         
         function onPlayChange(this, src, evt)
             % Ready means it isn't moving
+            
+            this.msg('onPlayChange()');
             if this.lReady
-                % this.msg('handleUI lReady = true. moveToDest()');
+                this.msg('handleUI lReady = true. moveToDest()');
                 this.moveToDest();
             else
-                % this.msg('handleUI lReady = false. stop()');
+                this.msg('handleUI lReady = false. stop()');
                 this.stop();
             end
         end
@@ -1571,14 +1582,7 @@ classdef HardwareIOPlus < HandlePlus
             
         end
         
-        function api = getApi(this)
-            if this.lActive
-                api = this.api;
-            else
-                api = this.apiv;
-            end 
-            
-        end
+        
         
         function dOut = getWidth(this)
             dOut = 0;
