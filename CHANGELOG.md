@@ -1,3 +1,10 @@
+# 1.0.0-alpha.30.2
+
+### NOT STABLE RELEASE
+
+### KEITHLEY6517A
+- Build new API that asynchronously polls the device and stores recent values so when a consumer needs them, it can get them immediately.  Not fully tested.
+
 # 1.0.0-alpha.30.1
 
 ### NOT STABLE RELEASE

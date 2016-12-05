@@ -8,7 +8,9 @@ cPathConfig = fullfile(...
     'config-default-stores.json' ...
 );
         
-config = ConfigHardwareIOPlus(cPathConfig);
+tic
+config = ConfigHardwareIOPlus();
+toc
 
 
 

@@ -1,6 +1,7 @@
-classdef ApiKeithley6517a < InterfaceKeithley6517a
+classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
 
     % Can only use ASCII format with RS232.  Need GPIB to use other formats
+        
     properties % (Access = private)
      
         % {serial 1x1}
@@ -12,10 +13,39 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         cTerminator = 'CR/LF'; % Default for Instrument does not support any other
         u16BaudRate = uint16(19200); % 9600
         lSerial = true;
+        
+        % {timer 1x1}
+        timer
+        
+        % {cell 1xm of char 1xm} each structure is a query command to issue to
+        % instrument and expected data type
+        
+        cecQueries = {...
+            ':curr:aver?', ... %state
+            ':curr:aver:type?', ... % type (none, scal, adv)
+            ':curr:aver:tcon?', ... % mode (moving, window)
+            ':curr:aver:coun?', ... % count
+            ':data:lat?', ... % data latest 
+            ':data:fres?', ... % data fresh
+            ':curr:aper?', ... % integration time
+            ':curr:nplc?', ... % integration time PLC
+            ':curr:med?', ... % med state
+            ':curr:med:rank?', ... % med rank
+            ':curr:rang?' ... % range
+            ':curr:rang:auto?' ... % auto range state
+        };
+        
+        % {cell 1xm of char 1xm} list of responses from asynchronous
+        % communication with instrument
+        cecResponses = cell(1, 12);
+    
+        u8Query = 1;
+        dDelay = 1;
+        
     end
     methods 
         
-        function this = ApiKeithley6517a(varargin)   
+        function this = ApiKeithley6517aAsync(varargin)   
             % Override properties with varargin
             for k = 1 : 2: length(varargin)
                 % this.msg(sprintf('passed in %s', varargin{k}));
@@ -24,19 +54,34 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
                     this.(varargin{k}) = varargin{k + 1};
                 end
             end
+            
+            this.timer = timer(...
+                'StartDelay', this.dDelay, ...
+                'ExecutionMode', 'singleShot', ...
+                'TimerFcn', @this.onTimer ...
+            );
+           
+                
         end
         
         function init(this)
-            
+                        
             if this.lSerial
                 % Serial
                 this.s = serial(this.cPort);
                 this.s.Terminator = this.cTerminator; 
                 this.s.BaudRate = this.u16BaudRate;
+                this.s.ReadAsyncMode = 'manual';
+                this.s.BytesAvailableFcn = @this.onBytesAvailable;
+                this.connect();
+                start(this.timer);
             else
                 % GPIB
                 this.s = gpib('ni', 0, this.u8GpibAddress);
+                this.s.BytesAvailableFcnMode = 'eosCharCode';
+                this.s.BytesAvailableFcn = @this.onBytesAvailable;
                 this.connect();
+                start(this.timer);
                 % this.s.EOSCharCode = this.cTerminator;
                 
             end
@@ -44,6 +89,73 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
             
             
         end
+        
+        
+        
+        % @param {gpib 1x1} obj
+        % @param {struct 1x1} event
+        % @param {char 1xm} event.Type
+        % @param {struct 1x1} event.Data
+        % @param {double 1x6] event.Data.AbsTime - datetime vector
+        
+        function onBytesAvailable(this, obj, event)
+            
+            
+            datetime(event.Data.AbsTime);
+            % disp('onBytesAvailable');
+            
+            % Read
+            % tic
+            % this.cecResponses{this.u8Query} 
+            this.cecResponses{this.u8Query} = fscanf(this.s);
+            % c = fread(this.s, this.s.BytesAvailable);
+            % time = toc;
+            % fprintf('Read time = %1.1f ms\n', time * 1000);
+            
+            % Update command index
+            this.updateQuery();
+            stop(this.timer);
+            start(this.timer);
+            % Possibly start a single-tick, that on execute executes the
+            % next command
+            
+            % this.nextQuery();
+                        
+        end
+        
+        function updateQuery(this)
+            this.u8Query = this.u8Query + 1;
+            if this.u8Query > length(this.cecQueries)
+                this.u8Query = 1;
+            end
+        end
+        
+        function onTimer(this, obj, evt)
+            % disp('onTimer()')
+            this.nextQuery();
+        end
+        function nextQuery(this)
+            
+            % disp('nextQuery()');
+            
+            % Execute next query command
+            % tic
+            fprintf(this.s, this.cecQueries{this.u8Query});
+            % time = toc;
+            %{
+            fprintf('Query time = %1.1f ms for %s\n', ...
+                time * 1000, ...
+                this.cecQueries{this.u8Query} ...
+            );
+            %}
+            
+            % Issue async read command.  Once the linefed has been read
+            % from the instrument and placed in the input buffer, the
+            % onBytesAvailable callback will be executed
+            readasync(this.s)
+            
+        end
+                
         
         function connect(this)
             if ~strcmp(this.s.Status, 'open')
@@ -114,35 +226,14 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function d = getIntegrationPeriod(this)
             cCommand = ':curr:aper?'; 
-            tic
-            fprintf(this.s, cCommand);
-            toc
-            tic
-            c = fscanf(this.s);
-            toc
-            d = str2double(c);
+            u8Index = this.getIndex(cCommand);
+            d = str2double(this.cecResponses{u8Index});
         end
-        
-        function getIntegrationPeriodA(this)
-            cCommand = ':curr:aper?'; 
-            tic
-            fprintf(this.s, cCommand);
-            toc 
-        end
-        
-        function d = getIntegrationPeriodB(this)
-            tic
-            c = fscanf(this.s);
-            toc
-            d = str2double(c);
-        end
-        
-        
-        
+               
         function d = getIntegrationPeriodPLC(this)
             cCommand = ':curr:nplc?';
-            fprintf(this.s, cCommand);
-            d = str2double(fscanf(this.s));
+            u8Index = this.getIndex(cCommand);
+            d = str2double(this.cecResponses{u8Index});
         end
         
         
@@ -159,14 +250,8 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function c = getAverageState(this)
             cCommand = ':curr:aver?';
-            tic
-            fprintf(this.s, cCommand);
-            toc
-            tic
-            c = fscanf(this.s);
-            % c = this.s.fscanf();
-            toc
-            c = this.stateText(c);
+            u8Index = this.getIndex(cCommand);
+            c = this.stateText(this.cecResponses{u8Index});
         end
         
         % Set the averaging filter state of a channel
@@ -183,8 +268,8 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function c = getAverageType(this)
             cCommand = ':curr:aver:type?';
-            fprintf(this.s, cCommand);
-            c = fscanf(this.s);
+            u8Index = this.getIndex(cCommand);
+            c = this.cecResponses{u8Index};
         end
         
          % Set the averaging filter mode of a channel
@@ -199,8 +284,8 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function c = getAverageMode(this)
             cCommand = ':curr:aver:tcon?';
-            fprintf(this.s, cCommand);
-            c = fscanf(this.s);
+            u8Index = this.getIndex(cCommand);
+            c = this.cecResponses{u8Index};
         end
         
         % Set the averaging filter count of a channel
@@ -212,9 +297,9 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         end
         
         function u8 = getAverageCount(this)
-            fprintf(this.s, ':curr:aver:coun?');
-            % do not cast as uint8 becasue it screws with HIO
-            u8 = str2double(fscanf(this.s));
+            cCommand = ':curr:aver:coun?';
+            u8Index = this.getIndex(cCommand);
+            u8 = str2double(this.cecResponses{u8Index});
         end
         
         
@@ -232,9 +317,8 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function c = getMedianState(this)
             cCommand = ':curr:med?';
-            fprintf(this.s, cCommand);
-            c = fscanf(this.s);
-            c = this.stateText(c);
+            u8Index = this.getIndex(cCommand);
+            c = this.stateText(this.cecResponses{u8Index});
         end
         
                 
@@ -249,9 +333,9 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function u8 = getMedianRank(this)
             cCommand = ':curr:med:rank?';
-            fprintf(this.s, cCommand);
+            u8Index = this.getIndex(cCommand);
             % do not cast as uint8 because it screws with HIO
-            u8 = str2double(fscanf(this.s));
+            u8 = str2double(this.cecResponses{u8Index});
         end
                 
             
@@ -267,8 +351,8 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
             
         function d = getRange(this)
             cCommand = ':curr:rang?';
-            fprintf(this.s, cCommand);
-            d = str2double(fscanf(this.s));
+            u8Index = this.getIndex(cCommand);
+            d = str2double(this.cecResponses{u8Index});
         end
         
         % Set the auto range state of a channel
@@ -280,9 +364,8 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function c = getAutoRangeState(this)
             cCommand = ':curr:rang:auto?';
-            fprintf(this.s, cCommand);
-            c = fscanf(this.s);
-            c = this.stateText(c);
+            u8Index = this.getIndex(cCommand);
+            c = this.stateText(this.cecResponses{u8Index});
         end
         
        
@@ -313,33 +396,31 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         % STATUS=n
         % VSRC=n (voltage source)
         function d = getDataLatest(this) 
-           tic
-           cCommand = ':data:lat?';
-           fprintf(this.s, cCommand);
-           toc
-           
-           tic
-           c = fscanf(this.s)
-           toc
-           d = str2double(c);
-           
+            cCommand = ':data:lat?';
+            u8Index = this.getIndex(cCommand);
+           d = str2double(this.cecResponses{u8Index});
         end
         
         function d = getDataFresh(this)
-           
-           cCommand = ':data:fres?';
-           tic
-           fprintf(this.s, cCommand);
-           toc
-           tic
-           c = fscanf(this.s)
-           toc           
-           d = str2double(c); 
+            cCommand = ':data:fres?';
+            u8Index = this.getIndex(cCommand);
+           d = str2double(this.cecResponses{u8Index}); 
         end
         
         function delete(this)
             this.disconnect();
             delete(this.s);
+            stop(this.timer);
+            delete(this.timer);
+        end
+        
+        
+        % @param {char 1xm} - SCPI query command
+        function u8 = getIndex(this, c)
+            tic
+            u8 = find(cellfun('length', regexp(this.cecQueries, c)) == 1);
+            time = toc;
+            fprintf('Get index time = %1.1f ms\n', time * 1000);
         end
         
     end
@@ -373,6 +454,10 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
             end
                     
         end
+        
+        
+            
+            
         
     end
     
