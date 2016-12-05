@@ -1,4 +1,4 @@
-classdef Utils
+classdef MicUtils
 %UTILS is a static class that contains a set of method useful for
 %   dealing with graphical user interface.
 
@@ -48,7 +48,7 @@ classdef Utils
         %       *If it is required to be an integer is it an integer?
         %       *If there is a range is it in the allowed range?
         %
-        % OK = Utils.checkNum(ARGUMENTS)
+        % OK = MicUtils.checkNum(ARGUMENTS)
         % Inputs - two min, four max
         %   *input 1 = num from edit (use str2num)
         %   *input 2 = intFlag
@@ -135,7 +135,7 @@ classdef Utils
 
 
 
-        function out = isProp(oThis,sProperty)
+        function out = isprop(oThis,sProperty)
         %ISPROP Checks if sProperty:String is a property of oThis:Object
         %
         %   EVENTUALLY THIS SHOULD BE DEPRECATED AND INSTEAD WE SHOULD USE 
@@ -143,7 +143,7 @@ classdef Utils
         %   meta.property objects have all of the meta associated with
         %   the property
         %
-        % out = Utils.isProp(oThis,sProperty)
+        % out = MicUtils.isprop(oThis,sProperty)
         %
         % See also CHECKNUM, ISMETHOD
         
@@ -158,7 +158,7 @@ classdef Utils
 
         function out = isMethod(oThis,sMethod)
         %ISMETHOD Checks if sMethod:String is a method of oThis:Object
-        % out = Utils.isMethod(oThis,sMethod)
+        % out = MicUtils.isMethod(oThis,sMethod)
         %
         % See also CHECKNUM, ISPROP
             if(~isempty(strmatch(sMethod,methods(oThis),'exact')))
@@ -205,7 +205,7 @@ classdef Utils
         %     [left top width height], which is the most intuitive way to
         %     do it.  It returns [left bottom width height]
         %
-        % out = Utils.lt2lb(dLTWH, hParent)
+        % out = MicUtils.lt2lb(dLTWH, hParent)
         %   where  :
         %     dLTWH (double [1x4]) [left top width height] of UI element
         %     hParent (handle) UI parent (usually a panel or figure)
@@ -228,13 +228,13 @@ classdef Utils
 
         function whileDisplay(sLocation)
         %WHILEDISPLAY Allows to print where one is located in a while loop
-        %   Utils.whileDisplay(sLocation)
+        %   MicUtils.whileDisplay(sLocation)
             disp(sprintf('In while loop at: %s',sLocation));
         end
 
         function out = uih(hUI)
         %UIH Returns the height of UI element
-        %   HEIGHT = Utils.uih(HANDLE)
+        %   HEIGHT = MicUtils.uih(HANDLE)
         %
         % See also PANELHEIGHT, UIW, UT, LT2LB, UICONTROLY
         
@@ -245,7 +245,7 @@ classdef Utils
 
         function out = uiw(hUI)
         % UIW Returns the  width of UI element
-        %   WIDTH = Utils.uih(HANDLE)
+        %   WIDTH = MicUtils.uih(HANDLE)
         %
         % See also PANELHEIGHT, UIH, UT, LT2LB, UICONTROLY
         
@@ -255,7 +255,7 @@ classdef Utils
 
         function out = ut(hUIChild, hUIParent)
         %UT 'update top' and it is used for positioning uielements
-        %   OUT = Utils.ut(hUIChild, hUIParent)
+        %   OUT = MicUtils.ut(hUIChild, hUIParent)
         %
         % See also PANELHEIGHT, UIH, UIW, LT2LB, UICONTROLY
                 
@@ -271,19 +271,19 @@ classdef Utils
 
         function out = panelHeight(u8Edits)
         % PANELHEIGHT 
-        %   out = Utils.panelHeight(u8Edits)
+        %   out = MicUtils.panelHeight(u8Edits)
         %       u8Edits: number of stacked edits in panel
         %
         % See also UIH, UIW, UT, LT2LB, UICONTROLY
-            out = Utils.dPanelTopPad + ...
-                Utils.dPanelBotPad + ...
-                u8Edits*(Utils.dEDITHEIGHT + Utils.dLABELHEIGHT) + ...
-                (u8Edits-1)*Utils.dEditPad;
+            out = MicUtils.dPanelTopPad + ...
+                MicUtils.dPanelBotPad + ...
+                u8Edits*(MicUtils.dEDITHEIGHT + MicUtils.dLABELHEIGHT) + ...
+                (u8Edits-1)*MicUtils.dEditPad;
         end
 
         function absolute_position = get_screenPos(h)
         % GET_SCREENPOS Gets the absolute position of the handle
-        %   position = Utils.get_screenPos(handle), where position is a
+        %   position = MicUtils.get_screenPos(handle), where position is a
         %   vector containing horizontal and vertical position, width and height
         %
         % See also GET_EDITABLE, GET_NEXTEDIT, SCROLL_INCREMENT
@@ -291,11 +291,11 @@ classdef Utils
 
             %making sure the format is good !
             if ~ishandle(h)
-                error('UTILS.get_screenPos argument is not an handle !')
+                error('MicUtils.get_screenPos argument is not an handle !')
             end
 
             if  ~isequal(size(h),[1 1])
-                error('UTILS.get_screenPos does not accept vectors of handle as argument')
+                error('MicUtils.get_screenPos does not accept vectors of handle as argument')
             end
 
             %we get the position of the element relative to his parent
@@ -336,7 +336,7 @@ classdef Utils
             eboxes = findall(handle,'Style','edit');      
             for i=1:length(eboxes)
                 %get the absolute position for each editbox
-                xyi = Utils.get_screenPos(eboxes(i));
+                xyi = MicUtils.get_screenPos(eboxes(i));
                 %if the editbox lies under the mouse pointer, select and output the
                 %handle !
                 if (xyi(1)<xy(1) && xyi(1)+xyi(3)>xy(1) && xyi(2)+xyi(4)>xy(2) && xyi(2)<xy(2))
@@ -355,16 +355,16 @@ classdef Utils
                 switch evt.Key
                     case 'i'
                         direction = 'up';
-                        Utils.get_nextEdit(src, direction);
+                        MicUtils.get_nextEdit(src, direction);
                     case 'k'
                         direction = 'down';
-                        Utils.get_nextEdit(src, direction);
+                        MicUtils.get_nextEdit(src, direction);
                     case 'j'
                         direction = 'left';
-                        Utils.get_nextEdit(src, direction);
+                        MicUtils.get_nextEdit(src, direction);
                     case 'l'
                         direction = 'right';
-                        Utils.get_nextEdit(src, direction);
+                        MicUtils.get_nextEdit(src, direction);
                 end
 
             %elseif (strcmp(evt.Modifier,'control') == 1)
@@ -388,13 +388,13 @@ classdef Utils
             end
             eboxes = findall(master_handle,'Style','edit');
 
-            mypos = Utils.get_screenPos(edit_handle);
+            mypos = MicUtils.get_screenPos(edit_handle);
             mycenter(1) = mypos(1)+mypos(3)/2;
             mycenter(2) = mypos(2)-mypos(4)/2;
 
             dist = zeros(2,length(eboxes));
             for i = 1:length(eboxes)
-                epos = Utils.get_screenPos(eboxes(i));
+                epos = MicUtils.get_screenPos(eboxes(i));
                 ecenter(1) = epos(1)+epos(3)/2;
                 ecenter(2) = epos(2)-epos(4)/2;
                 if(isequal(eboxes(i),edit_handle)) %self-distance
@@ -426,17 +426,17 @@ classdef Utils
 
         %% Event handlers
 
-        %   set(gcf,'WindowScrollWheelFcn',@Utils.scroll_increment)
+        %   set(gcf,'WindowScrollWheelFcn',@MicUtils.scroll_increment)
         function scroll_increment( src, evt )
         %SCROLL_INCREMENT Is a cb function designed to increment an editbox
         %
         % It can be used this way :
-        %   set(gcf,'WindowScrollWheelFcn',@Utils.scroll_increment)
+        %   set(gcf,'WindowScrollWheelFcn',@MicUtils.scroll_increment)
         %
         % See also GET_SCREENPOS, GET_EDITABLE, GET_NEXTEDIT, KEYBOARD_NAVIGATION
 
             %find the edit box located under the mouse pointer
-            edit_handle = Utils.get_editable(src, get(src,'CurrentPoint'));
+            edit_handle = MicUtils.get_editable(src, get(src,'CurrentPoint'));
             %get the direction of the scroll
             delta = -sign(evt.VerticalScrollCount);
 
@@ -451,7 +451,7 @@ classdef Utils
                     callbackCell = get(edit_handle,'Callback');
                     callbackCell(edit_handle)
                 catch err
-                    disp('Utils.scroll_increment : an error occured !')
+                    disp('MicUtils.scroll_increment : an error occured !')
                 end
             end
         end
@@ -522,7 +522,7 @@ classdef Utils
 
                                 % Return empty
                                 % cReturn = '';
-                                cReturn = Utils.saveAs(cName, cPath);
+                                cReturn = MicUtils.saveAs(cName, cPath);
                         end
                     
                     
@@ -550,7 +550,7 @@ classdef Utils
                     uiwait(h);
 
                     % recursively call
-                    cReturn = Utils.saveAs(cName, cPath);
+                    cReturn = MicUtils.saveAs(cName, cPath);
 
                 end
 
@@ -632,7 +632,7 @@ classdef Utils
 
                                 % Return empty
                                 % cReturn = '';
-                                cReturn = Utils.listSaveAs(cName, ceOptions);
+                                cReturn = MicUtils.listSaveAs(cName, ceOptions);
                         end 
                     end
                 else
@@ -651,7 +651,7 @@ classdef Utils
                     uiwait(h);
 
                     % recursively call
-                    cReturn = Utils.listSaveAs(cName, ceOptions);
+                    cReturn = MicUtils.listSaveAs(cName, ceOptions);
 
                 end
 

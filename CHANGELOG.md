@@ -1,3 +1,10 @@
+# 1.0.0-alpha.30.4
+
+### NOT STABLE RELEASE
+
+- Calls to isprop() --> this.hasProp() since isprop() [built-in MATLAB fcn] has different behavior across different versions.
+- Utils --> MicUtils for verbosity
+
 # 1.0.0-alpha.30.3
 
 ### NOT STABLE RELEASE

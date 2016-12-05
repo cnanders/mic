@@ -73,7 +73,7 @@ classdef nPoint < JavaDevice
                 'Units', 'pixels',...
                 'Title', 'nPoint',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dLeft dTop 310 330], hParent) ...
+                'Position', MicUtils.lt2lb([dLeft dTop 310 330], hParent) ...
             );
         
 			drawnow;
@@ -82,9 +82,9 @@ classdef nPoint < JavaDevice
             dButtonSep = 5;
             dTop = 20;
             
-            this.uitConnect.build(this.hPanel, 10 + 0*(dButtonSep + dButtonWidth), dTop, dButtonWidth, Utils.dEDITHEIGHT);
-            this.uitEnable.build(this.hPanel, 10 + 1*(dButtonSep + dButtonWidth), dTop, dButtonWidth, Utils.dEDITHEIGHT);
-            this.uitStart.build(this.hPanel, 10 + 2*(dButtonSep + dButtonWidth), dTop, dButtonWidth, Utils.dEDITHEIGHT);
+            this.uitConnect.build(this.hPanel, 10 + 0*(dButtonSep + dButtonWidth), dTop, dButtonWidth, MicUtils.dEDITHEIGHT);
+            this.uitEnable.build(this.hPanel, 10 + 1*(dButtonSep + dButtonWidth), dTop, dButtonWidth, MicUtils.dEDITHEIGHT);
+            this.uitStart.build(this.hPanel, 10 + 2*(dButtonSep + dButtonWidth), dTop, dButtonWidth, MicUtils.dEDITHEIGHT);
             
             this.uitEnable.hide();
             this.uitStart.hide();

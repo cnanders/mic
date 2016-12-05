@@ -96,7 +96,7 @@ classdef UIEdit < HandlePlus
             if this.lShowLabel
                 this.hLabel = uicontrol( ...
                     'Parent', hParent, ...
-                    'Position', Utils.lt2lb([dLeft dTop dWidth 20], hParent),...
+                    'Position', MicUtils.lt2lb([dLeft dTop dWidth 20], hParent),...
                     'Style', 'text', ...
                     'String', this.cLabel, ...
                     'FontWeight', 'Normal',...
@@ -111,7 +111,7 @@ classdef UIEdit < HandlePlus
             this.hUI = uicontrol( ...
                 'Parent', hParent, ...
                 'BackgroundColor', [1 1 1], ...
-                'Position', Utils.lt2lb([dLeft dTop dWidth dHeight], hParent), ...
+                'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent), ...
                 'Style', 'edit', ...
                 'String', this.cData, ...
                 'Callback', @this.cb, ...
@@ -490,11 +490,11 @@ classdef UIEdit < HandlePlus
             % Make it look vanilla
            
             if ishandle(this.hUI)
-                set(this.hUI, 'BackgroundColor', Utils.dColorEditBgDefault);
+                set(this.hUI, 'BackgroundColor', MicUtils.dColorEditBgDefault);
             end
 
             if ishandle(this.hLabel)
-                set(this.hLabel, 'BackgroundColor', Utils.dColorTextBgDefault);
+                set(this.hLabel, 'BackgroundColor', MicUtils.dColorTextBgDefault);
             end
            
             
@@ -505,11 +505,11 @@ classdef UIEdit < HandlePlus
             % Make it look vanilla
            
             if ishandle(this.hUI)
-                set(this.hUI, 'BackgroundColor', Utils.dColorEditBgVerified);
+                set(this.hUI, 'BackgroundColor', MicUtils.dColorEditBgVerified);
             end
 
             if ishandle(this.hLabel)
-                set(this.hLabel, 'BackgroundColor', Utils.dColorTextBgVerified);
+                set(this.hLabel, 'BackgroundColor', MicUtils.dColorTextBgVerified);
             end
             
         end
@@ -573,7 +573,7 @@ classdef UIEdit < HandlePlus
         %              disp('going right !')
         %this.hUI
             this.onKeyRelease(src, evt);
-            Utils.keyboard_navigation(src, evt)
+            MicUtils.keyboard_navigation(src, evt)
         %      end
         
             

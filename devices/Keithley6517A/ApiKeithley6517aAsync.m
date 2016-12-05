@@ -65,7 +65,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
             % Override properties with varargin
             for k = 1 : 2: length(varargin)
                 % this.msg(sprintf('passed in %s', varargin{k}));
-                if isprop(this, varargin{k})
+                if this.hasProp( varargin{k})
                     this.msg(sprintf('settting %s', varargin{k}), 6);
                     this.(varargin{k}) = varargin{k + 1};
                 end

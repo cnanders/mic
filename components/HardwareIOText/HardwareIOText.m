@@ -178,7 +178,7 @@ classdef HardwareIOText < HandlePlus
             
             for k = 1 : 2: length(varargin)
                 % this.msg(sprintf('passed in %s', varargin{k}));
-                if isprop(this, varargin{k})
+                if this.hasProp( varargin{k})
                     this.msg(sprintf('settting %s', varargin{k}), 6);
                     this.(varargin{k}) = varargin{k + 1};
                 end
@@ -233,7 +233,7 @@ classdef HardwareIOText < HandlePlus
                 'Title', blanks(0), ...
                 'Clipping', 'on', ...
                 'BorderWidth',0, ... 
-                'Position', Utils.lt2lb([dLeft dTop dWidth dHeight], hParent));
+                'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent));
             drawnow
 
             axis('image');
@@ -508,11 +508,11 @@ classdef HardwareIOText < HandlePlus
             % work with classes that extend this class
                        
             
-            this.u8Play     = imread(fullfile(Utils.pathAssets(), 'axis-play-24-3.png'));
-            this.u8Pause    = imread(fullfile(Utils.pathAssets(), 'axis-pause-24-3.png'));
+            this.u8Play     = imread(fullfile(MicUtils.pathAssets(), 'axis-play-24-3.png'));
+            this.u8Pause    = imread(fullfile(MicUtils.pathAssets(), 'axis-pause-24-3.png'));
             
-            this.u8Active   = imread(fullfile(Utils.pathAssets(), 'hiot-true-24.png'));
-            this.u8Inactive = imread(fullfile(Utils.pathAssets(), 'hiot-false-24.png'));
+            this.u8Active   = imread(fullfile(MicUtils.pathAssets(), 'hiot-true-24.png'));
+            this.u8Inactive = imread(fullfile(MicUtils.pathAssets(), 'hiot-false-24.png'));
             
             %activity ribbon on the right
             
