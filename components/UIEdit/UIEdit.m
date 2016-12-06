@@ -39,6 +39,7 @@ classdef UIEdit < HandlePlus
         hLabel
         hUI % made private 2013.06.11 % made setAccess private 3013/06/20
         cTooltip = 'Tooltip: set me!';
+        cKeyPressLast = '';
     end
 
 
@@ -114,10 +115,10 @@ classdef UIEdit < HandlePlus
                 'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent), ...
                 'Style', 'edit', ...
                 'String', this.cData, ...
+                'KeyPressFcn',@this.uie_keyPressFcn, ... % 'KeyReleaseFcn', @this.onKeyRelease, ...
                 'Callback', @this.cb, ...
                 'TooltipString', this.cTooltip, ...
                 'ButtonDownFcn',@this.uie_ButtonDownFcn, ...
-                'KeyPressFcn',@this.uie_keyPressFcn, ... % 'KeyReleaseFcn', @this.onKeyRelease, ...
                 'HorizontalAlignment', this.cHorizontalAlignment ...
             );
         
@@ -132,8 +133,11 @@ classdef UIEdit < HandlePlus
             switch src
                 case this.hUI
                     this.cData = get(src, 'String');
-            end        
-
+            end  
+            
+            if uint8(this.cKeyPressLast) == 13
+                notify(this, 'eEnter');
+            end
         end
 
 
@@ -556,9 +560,32 @@ classdef UIEdit < HandlePlus
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          %nothing
 
+         function onKeyPress(this, src, evt)
+            
+             % The KeyPress function is evoked before the 
+             % Callback function is evoked.  This is problematic because
+             % the value returned by
+             % get(src, 'String') inside of the KeyPress handler is not equal
+             % to the newly entered string until after the callback is
+             % executed.  SO DUMB. 
+             %
+             % The CALLBACK function is evoked if the user presses enter in
+             % the edit box however there is no way to know if the callback
+             % was evoked from an enter press or from the user clicking 
+             % another component.
+             %
+             % A workaround is to always store the last key pressed
+             % and then check this.cKeyPressLast inside of the callback.
+             % If the callback is evoked from an enter press, first this
+             % function evokes (updating cKeyPressLast) so that it can
+             % trigger a notify('eEnter') inside of the CALLBACK
+             
+             this.cKeyPressLast = evt.Character;
+         end
+         
          function onKeyRelease(this, src, evt)
              if uint8(evt.Character') == 13
-            	notify(this, 'eEnter');
+                 notify(this, 'eEnter');
              end
          end
          function uie_keyPressFcn(this, src, evt)
@@ -572,7 +599,9 @@ classdef UIEdit < HandlePlus
         %          case {'rightarrow', 'l'}
         %              disp('going right !')
         %this.hUI
-            this.onKeyRelease(src, evt);
+        
+            
+            this.onKeyPress(src, evt);
             MicUtils.keyboard_navigation(src, evt)
         %      end
         

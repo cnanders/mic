@@ -214,7 +214,7 @@ classdef HardwareIOPlus < HandlePlus
             % Override properties with varargin
             
             for k = 1 : 2: length(varargin)
-                this.msg(sprintf('passed in %s', varargin{k}));
+                % this.msg(sprintf('passed in %s', varargin{k}));
                 if this.hasProp( varargin{k})
                     this.msg(sprintf('settting %s', varargin{k}), 3);
                     this.(varargin{k}) = varargin{k + 1};
@@ -1305,7 +1305,7 @@ classdef HardwareIOPlus < HandlePlus
         end
         
         function onDestEnter(this, src, evt)
-            % this.msg('onDestEnter');
+            this.msg('onDestEnter');
             this.moveToDest();
         end
         

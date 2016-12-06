@@ -56,7 +56,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         % is invoked (whenever the result is available), a new timer is
         % started with this start delay, before invoking onTimer(), which 
         % begins the next read cycle
-        dDelay = .001;
+        dDelay = .1;
         
     end
     methods 
@@ -119,11 +119,11 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
             % disp('onBytesAvailable');
             
             % Read
-            % tic
+            %tic
             this.cecResponses{this.u8Query} = fscanf(this.s);
             % c = fread(this.s, this.s.BytesAvailable);
-            % time = toc;
-            % fprintf('Read time = %1.1f ms\n', time * 1000);
+            %time = toc;
+            %fprintf('Read time = %1.1f ms\n', time * 1000);
             
             % Update command index
             this.updateQuery();
@@ -178,6 +178,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         end
         
         function disconnect(this)
+            this.s.Status
             if strcmp(this.s.Status, 'open')
                 fclose(this.s);
             end
@@ -240,14 +241,12 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function d = getIntegrationPeriod(this)
             cCommand = ':curr:aper?'; 
-            u8Index = this.getIndex(cCommand);
-            d = str2double(this.cecResponses{u8Index});
+            d = str2double(this.getResponse(cCommand));
         end
                
         function d = getIntegrationPeriodPLC(this)
             cCommand = ':curr:nplc?';
-            u8Index = this.getIndex(cCommand);
-            d = str2double(this.cecResponses{u8Index});
+            d = str2double(this.getResponse(cCommand));
         end
         
         
@@ -264,8 +263,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function c = getAverageState(this)
             cCommand = ':curr:aver?';
-            u8Index = this.getIndex(cCommand);
-            c = this.stateText(this.cecResponses{u8Index});
+            c = this.stateText(this.getResponse(cCommand));
         end
         
         % Set the averaging filter state of a channel
@@ -282,8 +280,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function c = getAverageType(this)
             cCommand = ':curr:aver:type?';
-            u8Index = this.getIndex(cCommand);
-            c = this.cecResponses{u8Index};
+            c = this.getResponse(cCommand);
         end
         
          % Set the averaging filter mode of a channel
@@ -298,8 +295,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function c = getAverageMode(this)
             cCommand = ':curr:aver:tcon?';
-            u8Index = this.getIndex(cCommand);
-            c = this.cecResponses{u8Index};
+            c = this.getResponse(cCommand);
         end
         
         % Set the averaging filter count of a channel
@@ -312,8 +308,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function u8 = getAverageCount(this)
             cCommand = ':curr:aver:coun?';
-            u8Index = this.getIndex(cCommand);
-            u8 = str2double(this.cecResponses{u8Index});
+            u8 = str2double(this.getResponse(cCommand));
         end
         
         
@@ -331,8 +326,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function c = getMedianState(this)
             cCommand = ':curr:med?';
-            u8Index = this.getIndex(cCommand);
-            c = this.stateText(this.cecResponses{u8Index});
+            c = this.stateText(this.getResponse(cCommand));
         end
         
                 
@@ -347,9 +341,8 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function u8 = getMedianRank(this)
             cCommand = ':curr:med:rank?';
-            u8Index = this.getIndex(cCommand);
             % do not cast as uint8 because it screws with HIO
-            u8 = str2double(this.cecResponses{u8Index});
+            u8 = str2double(this.getResponse(cCommand));
         end
                 
             
@@ -365,8 +358,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
             
         function d = getRange(this)
             cCommand = ':curr:rang?';
-            u8Index = this.getIndex(cCommand);
-            d = str2double(this.cecResponses{u8Index});
+            d = str2double(this.getResponse(cCommand));
         end
         
         % Set the auto range state of a channel
@@ -378,8 +370,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         function c = getAutoRangeState(this)
             cCommand = ':curr:rang:auto?';
-            u8Index = this.getIndex(cCommand);
-            c = this.stateText(this.cecResponses{u8Index});
+            c = this.stateText(this.getResponse(cCommand));
         end
         
        
@@ -411,14 +402,12 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         % VSRC=n (voltage source)
         function d = getDataLatest(this) 
             cCommand = ':data:lat?';
-            u8Index = this.getIndex(cCommand);
-           d = str2double(this.cecResponses{u8Index});
+            d = str2double(this.getResponse(cCommand));
         end
         
         function d = getDataFresh(this)
             cCommand = ':data:fres?';
-            u8Index = this.getIndex(cCommand);
-           d = str2double(this.cecResponses{u8Index}); 
+            d = str2double(this.getResponse(cCommand)); 
         end
         
         function delete(this)
@@ -431,16 +420,28 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         
         % @param {char 1xm} - SCPI query command
         function u8 = getIndex(this, c)
-            tic
+            % tic
             u8 = find(cellfun('length', regexp(this.cecQueries, c)) == 1);
-            time = toc;
-            fprintf('Get index time = %1.1f ms\n', time * 1000);
+            % time = toc;
+            % fprintf('Get index time = %1.1f ms\n', time * 1000);
         end
+        
+        
         
     end
     
     methods (Access = private)
         
+        
+        % @param {char 1xm} cCommand - 
+        function c = getResponse(this, cCommand)
+            u8Index = this.getIndex(cCommand);
+            c = this.cecResponses{u8Index};
+            if isempty(c)
+                c = '';
+            end
+        end
+            
         % The SPCI state? commands return a {char 1xm} representation of 1
         % or 0 followed by the terminator.  The 6517A terminator is CR/LF,
         % which is equivalent to \r\n in matlab. This method converts the
@@ -450,6 +451,7 @@ classdef ApiKeithley6517aAsync < InterfaceKeithley6517a
         % @param {char 1xm} - response from SPCI
         % @return {char 1xm} - 'on' or 'off'
            
+        
         function c = stateText(this, cIn)
             
             switch this.cTerminator

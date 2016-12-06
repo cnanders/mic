@@ -12,7 +12,7 @@ classdef Keithley6517a < HandlePlus
         dSepVert2 = 24;
         dSepSection = 0;
         dWidthHIOName = 90;
-        dWidthHIOVal = 60;
+        dWidthHIOVal = 70;
         dWidthHIOStores = 90;
         dWidthHIODest = 90;
         dBackgroundColor = [.94 .94 .94]

@@ -1,5 +1,5 @@
 {
-	"delay": 1,
+	"delay": .2,
 	"units": [
 		{
 			"name": "ms",
