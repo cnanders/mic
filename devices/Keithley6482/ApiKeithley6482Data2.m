@@ -1,4 +1,4 @@
-classdef ApiKeithley6482Data2 < InterfaceApiHardwareO
+classdef ApiKeithley6482Data2 < InterfaceApiHardwareOPlus
     
     properties (Access = private)
         api
