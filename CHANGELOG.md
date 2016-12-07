@@ -1,3 +1,13 @@
+# 1.0.0-alpha.31
+
+### Keithley6517a
+- Added lShowRange and lShowSettings to allow disabling the range and settings UI
+
+### ApiKeithley6517a
+- Now supports serial and GPIB communication protocols.  Both are synchronous right now.  Communication isn't the bottleneck; it is the time the device takes to fill buffer with answer.
+- Reads take around 50 ms - 60 ms.  Around 3 ms for the command, 45 ms for the instrument to fill its buffer, 1 ms for reading the result.  
+- Commented tic/toc that was used while debugging serial vs. gpib speed
+
 # 1.0.0-alpha.30.5
 
 ### UIEdit

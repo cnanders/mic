@@ -39,9 +39,7 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
                 this.connect();
                 % this.s.EOSCharCode = this.cTerminator;
                 
-            end
-                
-            
+            end            
             
         end
         
@@ -60,12 +58,12 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function c = identity(this)
             cCommand = '*IDN?';
-            tic
+            %tic
             fprintf(this.s, cCommand);
-            toc
-            tic
+            %toc
+            %tic
             c = fscanf(this.s);
-            toc
+            %toc
         end
         
         function setFunctionToAmps(this)
@@ -114,28 +112,32 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function d = getIntegrationPeriod(this)
             cCommand = ':curr:aper?'; 
-            tic
+            %tic
             fprintf(this.s, cCommand);
-            toc
-            tic
+            %toc
+            %tic
             c = fscanf(this.s);
-            toc
+            %toc
             d = str2double(c);
         end
         
-        function getIntegrationPeriodA(this)
-            cCommand = ':curr:aper?'; 
-            tic
-            fprintf(this.s, cCommand);
-            toc 
-        end
+        % For testing command vs. read with dead time in the middle
+        % to isolate delays while the instrument fills its buffer with
+        % the answer
         
-        function d = getIntegrationPeriodB(this)
-            tic
-            c = fscanf(this.s);
-            toc
-            d = str2double(c);
-        end
+%         function getIntegrationPeriodA(this)
+%             cCommand = ':curr:aper?'; 
+%             tic
+%             fprintf(this.s, cCommand);
+%             toc 
+%         end
+%         
+%         function d = getIntegrationPeriodB(this)
+%             tic
+%             c = fscanf(this.s);
+%             toc
+%             d = str2double(c);
+%         end
         
         
         
@@ -159,13 +161,8 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         
         function c = getAverageState(this)
             cCommand = ':curr:aver?';
-            tic
             fprintf(this.s, cCommand);
-            toc
-            tic
             c = fscanf(this.s);
-            % c = this.s.fscanf();
-            toc
             c = this.stateText(c);
         end
         
@@ -313,27 +310,17 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         % STATUS=n
         % VSRC=n (voltage source)
         function d = getDataLatest(this) 
-           tic
            cCommand = ':data:lat?';
            fprintf(this.s, cCommand);
-           toc
-           
-           tic
-           c = fscanf(this.s)
-           toc
+           c = fscanf(this.s);
            d = str2double(c);
            
         end
         
         function d = getDataFresh(this)
-           
            cCommand = ':data:fres?';
-           tic
            fprintf(this.s, cCommand);
-           toc
-           tic
-           c = fscanf(this.s)
-           toc           
+           c = fscanf(this.s);
            d = str2double(c); 
         end
         

@@ -21,12 +21,14 @@ classdef TestKeithley6517a < HandlePlus
         
             this.clock = Clock('master');
             this.keithley6517a = Keithley6517a(...
-                'clock', this.clock ...
+                'clock', this.clock, ...
+                'lShowSettings', false, ...
+                'lShowRange', false ...
             );
         
             % Set the Api
-            this.api = ApiKeithley6517aAsync();
-            this.keithley6517a.setApi(this.api);
+            % this.api = ApiKeithley6517aAsync();
+            % this.keithley6517a.setApi(this.api);
             
         end
         
