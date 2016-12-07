@@ -1,4 +1,12 @@
 
+# 1.0.0-alpha.32
+
+### Keithley6482
+- Added lShowRange and lShowSettings to allow disabling the range and settings UI.  Made changes robust enough that if there is ever a version of this instrument with separate settings for each channel, a few lines of code can make this work. 
+
+### Keithley6517a
+- Bug fixes from 1.0.0-alpha.31 in setApi() and turnOff() methods
+
 # 1.0.0-alpha.31
 
 ### Keithley6517a

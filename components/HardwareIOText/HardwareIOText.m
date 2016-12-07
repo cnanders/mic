@@ -349,7 +349,7 @@ classdef HardwareIOText < HandlePlus
 
                         
             % Update destination values to match device values
-            this.setDest(this.api.get());
+            this.setDest(this.getApi().get());
             
             % Kill the Apiv
             if ~isempty(this.apiv) && ...

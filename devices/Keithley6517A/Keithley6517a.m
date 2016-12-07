@@ -114,8 +114,29 @@ classdef Keithley6517a < HandlePlus
             this.api.connect();
             
             this.hoData.setApi(ApiKeithley6517aData(this.api));
+            
+            this.setApiRange();
+            this.setApiSettings();
+            
+        end
+        
+        function setApiRange(this)
+            if ~this.lShowRange
+                return
+            end
+            
             this.hioRange.setApi(ApiKeithley6517aRange(this.api));
             this.hiotxAutoRangeState.setApi(ApiKeithley6517aAutoRangeState(this.api));
+            
+            
+                
+        end
+        
+        function setApiSettings(this)
+            if ~this.lShowSettings
+                return
+            end 
+            
             this.hioADCPeriod.setApi(ApiKeithley6517aAdcPeriod(this.api));
             this.hiotxAvgFiltState.setApi(ApiKeithley6517aAvgFiltState(this.api));
             this.hiotxAvgFiltType.setApi(ApiKeithley6517aAvgFiltType(this.api));
@@ -125,6 +146,7 @@ classdef Keithley6517a < HandlePlus
             this.hioMedFiltRank.setApi(ApiKeithley6517aMedFiltRank(this.api));
             
         end
+        
         
         function build(this, hParent, dLeft, dTop)
         %BUILD Builds the UI element associated with the class
@@ -223,7 +245,7 @@ classdef Keithley6517a < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 150 this.dWidth - 20 195], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 120 this.dWidth - 20 195], this.hPanel) ...
             );
             drawnow
             
@@ -326,6 +348,8 @@ classdef Keithley6517a < HandlePlus
             this.hiotxAutoRangeState.turnOn();
         end
         
+        
+        
         function turnOnSettings(this)
             if ~this.lShowSettings
                 return;
@@ -357,13 +381,21 @@ classdef Keithley6517a < HandlePlus
             this.uitApi.setTooltip(this.cTooltipApiOff);
             
             this.hoData.turnOff();
-            this.hioRange.turnOff();
-            this.hiotxAutoRangeState.turnOff();
-            
+            this.turnOffRange();
             this.turnOffSettings();
             
             
             
+        end
+        
+        function turnOffRange(this)
+            
+            if ~this.lShowRange
+               return;
+            end
+           
+            this.hioRange.turnOff();
+            this.hiotxAutoRangeState.turnOff();
         end
         
         function turnOffSettings(this)
