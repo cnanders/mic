@@ -1,7 +1,31 @@
+
+# 1.0.0-alpha.32
+
+### Keithley6482
+- Added lShowRange and lShowSettings to allow disabling the range and settings UI.  Made changes robust enough that if there is ever a version of this instrument with separate settings for each channel, a few lines of code can make this work. 
+
+### Keithley6517a
+- Bug fixes from 1.0.0-alpha.31 in setApi() and turnOff() methods
+
+# 1.0.0-alpha.31
+
+### Keithley6517a
+- Added lShowRange and lShowSettings to allow disabling the range and settings UI
+
+### ApiKeithley6517a
+- Now supports serial and GPIB communication protocols.  Both are synchronous right now.  Communication isn't the bottleneck; it is the time the device takes to fill buffer with answer.
+- Full synchronous read takes between 50 ms - 60 ms
+	- 3 ms to send the command
+	- 45 ms for the instrument to fill its buffer
+	- 1 ms for reading the result 
+- Commented tic/toc that was used while debugging serial vs. gpib speed
+
 # 1.0.0-alpha.30.5
 
+### NOT STABLE RELEASE
+
 ### UIEdit
-- Figured out how to make it notify 'eEnter' on clicking enter and have the val() function report the value in the edit box.  get(src, 'String') doesn't return the value the user has typed until the callback is evoked. The callback is evoked by pressing enter or by clicking another component but in the callback there is no way to know if it was evoked from enter or not.  I used KeyPress event to store the last key press and check it in the callback.  This was a 
+Figured out how to make it notify 'eEnter' on clicking enter and have the val() function report the value in the edit box.  get(src, 'String') doesn't return the value the user has typed until the callback is evoked. The callback is evoked by pressing enter or by clicking another component but in the callback there is no way to know if it was evoked from enter or not.  I used KeyPress event to store the last key press and check it in the callback.  This was a 
 
 
 
