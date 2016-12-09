@@ -3,6 +3,8 @@
 ### UIEdit
 - Figured out how to make it notify 'eEnter' on clicking enter and have the val() function report the value in the edit box.  get(src, 'String') doesn't return the value the user has typed until the callback is evoked. The callback is evoked by pressing enter or by clicking another component but in the callback there is no way to know if it was evoked from enter or not.  I used KeyPress event to store the last key press and check it in the callback.  This was a 
 
+
+
 # 1.0.0-alpha.30.3
 
 ### NOT STABLE RELEASE
