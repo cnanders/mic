@@ -5,7 +5,7 @@
 - Moved documentation from above the constructor to the property names in the class definition
 
 ### Keithley6517a, Keithley6482
-- Added setApiv() method that calls setApiv() on all of the HioText and Hio instances
+- Added setApiv() method that calls setApiv() on all of the HioText and Hio instances so they use the wrappers around ApivKeithley* that implement the correct interface for the UI components.
 - call to setApiv() now at the end of init() since it relies on having all of the Hardware* instances available
 - delete() method now properly calls delete() on all children
 - delete() now deletes the apiv at the end (after all Hardware* classes have been deleted) since they rely on the api/apiv being available for timer callbacks
