@@ -82,6 +82,12 @@ classdef Keithley6517a < HandlePlus
         u8Active
         u8Inactive
         
+        % listener handles
+        lhApi
+        lhAutoRangeStat
+        lhAvgFiltState
+        lhMedFiltState
+        
     end
     
     
@@ -108,7 +114,9 @@ classdef Keithley6517a < HandlePlus
             
         end
         
+        
         function setApi(this, api)
+            
             this.api = api;
             this.api.init();
             this.api.connect();
@@ -127,9 +135,7 @@ classdef Keithley6517a < HandlePlus
             
             this.hioRange.setApi(ApiKeithley6517aRange(this.api));
             this.hiotxAutoRangeState.setApi(ApiKeithley6517aAutoRangeState(this.api));
-            
-            
-                
+                            
         end
         
         function setApiSettings(this)
@@ -144,6 +150,42 @@ classdef Keithley6517a < HandlePlus
             this.hioAvgFiltSize.setApi(ApiKeithley6517aAvgFiltSize(this.api));
             this.hiotxMedFiltState.setApi(ApiKeithley6517aMedFiltState(this.api));
             this.hioMedFiltRank.setApi(ApiKeithley6517aMedFiltRank(this.api));
+            
+        end
+        
+                
+        function setApiv(this, api)
+            
+            this.apiv = api;
+           
+            this.hoData.setApiv(ApiKeithley6517aData(this.apiv));
+            this.setApivRange();
+            this.setApivSettings();
+            
+        end
+        
+        function setApivRange(this)
+            if ~this.lShowRange
+                return
+            end
+            
+            this.hioRange.setApiv(ApiKeithley6517aRange(this.apiv));
+            this.hiotxAutoRangeState.setApiv(ApiKeithley6517aAutoRangeState(this.apiv));
+                            
+        end
+        
+        function setApivSettings(this)
+            if ~this.lShowSettings
+                return
+            end 
+            
+            this.hioADCPeriod.setApiv(ApiKeithley6517aAdcPeriod(this.apiv));
+            this.hiotxAvgFiltState.setApiv(ApiKeithley6517aAvgFiltState(this.apiv));
+            this.hiotxAvgFiltType.setApiv(ApiKeithley6517aAvgFiltType(this.apiv));
+            this.hiotxAvgFiltMode.setApiv(ApiKeithley6517aAvgFiltMode(this.apiv));
+            this.hioAvgFiltSize.setApiv(ApiKeithley6517aAvgFiltSize(this.apiv));
+            this.hiotxMedFiltState.setApiv(ApiKeithley6517aMedFiltState(this.apiv));
+            this.hioMedFiltRank.setApiv(ApiKeithley6517aMedFiltRank(this.apiv));
             
         end
         
@@ -193,7 +235,7 @@ classdef Keithley6517a < HandlePlus
             ); 
         
             this.hoData.build(this.hPanel, ...
-                dLeft + this.dWidthBtn + 5 + this.dWidthName + 50, ... % left
+                dLeft + this.dWidthBtn + 5 + this.dWidthName + 40, ... % left
                 dTop ... % top
             );
             
@@ -278,12 +320,56 @@ classdef Keithley6517a < HandlePlus
         function delete(this)
             
             this.msg('delete', 5);
+            
+            this.save();
+            
+            
+            delete(this.lhApi);
+            delete(this.hoData);
+            
+            this.deleteSettings();
+            this.deleteRange();
+            
+            % Clean up Api and Apiv
             if ishandle(this.api)
                 this.api.disconnect();
             end
-            this.save();
             delete(this.apiv);
+
                         
+        end
+        
+        function deleteSettings(this)
+            if ~this.lShowSettings
+                return
+            end
+            
+            % Remove event listeners
+            
+           
+            delete(this.lhAutoRangeStat);
+            delete(this.lhAvgFiltState);
+            delete(this.lhMedFiltState);
+        
+            delete(this.hioADCPeriod);
+            delete(this.hiotxAvgFiltStat);
+            delete(this.hiotxAvgFiltType);
+            delete(this.hiotxAvgFiltMod);
+            delete(this.hioAvgFiltSize);
+            delete(this.hiotxMedFiltState);
+            delete(this.hioMedFiltRank);
+        
+            
+        end
+        
+        function deleteRange(this)
+            if ~this.lShowRange
+                return
+            end
+            
+            delete(this.hiotxAutoRangeState);
+            delete(this.hioRange);
+
         end
         
         
@@ -327,7 +413,7 @@ classdef Keithley6517a < HandlePlus
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
-                this.apiv = []; % This is calling the setter
+                this.setApiv([]); % This is calling the setter
             end
             
             this.hoData.turnOn();
@@ -373,7 +459,7 @@ classdef Keithley6517a < HandlePlus
             % CA 2014.04.14: Make sure Apiv is available
             
             if isempty(this.apiv)
-                this.apiv = this.newApiv();
+                this.setApiv(this.newApiv());
             end
             
             this.lActive = false;
@@ -470,7 +556,6 @@ classdef Keithley6517a < HandlePlus
             
             
             
-            this.apiv = this.newApiv();
             this.u8Active = imread(fullfile(...
                MicUtils.pathAssets(), ...
                 'hiot-true-24.png'...
@@ -526,15 +611,17 @@ classdef Keithley6517a < HandlePlus
                 'lShowApi', false, ...
                 'lShowLabels', false, ...
                 'dWidthName', 40, ...
-                'dWidthVal', this.dWidthHIOVal  - 15, ...
+                'dWidthVal', this.dWidthHIOVal , ...
                 'dWidthStores', this.dWidthHIOStores, ...
                 'clock', this.clock ...
             );
         
             this.initRange();
             this.initSettings();
-             
-            addlistener(this.uitApi, 'eChange', @this.onApiChange);
+            
+            % Update Apiv of all children to ApivKeithley6517a
+            this.setApiv(this.newApiv());
+            this.lhApi = addlistener(this.uitApi, 'eChange', @this.onApiChange);
             
         end
         
@@ -717,9 +804,9 @@ classdef Keithley6517a < HandlePlus
                 'clock', this.clock ...
             );
         
-            addlistener(this.hiotxAutoRangeState, 'eChange', @this.onAutoRangeStateChange);
-            addlistener(this.hiotxAvgFiltState, 'eChange', @this.onAvgFiltStateChange);
-            addlistener(this.hiotxMedFiltState, 'eChange', @this.onMedFiltStateChange);
+            this.lhAutoRangeState = addlistener(this.hiotxAutoRangeState, 'eChange', @this.onAutoRangeStateChange);
+            this.lhAvgFiltState = addlistener(this.hiotxAvgFiltState, 'eChange', @this.onAvgFiltStateChange);
+            this.lhMedFiltState = addlistener(this.hiotxMedFiltState, 'eChange', @this.onMedFiltStateChange);
             
             
             

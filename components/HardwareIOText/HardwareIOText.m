@@ -1,16 +1,6 @@
 classdef HardwareIOText < HandlePlus
     
-%HARDWAREIO Class that creates the controls to a specific piece of hardware
-% Contrary to Axis Class, this class is meant to have direct access to the
-% hardware (whatever it is : motor, galvo, etc)
-%
-%   hio = HardwareIO('name', clock)creates an instance with a name 'name'
-%   hio = HardwareIO('name', clock, 'display name') will do the same, except
-%       that the displayed name will not be default 'name'
-%
-% See also HARDWAREO, AXIS
-    
-    % Hungarian: hio
+    % Hungarian: hiotx
 
     properties (Constant)
        
@@ -129,42 +119,7 @@ classdef HardwareIOText < HandlePlus
     
     methods       
         
-        
-        %HARDWAREIO Class constructor
-        %@param {char 1xm} cName - the name of the instance.  
-        %   Must be unique within the entire project / codebase
-        %@param {clock 1x1} clock - the clock
-        %@param {char 1x1} cLabel - the label in the GUI
-        %@param {config 1x1} [config = new Config()] - the config instance
-        %   !!! WARNING !!!
-        %   DO NOT USE a single Config for multiple HardwareIO instances
-        %   because deleting one HardwareIO will delete the reference to
-        %   the Config instance that the other Hardware IO is using
-        %@param {function_handle 1x1} [fhValidateDest =
-        %   this.validateDest()] - a function that returns a
-        %   locical that validates if the requested move is allowed.
-        %   It is called within moveToDest() and if it returns false, a
-        %   message is displayed sayint the current move is not
-        %   allowed.  Is expected that the higher-level class that
-        %   implements this (which may access more than one HardwareIO
-        %   instance) implements this function
-        %@param {double 1x1} [u8Layout = uint8(1)] - the layout.  1 = wide, not
-        %   tall. 2 = narrow, twice as tall. 
-        %@param {logical 1x1} [lShowZero = true]
-        %@param {logical 1x1} [lShowRel = true]
-        %@param {logical 1x1} [lShowStores = true]
-        %@param {logical 1x1} [lShowJog = true]
-        %@param {logical 1x1} [lShowPlay = true]
-        %@param {logical 1x1} [lShowDest = true]
-        %@param {logical 1x1} [lShowLabels = true]
-        %@param {logical 1x1} [lShowApi = true] - show the
-        %   clickable toggle / status that shows if is using real Api or
-        %   virtual Api
-        %@param {logical 1x1} [lDisableI = false] - disable the
-        %"I" of HardwareIO (removes jog, play, dest, stores)
-        
- 
-        
+        % See HardwareIOPlus documentation
         
         function this = HardwareIOText(varargin)  
                     
@@ -355,7 +310,7 @@ classdef HardwareIOText < HandlePlus
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
-                this.apiv = []; % This is calling the setter
+                this.setApiv([]); % This is calling the setter
             end
             
         end
@@ -370,7 +325,7 @@ classdef HardwareIOText < HandlePlus
             % CA 2014.04.14: Make sure Apiv is available
             
             if isempty(this.apiv)
-                this.apiv = this.newApiv();
+                this.setApiv(this.newApiv());
             end
             
             this.lActive = false;
@@ -383,6 +338,16 @@ classdef HardwareIOText < HandlePlus
             this.api = api;
         end
         
+        function setApiv(this, api)
+            
+            if ~isempty(this.apiv) && ...
+                isvalid(this.apiv)
+                delete(this.apiv);
+            end
+
+            this.apiv = api;
+            
+        end
         
         
         function delete(this)
@@ -491,6 +456,8 @@ classdef HardwareIOText < HandlePlus
             this.uitxLabelStores.disable();
         end
         
+       
+        
 
     end %methods
     
@@ -566,7 +533,7 @@ classdef HardwareIOText < HandlePlus
             % Name (on the left)
             this.uitxName = UIText(this.cLabel);
 
-            this.apiv = this.newApiv();
+            this.setApiv(this.newApiv());
             
             % if ~isempty(this.config.ceStores)
                 this.uipStores = UIPopupStruct(...

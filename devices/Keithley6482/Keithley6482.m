@@ -76,10 +76,13 @@ classdef Keithley6482 < HandlePlus
         
         hoData
         hoData2
-        hioADCPeriod
         
+        % Range 1
         hioRange
         hiotxAutoRangeState
+        
+        % Settings 1
+        hioADCPeriod
         hiotxAvgFiltState
         % hiotxAvgFiltType
         hiotxAvgFiltMode
@@ -87,9 +90,11 @@ classdef Keithley6482 < HandlePlus
         hiotxMedFiltState
         hioMedFiltRank
         
-        
+        % Range 2
         hioRange2
         hiotxAutoRangeState2
+        
+        % Settings 2
         %{
         hiotxAvgFiltState2
         hiotxAvgFiltMode2
@@ -108,6 +113,14 @@ classdef Keithley6482 < HandlePlus
         uitxLabelCurrent
         uitxLabelRange
         uitxLabelAutoRange
+        
+        lhApi
+        lhAutoRangeState
+        lhAutoRangeState2
+        lhAvgFiltState
+        lhMedFiltState
+        lhAvgFiltState2
+        lhMedFiltState2
     end
     
     
@@ -135,6 +148,21 @@ classdef Keithley6482 < HandlePlus
             this.init();
             
         end
+        
+        
+        function setApi(this, api)
+            this.api = api;
+            this.api.init();
+            this.api.connect();
+            
+            this.hoData.setApi(ApiKeithley6482Data(this.api));
+            this.hoData2.setApi(ApiKeithley6482Data2(this.api));
+            
+            this.setApiRange();
+            this.setApiSettings();
+            
+        end
+        
         
         function setApiRange(this)
             this.setApiRange1();
@@ -198,19 +226,83 @@ classdef Keithley6482 < HandlePlus
         end
         
         
-        function setApi(this, api)
-            this.api = api;
-            this.api.init();
-            this.api.connect();
+        
+        
+        function setApiv(this, api)
+            this.apiv = api;
+           
+            this.hoData.setApiv(ApiKeithley6482Data(this.apiv));
+            this.hoData2.setApiv(ApiKeithley6482Data2(this.apiv));
             
-            this.hoData.setApi(ApiKeithley6482Data(this.api));
-            
-            this.hoData2.setApi(ApiKeithley6482Data2(this.api));
-            
-            this.setApiRange();
-            this.setApiSettings();
+            this.setApivRange();
+            this.setApivSettings();
             
         end
+        
+        
+        function setApivRange(this)
+            this.setApivRange1();
+            this.setApivRange2();
+        end
+        
+        function setApivRange1(this)
+            
+            if ~this.lShowRange
+                return
+            end
+            
+            this.hioRange.setApiv(ApiKeithley6482Range(this.apiv));
+            this.hiotxAutoRangeState.setApiv(ApiKeithley6482AutoRangeState(this.apiv));
+            
+        end
+        
+        function setApivRange2(this)
+            
+            if ~this.lShowRange
+                return
+            end
+            this.hioRange2.setApiv(ApiKeithley6482Range2(this.apiv));
+            this.hiotxAutoRangeState2.setApiv(ApiKeithley6482AutoRangeState2(this.apiv));
+           
+        end
+        
+        function setApivSettings(this)
+            this.setApivSettings1();
+            this.setApivSettings2();
+        end
+        
+        
+        function setApivSettings1(this)
+            
+            if ~this.lShowSettings
+                return
+            end
+            
+            this.hioADCPeriod.setApiv(ApiKeithley6482AdcPeriod(this.apiv));
+            this.hiotxAvgFiltState.setApiv(ApiKeithley6482AvgFiltState(this.apiv));
+            this.hiotxAvgFiltMode.setApiv(ApiKeithley6482AvgFiltMode(this.apiv));
+            this.hioAvgFiltSize.setApiv(ApiKeithley6482AvgFiltSize(this.apiv));
+            this.hiotxMedFiltState.setApiv(ApiKeithley6482MedFiltState(this.apiv));
+            this.hioMedFiltRank.setApiv(ApiKeithley6482MedFiltRank(this.apiv));
+             
+        end
+        
+        function setApivSettings2(this)
+            %{
+            if ~this.lShowSettings
+                return
+            end
+            
+            this.hiotxAvgFiltState2.setApiv(ApiKeithley6482AvgFiltState2(this.apiv));
+            this.hiotxAvgFiltMode2.setApiv(ApiKeithley6482AvgFiltMode2(this.apiv));
+            this.hioAvgFiltSize2.setApiv(ApiKeithley6482AvgFiltSize2(this.apiv));
+            this.hiotxMedFiltState2.setApiv(ApiKeithley6482MedFiltState2(this.apiv));
+            this.hioMedFiltRank2.setApiv(ApiKeithley6482MedFiltRank2(this.apiv));
+            %}
+        end
+        
+        
+        
         
         function build(this, hParent, dLeft, dTop)
         %BUILD Builds the UI element associated with the class
@@ -412,9 +504,87 @@ classdef Keithley6482 < HandlePlus
             
         end
         
+        function deleteRange1(this)
+            
+            if ~this.lShowRange
+                return;
+            end
+
+            delete(this.lhAutoRangeState);
+
+            delete(this.hioRange);
+            delete(this.hiotxAutoRangeState);
+        
+       
+        end
+        
+        function deleteRange2(this)
+            
+            if ~this.lShowRange
+                return;
+            end
+            
+            delete(this.lhAutoRangeState2);
+
+            delete(this.hioRange2);
+            delete(this.hiotxAutoRangeState2);
+
+        
+        end
+        
+        function deleteSettings1(this)
+            
+            if ~this.lShowSettings
+                return;
+            end
+            
+            % Listeners
+            delete(this.lhAvgFiltState);
+            delete(this.lhMedFiltState);
+        
+            delete(this.hioADCPeriod);
+            delete(this.hiotxAvgFiltState);
+            delete(this.hiotxAvgFiltMode);
+            delete(this.hioAvgFiltSize);
+            delete(this.hiotxMedFiltState);
+            delete(this.hioMedFiltRank);
+        end
+        
+        function deleteSettings2(this)
+            if ~this.lShowSettings
+                return;
+            end
+            
+            %{
+            
+            % Listeners
+            delete(this.lhAvgFiltState2);
+            delete(this.lhMedFiltState2);
+        
+            delete(this.hiotxAvgFiltState2);
+            delete(this.hiotxAvgFiltMode2);
+            delete(this.hioAvgFiltSize2);
+            delete(this.hiotxMedFiltState2);
+            delete(this.hioMedFiltRank2);
+            %}
+         
+        end
+        
+        
         function delete(this)
             
             this.msg('delete', 5);
+            
+            delete(this.lhApi);
+            
+            delete(this.hoData);
+            delete(this.hoData2);
+            
+            this.deleteRange1();
+            this.deleteRange2();
+            this.deleteSettings1();
+            this.deleteSettings2();
+            
             if ishandle(this.api)
                 this.api.disconnect();
             end
@@ -464,7 +634,7 @@ classdef Keithley6482 < HandlePlus
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
-                this.apiv = []; % This is calling the setter
+                this.setApiv([]); % This is calling the setter
             end
             
             this.hoData.turnOn();
@@ -543,7 +713,7 @@ classdef Keithley6482 < HandlePlus
             % CA 2014.04.14: Make sure Apiv is available
             
             if isempty(this.apiv)
-                this.apiv = this.newApiv();
+                this.setApiv(this.newApiv());
             end
             
             this.lActive = false;
@@ -677,7 +847,6 @@ classdef Keithley6482 < HandlePlus
             this.uitxLabelRange = UIText('Range (A)');
             this.uitxLabelAutoRange = UIText('Auto Range');
             
-            this.apiv = this.newApiv();
             this.u8Active = imread(fullfile(...
                MicUtils.pathAssets(), ...
                 'hiot-true-24.png'...
@@ -715,12 +884,9 @@ classdef Keithley6482 < HandlePlus
                 st2 ...
             );
             this.uitApi.setTooltip(this.cTooltipApiOff);
-            
-            addlistener(this.uitApi, 'eChange', @this.onApiChange);
+            this.lhApi = addlistener(this.uitApi, 'eChange', @this.onApiChange);
 
-            this.uitxName = UIText('KEITHLEY 6482', 'left');
-            
-            
+            this.uitxName = UIText('KEITHLEY 6482', 'left');            
             cPathConfigData = fullfile(this.cPathConfig, 'config-data.json');
             
             
@@ -770,8 +936,13 @@ classdef Keithley6482 < HandlePlus
             this.initRange1();
             this.initRange2();
             this.initSettings(); % see initSettings2()
+            
+            this.setApiv(this.newApiv());
+
               
         end
+        
+        
         
         function initRange1(this)
             
@@ -822,7 +993,7 @@ classdef Keithley6482 < HandlePlus
                 'clock', this.clock ...
             );
         
-            addlistener(this.hiotxAutoRangeState, 'eChange', @this.onAutoRangeStateChange);
+            this.lhAutoRangeState = addlistener(this.hiotxAutoRangeState, 'eChange', @this.onAutoRangeStateChange);
             
             
             
@@ -875,7 +1046,7 @@ classdef Keithley6482 < HandlePlus
                 'dWidthStores', this.dWidthHioStores, ...
                 'clock', this.clock ...
             );
-            addlistener(this.hiotxAutoRangeState2, 'eChange', @this.onAutoRangeStateChange2);
+            this.lhAutoRangeState2 = addlistener(this.hiotxAutoRangeState2, 'eChange', @this.onAutoRangeStateChange2);
         end
         
         function initSettings(this)
@@ -1004,8 +1175,8 @@ classdef Keithley6482 < HandlePlus
                 'clock', this.clock ...
             );
         
-            addlistener(this.hiotxAvgFiltState, 'eChange', @this.onAvgFiltStateChange);
-            addlistener(this.hiotxMedFiltState, 'eChange', @this.onMedFiltStateChange);
+            this.lhAvgFiltState = addlistener(this.hiotxAvgFiltState, 'eChange', @this.onAvgFiltStateChange);
+            this.lhMedFiltState = addlistener(this.hiotxMedFiltState, 'eChange', @this.onMedFiltStateChange);
             
         
             
@@ -1115,8 +1286,8 @@ classdef Keithley6482 < HandlePlus
                 'clock', this.clock ...
             );
             
-            addlistener(this.hiotxAvgFiltState2, 'eChange', @this.onAvgFiltStateChange2);
-            addlistener(this.hiotxMedFiltState2, 'eChange', @this.onMedFiltStateChange2);
+            this.lhAvgFiltState2 = addlistener(this.hiotxAvgFiltState2, 'eChange', @this.onAvgFiltStateChange2);
+            this.lhMedFiltState2 = addlistener(this.hiotxMedFiltState2, 'eChange', @this.onMedFiltStateChange2);
             
         
             %}

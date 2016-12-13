@@ -23,10 +23,16 @@ classdef HardwareIOPlus < HandlePlus
     end
 
     properties (SetAccess = private)
+        
+        % @param {char 1xm} cName - the name of the instance.  
+        %   Must be unique within the entire project / codebase
         cName = 'CHANGE ME' % name identifier
         lActive = false   % boolean to tell whether the motor is active or not
         lReady = false  % true when stopped or at its target
-        u8Layout = uint8(1); % {uint8 1x1} to store the layout style
+        
+        % @param {uint8 1x1} [u8Layout = uint8(1)] - the layout.  1 = wide, not
+        %   tall. 2 = narrow, twice as tall. 
+        u8Layout = uint8(1); 
         % lIsThere 
 
     end
@@ -70,7 +76,9 @@ classdef HardwareIOPlus < HandlePlus
         apiv        % virtual Api (for test and debugging).  Builds its own ApivHardwareIO
         api         % Api to the low level controls.  Must be set after initialized.
         
-        clock       % clock 
+        % @param {clock 1x1} clock - the clock
+        clock 
+        % @param {char 1x1} cLabel - the label in the GUI
         cLabel = 'CHANGE ME' % name to be displayed by the UI element
         cDir        % current directory
         cDirSave    
@@ -110,8 +118,22 @@ classdef HardwareIOPlus < HandlePlus
         u8Active
         u8Inactive
         
+        % @param {ConfigHardwareIOPlus 1x1} [config = new ConfigHardwareIOPlus()] - the config instance
+        %   !!! WARNING !!!
+        %   DO NOT USE a single Config for multiple HardwareIO instances
+        %   because deleting one HardwareIO will delete the reference to
+        %   the Config instance that the other Hardware IO is using
         config
         dZeroRaw = 0;
+        
+        % @param {function_handle 1x1} [fhValidateDest =
+        %   this.validateDest()] - a function that returns a
+        %   locical that validates if the requested move is allowed.
+        %   It is called within moveToDest() and if it returns false, a
+        %   message is displayed sayint the current move is not
+        %   allowed.  Is expected that the higher-level class that
+        %   implements this (which may access more than one HardwareIO
+        %   instance) implements this function
         fhValidateDest
         dValRaw % value in raw units (updated by clock)
         
@@ -122,17 +144,34 @@ classdef HardwareIOPlus < HandlePlus
         % asupported as of 2016.10.24.  To add support for other formats,
         % search for uitxVal.cVal and add more to the switch block.
         cConversion = 'f'; 
+       
+        
+        % {logical 1x1} - show the name (on left)
         lShowName = true;
+        % {logical 1x1} - show the value (right of the edit)
         lShowVal = true;
+        % {logical 1x1}
         lShowUnit = true;
+        % {logical 1x1}
         lShowZero = true
+        % {logical 1x1}
         lShowRel = true
+        % {logical 1x1}
         lShowJog = true
+        % {logical 1x1}
         lShowDest = true
+        % {logical 1x1}
         lShowPlay = true
+        % {logical 1x1} - labels above name, val, dest, play, jog, etc.
         lShowLabels = true
+        % {logical 1x1} - show the list of stored positions (only if they
+        % are present in config)
         lShowStores = true
+        % {logical 1x1} - show the clickable toggle / status that shows if
+        % is using real Api or virtual Api
         lShowApi = true
+        % {logical 1x1} - disable the "I" part of HardwareIO (removes jog,
+        % play, dest, stores)
         lDisableI = false
                 
         uitxLabelName
@@ -169,40 +208,6 @@ classdef HardwareIOPlus < HandlePlus
         
         
         %HARDWAREIO Class constructor
-        %@param {char 1xm} cName - the name of the instance.  
-        %   Must be unique within the entire project / codebase
-        %@param {clock 1x1} clock - the clock
-        %@param {char 1x1} cLabel - the label in the GUI
-        %@param {config 1x1} [config = new Config()] - the config instance
-        %   !!! WARNING !!!
-        %   DO NOT USE a single Config for multiple HardwareIO instances
-        %   because deleting one HardwareIO will delete the reference to
-        %   the Config instance that the other Hardware IO is using
-        %@param {function_handle 1x1} [fhValidateDest =
-        %   this.validateDest()] - a function that returns a
-        %   locical that validates if the requested move is allowed.
-        %   It is called within moveToDest() and if it returns false, a
-        %   message is displayed sayint the current move is not
-        %   allowed.  Is expected that the higher-level class that
-        %   implements this (which may access more than one HardwareIO
-        %   instance) implements this function
-        %@param {double 1x1} [u8Layout = uint8(1)] - the layout.  1 = wide, not
-        %   tall. 2 = narrow, twice as tall. 
-        %@param {logical 1x1} [lShowZero = true]
-        %@param {logical 1x1} [lShowRel = true]
-        %@param {logical 1x1} [lShowStores = true]
-        %@param {logical 1x1} [lShowJog = true]
-        %@param {logical 1x1} [lShowPlay = true]
-        %@param {logical 1x1} [lShowDest = true]
-        %@param {logical 1x1} [lShowLabels = true]
-        %@param {logical 1x1} [lShowApi = true] - show the
-        %   clickable toggle / status that shows if is using real Api or
-        %   virtual Api
-        %@param {logical 1x1} [lDisableI = false] - disable the
-        %"I" of HardwareIO (removes jog, play, dest, stores)
-        
- 
-        
         
         function this = HardwareIOPlus(varargin)  
                     
@@ -725,7 +730,7 @@ classdef HardwareIOPlus < HandlePlus
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
-                this.apiv = []; % This is calling the setter
+                this.setApiv([]); % This is calling the setter
             end
             
         end
@@ -740,7 +745,7 @@ classdef HardwareIOPlus < HandlePlus
             % CA 2014.04.14: Make sure Apiv is available
             
             if isempty(this.apiv)
-                this.apiv = this.newApiv();
+                this.setApiv(this.newApiv());
             end
             
             this.lActive = false;
@@ -753,20 +758,23 @@ classdef HardwareIOPlus < HandlePlus
         function setApi(this, api)
             this.api = api;
         end
-        
-        function set.apiv(this, value)
+                
+        function setApiv(this, api)
             
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
             end
 
-            this.apiv = value;
+            this.apiv = api;
+            
+            %{
             try
                 this.uieDest.setVal(this.apiv.get());
             catch err
                 this.uieDest.setVal(0);
             end
+            %}
         end
         
         function delete(this)
@@ -785,17 +793,7 @@ classdef HardwareIOPlus < HandlePlus
                 this.msg('delete() removing clock task'); 
                 this.clock.remove(this.id());
             end
-            
-            % The Apiv instances have clock tasks so need to delete them
-            % first
-            
-            delete(this.apiv);
-            
-            if ~isempty(this.api) && ... % isvalid(this.api) && ...
-                isa(this.api, 'ApivHardwareIOPlus')
-                delete(this.api)
-            end
-            
+                        
             delete(this.uieDest);  
             delete(this.uieStep);
             delete(this.uitxVal);
@@ -822,11 +820,18 @@ classdef HardwareIOPlus < HandlePlus
             delete(this.uitxLabelStores);
             delete(this.uitxLabelPlay);
             delete(this.uitxLabelApi);
-            
-            
-          
-            delete(this.config)
 
+            delete(this.config)
+            
+            % The Apiv instances have clock tasks so need to delete them
+            % first
+            
+            delete(this.apiv);
+            
+            if ~isempty(this.api) && ... % isvalid(this.api) && ...
+                isa(this.api, 'ApivHardwareIOPlus')
+                delete(this.api)
+            end
                         
         end
         
@@ -1216,7 +1221,7 @@ classdef HardwareIOPlus < HandlePlus
             % Name (on the left)
             this.uitxName = UIText(this.cLabel);
 
-            this.apiv = this.newApiv();
+            this.setApiv(this.newApiv());
             
             
             % if ~isempty(this.config.ceStores)

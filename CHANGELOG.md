@@ -1,3 +1,17 @@
+# 1.0.0-alpha.33
+
+### HardwareIOPlus, HardwareIOText
+- Removed setter for apiv property and added method setApiv()
+- Moved documentation from above the constructor to the property names in the class definition
+
+### Keithley6517a, Keithley6482
+- Added setApiv() method that calls setApiv() on all of the HioText and Hio instances
+- call to setApiv() now at the end of init() since it relies on having all of the Hardware* instances available
+- delete() method now properly calls delete() on all children
+- delete() now deletes the apiv at the end (after all Hardware* classes have been deleted) since they rely on the api/apiv being available for timer callbacks
+
+### Unanswered Question
+What class is responsible for deleting api and apiv instances? Need to think about this.  Often times, Hardware* classes have an api that is an interface wrapper around a larger API. It should be OK for Hardware* classes to delete their api refernce in this scenario. 
 
 # 1.0.0-alpha.32
 
