@@ -12,6 +12,9 @@
 # Compiled MEX binaries (all platforms)
 *.mex*
 
+# .mat files
+*.mat
+
 # Simulink Code Generation
 slprj/
 
