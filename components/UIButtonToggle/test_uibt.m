@@ -1,12 +1,8 @@
-purge
+[cPath, cName, cExt] = fileparts(mfilename('fullpath'));
 
-% Set current directory to the directory containing this file
-[filepath, filename, ext] = fileparts(mfilename('fullpath'));
-cd(filepath);
-
-addpath(pwd);
-addpath(fullfile(pwd,'classes'));
-
+% Add mic
+addpath(genpath(fullfile(cPath, '..', '..')));
+purge;
 
 h = figure();
 
@@ -21,3 +17,6 @@ uibt = UIButtonToggle( ...
 
 
 uibt.build(h, 10, 10, 100, 30);
+
+cb = @(src, evt) (disp('on change'));
+addlistener(uibt, 'eChange', cb);

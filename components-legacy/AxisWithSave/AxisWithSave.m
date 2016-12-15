@@ -84,7 +84,7 @@ classdef AxisWithSave < Axis
                 'Units', 'pixels',...
                 'Title', blanks(0),...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dLeft dTop dWidth 36], hParent) ...
+                'Position', MicUtils.lt2lb([dLeft dTop dWidth 36], hParent) ...
                 );
 			drawnow;
              
@@ -123,7 +123,7 @@ classdef AxisWithSave < Axis
         function handleSave(this, src, evt)
                         
             
-            cSaveName = Utils.listSaveAs('', this.ceSavedName);
+            cSaveName = MicUtils.listSaveAs('', this.ceSavedName);
             if ~strcmp(cSaveName, '')
                 this.append(cSaveName);
             end

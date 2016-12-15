@@ -209,7 +209,7 @@ classdef MotionControl_ais < JavaDevice_ais
             dTopPad = 20;
             dBotPad = 10;
             
-            dHeight = dTopPad + Utils.dEDITHEIGHT + 5;
+            dHeight = dTopPad + MicUtils.dEDITHEIGHT + 5;
             for k = 1:length(this.cecUIDispName)
                 dHeight = dHeight + dSep;
             end
@@ -221,14 +221,14 @@ classdef MotionControl_ais < JavaDevice_ais
                 'Units', 'pixels',...
                 'Title', this.cPanelName,...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dLeft dTop dWidth dHeight], hParent) ...
+                'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent) ...
                 );
             
             %"Connect" toggle button
-            this.uitConnect.build(this.hPanel, 10, dTopPad, 50, Utils.dEDITHEIGHT);
+            this.uitConnect.build(this.hPanel, 10, dTopPad, 50, MicUtils.dEDITHEIGHT);
             
             %Filling the panel with all elements
-            dOffset = dTopPad + Utils.dEDITHEIGHT + 5;
+            dOffset = dTopPad + MicUtils.dEDITHEIGHT + 5;
             for k = 1:length(this.cecUIDispName)                
                 this.cehio{k}.build(this.hPanel, dLeft, dOffset + (k - 1)*dSep);
             end            

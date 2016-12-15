@@ -34,7 +34,7 @@ classdef TestHardwareOPlus < HandlePlus
               
             this.clock = Clock('master');
             cPathConfig = fullfile(...
-                Utils.pathConfig(), ...
+                MicUtils.pathConfig(), ...
                 'hop', ...
                 'default.json' ...
             );
@@ -62,7 +62,7 @@ classdef TestHardwareOPlus < HandlePlus
             stParams.dMean = 5;
             stParams.dSig = 0.5;
             
-            apiv = ApivHardwareO(stParams);
+            apiv = ApivHardwareOPlus(stParams);
             this.ho.setApi(apiv);
             
         end

@@ -235,7 +235,7 @@ classdef HardwareIOToggle < HandlePlus
                 'Title', blanks(0), ...
                 'Clipping', 'on', ...
                 'BorderWidth',0, ... 
-                'Position', Utils.lt2lb([dLeft dTop this.getWidth() this.dHeight], hParent));
+                'Position', MicUtils.lt2lb([dLeft dTop this.getWidth() this.dHeight], hParent));
             drawnow
             
             dLeft = 0;
@@ -275,6 +275,13 @@ classdef HardwareIOToggle < HandlePlus
             this.getApi().set(this.uitCommand.lVal);            
                         
         end 
+        
+        % Expose the set command of the Api
+        % @param {logical 1x1} 
+        function set(this, l)
+           this.getApi().set(l);
+           
+        end
 
            
         
@@ -381,10 +388,6 @@ classdef HardwareIOToggle < HandlePlus
             this.api = api;
         end
         
-    end %methods
-    
-    methods (Access = protected)
-            
         function api = getApi(this)
             if this.lActive
                 api = this.api;
@@ -393,6 +396,12 @@ classdef HardwareIOToggle < HandlePlus
             end 
             
         end
+        
+    end %methods
+    
+    methods (Access = protected)
+            
+        
         
         function api = newAPIV(this)
         %@return {APIVHardwareIO}

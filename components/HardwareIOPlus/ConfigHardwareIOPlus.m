@@ -51,6 +51,7 @@ classdef ConfigHardwareIOPlus < HandlePlus
                     
              % Default arguments
             
+             
             if nargin == 0
                 
                 cFileFull = mfilename('fullpath');
@@ -88,7 +89,6 @@ classdef ConfigHardwareIOPlus < HandlePlus
                     3 ...
                );     
             end
-            
             
             this.stJson = parse_json(fileread(this.cPathJson));
             this.stJson = this.stJson{1}; % has to do with parse_json

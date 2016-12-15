@@ -143,10 +143,10 @@ classdef HandlePlus < handle
         function cID = id(this)
         %ID Gives the Class of which this object is an instance
         %   cID = handlePlus.id()
-            if isprop(this, 'cName')
+            if this.hasProp( 'cName')
                 cID =  sprintf('%s-%s', class(this), this.cName);
-            elseif isprop(this, 'cLabel')
-                cID =  sprintf('%s-%s', class(this), this.cLabel);
+            % elseif this.hasProp( 'cLabel')
+                % cID =  sprintf('%s-%s', class(this), this.cLabel);
             else
                 cID = class(this);
             end
@@ -154,6 +154,17 @@ classdef HandlePlus < handle
         
         function log(this, string, file, verbosity)
             
+        end
+        
+        %%
+        % @param {char 1xm} c - name of property
+        % @return {logical 1x1} - true if class has property
+        
+        function l = hasProp(this, c)
+            l = false;
+            if length(findprop(this, c)) > 0
+                l = true;
+            end
         end
         
         

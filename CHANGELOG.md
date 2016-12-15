@@ -1,3 +1,95 @@
+# 1.0.0-alpha.33
+
+### HardwareIOPlus, HardwareIOText
+- Removed setter for apiv property and added method setApiv()
+- Moved documentation from above the constructor to the property names in the class definition
+
+### Keithley6517a, Keithley6482
+- Added setApiv() method that calls setApiv() on all of the HioText and Hio instances so they use the wrappers around ApivKeithley* that implement the correct interface for the UI components.
+- call to setApiv() now at the end of init() since it relies on having all of the Hardware* instances available
+- delete() method now properly calls delete() on all children
+- delete() now deletes the apiv at the end (after all Hardware* classes have been deleted) since they rely on the api/apiv being available for timer callbacks
+
+### Unanswered Question
+What class is responsible for deleting api and apiv instances? Need to think about this.  Often times, Hardware* classes have an api that is an interface wrapper around a larger API. It should be OK for Hardware* classes to delete their api refernce in this scenario. 
+
+# 1.0.0-alpha.32
+
+### Keithley6482
+- Added lShowRange and lShowSettings to allow disabling the range and settings UI.  Made changes robust enough that if there is ever a version of this instrument with separate settings for each channel, a few lines of code can make this work. 
+
+### Keithley6517a
+- Bug fixes from 1.0.0-alpha.31 in setApi() and turnOff() methods
+
+# 1.0.0-alpha.31
+
+### Keithley6517a
+- Added lShowRange and lShowSettings to allow disabling the range and settings UI
+
+### ApiKeithley6517a
+- Now supports serial and GPIB communication protocols.  Both are synchronous right now.  Communication isn't the bottleneck; it is the time the device takes to fill buffer with answer.
+- Full synchronous read takes between 50 ms - 60 ms
+	- 3 ms to send the command
+	- 45 ms for the instrument to fill its buffer
+	- 1 ms for reading the result 
+- Commented tic/toc that was used while debugging serial vs. gpib speed
+
+# 1.0.0-alpha.30.5
+
+### NOT STABLE RELEASE
+
+### UIEdit
+Figured out how to make it notify 'eEnter' on clicking enter and have the val() function report the value in the edit box.  get(src, 'String') doesn't return the value the user has typed until the callback is evoked. The callback is evoked by pressing enter or by clicking another component but in the callback there is no way to know if it was evoked from enter or not.  I used KeyPress event to store the last key press and check it in the callback.  This was a 
+
+
+
+# 1.0.0-alpha.30.3
+
+### NOT STABLE RELEASE
+
+In the process of making backwards compatible with 2009b.  And eventually want to try going back to 2008a, where OOP was first introduced.  isprop() functions differently in 2009b then in 2013a, which is the last place it was tested.
+
+# 1.0.0-alpha.30.2
+
+### NOT STABLE RELEASE
+
+### KEITHLEY6517A
+- Build new API that asynchronously polls the device and stores recent values so when a consumer needs them, it can get them immediately.  Not fully tested.
+
+# 1.0.0-alpha.30.1
+
+### NOT STABLE RELEASE
+
+### Keithley6517A
+- Fixed bug referncing this.terminator instead of this.cTerminator
+
+### Clock
+- Added second optional paramater in constrictor to set the period
+
+# 1.0.0-alpha.30
+- Renamed components/HardwareIOPlus/InterfaceHardwareIO to InterfaceHardwareIOPlus to fix namespace conflict with components/HardwareIO/InterfaceHardwareIO
+- In devices folder, all APIs that implemented InterfaceHardwareIO were switched to HardwareIOPlus
+
+
+# 1.0.0-alpha.29
+
+### Keithley6517A
+- Major changes to visual appearance
+
+### HardwareIOToggle
+- Minor changes 
+
+# 1.0.0-alpha.28
+
+### HardwareIOPlus, HardwareIOText, HardwareOPlus
+Fixing case errors in class names due to git case insensivity that occurred in 1.0.0-alpha.26 release
+
+
+# 1.0.0-alpha.27
+
+### Keithley6482, Keithley6517A
+Fixing case errors in class names due to git case insensivity that occurred in 1.0.0-alpha.26 release
+
 # 1.0.0-alpha.26
 
 ### Keithley6482, Keithley6517A

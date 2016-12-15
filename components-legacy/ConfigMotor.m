@@ -94,7 +94,7 @@ classdef ConfigMotor < handle
                 );
             
             dFigureTop = 10;
-            dPanelTop = Utils.dPanelTopPad;
+            dPanelTop = MicUtils.dPanelTopPad;
             
 			
             % Delay
@@ -103,12 +103,12 @@ classdef ConfigMotor < handle
                 'Units', 'pixels',...
                 'Title', 'Update rate',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1)], this.hFigure) ...
             );
 			drawnow;
 			
-            this.uieDelay.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            dFigureTop = Utils.ut(hPanel, this.hFigure);
+            this.uieDelay.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            dFigureTop = MicUtils.ut(hPanel, this.hFigure);
             
             
             % Calibration
@@ -118,7 +118,7 @@ classdef ConfigMotor < handle
                 'Units', 'pixels',...
                 'Title', 'Calibration',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1)+dTextHeight], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1)+dTextHeight], this.hFigure) ...
             );
 			drawnow;
         
@@ -126,15 +126,15 @@ classdef ConfigMotor < handle
             hText = uicontrol(...
                 'Parent', hPanel , ...
                 'HorizontalAlignment', 'left', ...
-                'Position', Utils.lt2lb([dLeftCol1, dPanelTop, 150, dTextHeight], hPanel), ...
+                'Position', MicUtils.lt2lb([dLeftCol1, dPanelTop, 150, dTextHeight], hPanel), ...
                 'String', 'cal = slope*(raw - offset)', ...
                 'Style', 'text' ...
                 );
             dPanelTop = dPanelTop + dTextHeight;
-            this.uieSlope.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieOffset.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            dFigureTop = Utils.ut(hPanel, this.hFigure);
-            dPanelTop = Utils.dPanelTopPad;
+            this.uieSlope.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieOffset.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            dFigureTop = MicUtils.ut(hPanel, this.hFigure);
+            dPanelTop = MicUtils.dPanelTopPad;
             
 			
             % Step
@@ -143,13 +143,13 @@ classdef ConfigMotor < handle
                 'Units', 'pixels',...
                 'Title', 'Step (+/- buttons)',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1)], this.hFigure) ...
             );
 			drawnow;
 			
-            this.uieStepCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieStepRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            dFigureTop = Utils.ut(hPanel, this.hFigure);
+            this.uieStepCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieStepRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            dFigureTop = MicUtils.ut(hPanel, this.hFigure);
 
                         
             % Software Limits
@@ -158,20 +158,20 @@ classdef ConfigMotor < handle
                 'Units', 'pixels',...
                 'Title', '(Software) motion limits',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(2)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(2)], this.hFigure) ...
             );
 			drawnow;
             
-            this.uieLowLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieLowLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uieLowLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieLowLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
             
-            dPanelTop = Utils.ut(this.uieLowLimitCal.hUI, hPanel);
+            dPanelTop = MicUtils.ut(this.uieLowLimitCal.hUI, hPanel);
             
-            this.uieHighLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieHighLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uieHighLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieHighLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
             
-            dFigureTop = Utils.ut(hPanel, this.hFigure);
-            dPanelTop = Utils.dPanelTopPad;
+            dFigureTop = MicUtils.ut(hPanel, this.hFigure);
+            dPanelTop = MicUtils.dPanelTopPad;
             
 			
             % "Is There?" Tol
@@ -180,13 +180,13 @@ classdef ConfigMotor < handle
                 'Units', 'pixels',...
                 'Title', '"Is There?" Tolerance',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1)], this.hFigure) ...
             );
 			drawnow;
 			
-            this.uieTolCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieTolRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            dFigureTop = Utils.ut(hPanel, this.hFigure);
+            this.uieTolCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieTolRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            dFigureTop = MicUtils.ut(hPanel, this.hFigure);
             
   
         end

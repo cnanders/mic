@@ -121,7 +121,7 @@ classdef PixisControl < JavaDevice
             dTopPad = 20;
             dBotPad = 10;
             
-            this.dHeight = dTopPad + Utils.dEDITHEIGHT + 5;
+            this.dHeight = dTopPad + MicUtils.dEDITHEIGHT + 5;
             this.dHeight = this.dHeight + 300;
             this.dHeight = this.dHeight + dBotPad;
             
@@ -131,7 +131,7 @@ classdef PixisControl < JavaDevice
                 'Title', this.cPanelName,...
                 'Clipping', 'on',...
                 'BackgroundColor', dColor, ...
-                'Position', Utils.lt2lb([ ...
+                'Position', MicUtils.lt2lb([ ...
                 dLeft ...
                 dTop ...
                 this.dWidth ...
@@ -144,7 +144,7 @@ classdef PixisControl < JavaDevice
                 'Title', 'ROI',...
                 'Clipping', 'on',...
                 'BorderType', 'none', ...
-                'Position', Utils.lt2lb([ ...
+                'Position', MicUtils.lt2lb([ ...
                 0 ...
                 dTop + 30 ...
                 this.dWidth  ...
@@ -158,12 +158,12 @@ classdef PixisControl < JavaDevice
             dROIEditWidth   = 40;
             dROIPad         = 5;
             
-            this.uieROIx1.build(this.hROIPanel, dLeftCol1, dTop, dROIEditWidth, Utils.dEDITHEIGHT);
-            this.uieROIx2.build(this.hROIPanel, dLeftCol1 + dROIEditWidth + dROIPad, dTop, dROIEditWidth, Utils.dEDITHEIGHT);
-            this.uieROIy1.build(this.hROIPanel, dLeftCol1 + 2*dROIEditWidth + 2*dROIPad, dTop, dROIEditWidth, Utils.dEDITHEIGHT);
-            this.uieROIy2.build(this.hROIPanel, dLeftCol1 + 3*dROIEditWidth + 3*dROIPad, dTop, dROIEditWidth, Utils.dEDITHEIGHT);
+            this.uieROIx1.build(this.hROIPanel, dLeftCol1, dTop, dROIEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieROIx2.build(this.hROIPanel, dLeftCol1 + dROIEditWidth + dROIPad, dTop, dROIEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieROIy1.build(this.hROIPanel, dLeftCol1 + 2*dROIEditWidth + 2*dROIPad, dTop, dROIEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieROIy2.build(this.hROIPanel, dLeftCol1 + 3*dROIEditWidth + 3*dROIPad, dTop, dROIEditWidth, MicUtils.dEDITHEIGHT);
             
-            this.uieBinning.build(this.hROIPanel, dLeftCol1 + 4*dROIEditWidth + 10*dROIPad, dTop, dROIEditWidth, Utils.dEDITHEIGHT);
+            this.uieBinning.build(this.hROIPanel, dLeftCol1 + 4*dROIEditWidth + 10*dROIPad, dTop, dROIEditWidth, MicUtils.dEDITHEIGHT);
         
 			drawnow;
             
@@ -173,19 +173,19 @@ classdef PixisControl < JavaDevice
                 10, ...
                 dTopPad, ...
                 50, ...
-                Utils.dEDITHEIGHT);
+                MicUtils.dEDITHEIGHT);
                         
             % ROI control buttons:
-            dTop = dTop + Utils.dEDITHEIGHT + 5*dROIPad;
-            this.uibSetROIToSelection.build(this.hROIPanel, dLeftCol1, dTop, 3*dROIEditWidth, Utils.dEDITHEIGHT);
-            this.uibResetROI.build(this.hROIPanel, dLeftCol1 + 3*dROIEditWidth + 2*dROIPad, dTop, 2*dROIEditWidth, Utils.dEDITHEIGHT);
+            dTop = dTop + MicUtils.dEDITHEIGHT + 5*dROIPad;
+            this.uibSetROIToSelection.build(this.hROIPanel, dLeftCol1, dTop, 3*dROIEditWidth, MicUtils.dEDITHEIGHT);
+            this.uibResetROI.build(this.hROIPanel, dLeftCol1 + 3*dROIEditWidth + 2*dROIPad, dTop, 2*dROIEditWidth, MicUtils.dEDITHEIGHT);
         
             % Camera temperature and exposure
             dTop = dTop + 50;
-            dTop = dTop + Utils.dEDITHEIGHT + 5*dROIPad;
+            dTop = dTop + MicUtils.dEDITHEIGHT + 5*dROIPad;
             this.hioTemperature.build(this.hMainPanel, dLeftCol1, dTop);
             
-            dTop = dTop + Utils.dEDITHEIGHT + 5*dROIPad;
+            dTop = dTop + MicUtils.dEDITHEIGHT + 5*dROIPad;
             this.hioExposureTime.build(this.hMainPanel, dLeftCol1, dTop);
             
         end

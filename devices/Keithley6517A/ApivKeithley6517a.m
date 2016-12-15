@@ -18,7 +18,7 @@ classdef ApivKeithley6517a < InterfaceKeithley6517a
         cAutoRangeState = 'OFF'
         
         % {double 1x1} - mean reported current 
-        dMean = 10e-6;
+        dMean = 100e-6;
         % {double 1x1} - standard deviation of reported current
         dSig = 1e-6;
     end

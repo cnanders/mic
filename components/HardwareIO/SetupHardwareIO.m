@@ -155,14 +155,14 @@ classdef SetupHardwareIO < HandlePlus
                 'Units', 'pixels',...
                 'Title', 'Update rate',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1)], this.hFigure) ...
             );
             drawnow;
-            dFigureTop = dFigureTop + Utils.panelHeight(1) + Utils.dEditPad; % bottom edge of delay panel
+            dFigureTop = dFigureTop + MicUtils.panelHeight(1) + MicUtils.dEditPad; % bottom edge of delay panel
             
             
-            dPanelTop = Utils.dPanelTopPad;
-            this.uieDelay.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            dPanelTop = MicUtils.dPanelTopPad;
+            this.uieDelay.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
 
             % Calibration           
             dTextHeight = 20;
@@ -171,22 +171,22 @@ classdef SetupHardwareIO < HandlePlus
                 'Units', 'pixels',...
                 'Title', 'Calibration',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1) + dTextHeight], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1) + dTextHeight], this.hFigure) ...
             );
             drawnow;
-            dFigureTop = dFigureTop + Utils.panelHeight(1) + Utils.dEditPad + dTextHeight;
+            dFigureTop = dFigureTop + MicUtils.panelHeight(1) + MicUtils.dEditPad + dTextHeight;
 
             hText = uicontrol(...
                 'Parent', hPanel , ...
                 'HorizontalAlignment', 'left', ...
-                'Position', Utils.lt2lb([dLeftCol1, dPanelTop, 150, dTextHeight], hPanel), ...
+                'Position', MicUtils.lt2lb([dLeftCol1, dPanelTop, 150, dTextHeight], hPanel), ...
                 'String', 'cal = slope*(raw - offset)', ...
                 'Style', 'text' ...
                 );
             
-            dPanelTop = Utils.dPanelTopPad + dTextHeight;
-            this.uieSlope.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieOffset.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            dPanelTop = MicUtils.dPanelTopPad + dTextHeight;
+            this.uieSlope.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieOffset.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
 
 
             % Step
@@ -195,14 +195,14 @@ classdef SetupHardwareIO < HandlePlus
                 'Units', 'pixels',...
                 'Title', 'Step (+/- buttons)',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1)], this.hFigure) ...
             );
             drawnow;
-            dFigureTop = dFigureTop + Utils.panelHeight(1) + Utils.dEditPad;
+            dFigureTop = dFigureTop + MicUtils.panelHeight(1) + MicUtils.dEditPad;
             
-            dPanelTop = Utils.dPanelTopPad;
-            this.uieStepCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieStepRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            dPanelTop = MicUtils.dPanelTopPad;
+            this.uieStepCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieStepRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
 
 
             % Software Limits
@@ -211,18 +211,18 @@ classdef SetupHardwareIO < HandlePlus
                 'Units', 'pixels',...
                 'Title', '(Software) motion limits',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(2)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(2)], this.hFigure) ...
             );
             drawnow;
-            dFigureTop = dFigureTop + Utils.panelHeight(2) + Utils.dEditPad;
+            dFigureTop = dFigureTop + MicUtils.panelHeight(2) + MicUtils.dEditPad;
             
-            dPanelTop = Utils.dPanelTopPad;
-            this.uieLowLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieLowLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            dPanelTop = MicUtils.dPanelTopPad;
+            this.uieLowLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieLowLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
 
-            dPanelTop = dPanelTop + Utils.dEDITHEIGHT + Utils.dEditPad;
-            this.uieHighLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieHighLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            dPanelTop = dPanelTop + MicUtils.dEDITHEIGHT + MicUtils.dEditPad;
+            this.uieHighLimitCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieHighLimitRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
 
             % "Is There?" Tol
             hPanel = uipanel(...
@@ -230,13 +230,13 @@ classdef SetupHardwareIO < HandlePlus
                 'Units', 'pixels',...
                 'Title', '"Is There?" Tolerance',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([dPanelLeft dFigureTop dPanelWidth Utils.panelHeight(1)], this.hFigure) ...
+                'Position', MicUtils.lt2lb([dPanelLeft dFigureTop dPanelWidth MicUtils.panelHeight(1)], this.hFigure) ...
             );
             drawnow;
             
-            dPanelTop = Utils.dPanelTopPad;
-            this.uieTolCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
-            this.uieTolRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, Utils.dEDITHEIGHT);
+            dPanelTop = MicUtils.dPanelTopPad;
+            this.uieTolCal.build(hPanel, dLeftCol1, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
+            this.uieTolRaw.build(hPanel, dLeftCol2, dPanelTop, dEditWidth, MicUtils.dEDITHEIGHT);
             
 
         end

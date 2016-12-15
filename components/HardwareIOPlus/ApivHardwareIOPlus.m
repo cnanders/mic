@@ -1,4 +1,4 @@
-classdef ApivHardwareIOPlus < InterfaceApiHardwareIO
+classdef ApivHardwareIOPlus < InterfaceApiHardwareIOPlus
 
     % apiv
 

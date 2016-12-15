@@ -4,7 +4,7 @@
 
 
 %% scroll control test
-set(gcf,'WindowScrollWheelFcn',@Utils.scroll_increment)
+set(gcf,'WindowScrollWheelFcn',@MicUtils.scroll_increment)
 
 %% making all object courier instead of MS sans Serif
 

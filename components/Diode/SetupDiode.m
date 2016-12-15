@@ -129,27 +129,27 @@ classdef SetupDiode < HandlePlus
                 'Units', 'pixels',...
                 'Title', '',...
                 'Clipping', 'on',...
-                'Position', Utils.lt2lb([0 0 this.dWidth this.dHeight], this.hFigure) ...
+                'Position', MicUtils.lt2lb([0 0 this.dWidth this.dHeight], this.hFigure) ...
             );
             drawnow;
 
 
-            this.uieDelay.build(hPanel, dLeftCol1, dTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uieDelay.build(hPanel, dLeftCol1, dTop, dEditWidth, MicUtils.dEDITHEIGHT);
             dTop = dTop + dSep;
 
-            this.uipGain.build(hPanel, dLeftCol1, dTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uipGain.build(hPanel, dLeftCol1, dTop, dEditWidth, MicUtils.dEDITHEIGHT);
             dTop = dTop + dSep;
 
-            this.uieCal.build(hPanel, dLeftCol1, dTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uieCal.build(hPanel, dLeftCol1, dTop, dEditWidth, MicUtils.dEDITHEIGHT);
             dTop = dTop + dSep;
 
-            this.uieArea.build(hPanel, dLeftCol1, dTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uieArea.build(hPanel, dLeftCol1, dTop, dEditWidth, MicUtils.dEDITHEIGHT);
             dTop = dTop + dSep;
 
-            this.uieAreaRatio.build(hPanel, dLeftCol1, dTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uieAreaRatio.build(hPanel, dLeftCol1, dTop, dEditWidth, MicUtils.dEDITHEIGHT);
             dTop = dTop + dSep;
 
-            this.uieCycles.build(hPanel, dLeftCol1, dTop, dEditWidth, Utils.dEDITHEIGHT);
+            this.uieCycles.build(hPanel, dLeftCol1, dTop, dEditWidth, MicUtils.dEDITHEIGHT);
 
         end
 

@@ -4,12 +4,12 @@
 addpath(genpath(fullfile(cPath, '..', '..')));
 purge;
 
-api = ApiKeithley6517a('lSerial', true);
+api = ApiKeithley6517aAsync('lSerial', true);
 api.init()
 api.connect()
-api.setFunctionToAmps();
+% api.setFunctionToAmps();
 
-cIdentity = api.identity()
+% cIdentity = api.identity()
 
 
 %{

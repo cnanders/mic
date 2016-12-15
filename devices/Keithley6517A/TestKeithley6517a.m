@@ -5,6 +5,7 @@ classdef TestKeithley6517a < HandlePlus
     properties
         clock
         keithley6517a
+        api
     end
     
     properties (Access = private)
@@ -20,11 +21,15 @@ classdef TestKeithley6517a < HandlePlus
         
             this.clock = Clock('master');
             this.keithley6517a = Keithley6517a(...
-                'clock', this.clock ...
+                'clock', this.clock, ...
+                'lShowSettings', false, ...
+                'lShowRange', true ...
             );
         
             % Set the Api
-            this.keithley6517a.setApi(ApivKeithley6517a);
+            % this.api = ApiKeithley6517aAsync();
+            this.api = ApivKeithley6517a();
+            this.keithley6517a.setApi(this.api);
             
         end
         

@@ -169,7 +169,7 @@ classdef Clock < HandlePlus
     end
     
     properties (SetAccess = private)
-        dPeriod = 5/1000;       % Clock period
+        dPeriod       % Clock period
     end
     
     properties (Access = private)
@@ -233,12 +233,17 @@ classdef Clock < HandlePlus
     
     methods
 %% Methods
-        function this = Clock(cName)
+        function this = Clock(cName, dPeriod)
         %CLOCK Creates an instance of a clock class
         %   cl = Clock('name')
         %
         % See also INIT, BUILD, DELETE
             
+            if nargin == 1
+                dPeriod = 5/1000;
+            end
+            
+            this.dPeriod = dPeriod;
             this.cName = cName;
             this.init();
         end
@@ -552,12 +557,19 @@ classdef Clock < HandlePlus
         % See also HAS, ADD, REMOVE
             
             ceTaskNameActive = this.ceTaskName(this.lTaskActive); % returns a cell
+            dTaskPeriodActive = this.dTaskPeriod(this.lTaskActive);
             if isempty(ceTaskNameActive)
                 cStr = 'No task running\n';
             else
                 cStr = 'List of running tasks :\n';
                 for n = 1:length(ceTaskNameActive)
-                    cStr = sprintf('%s\t %1.0f. %s\n', cStr, n, ceTaskNameActive{n});
+                    cStr = sprintf(...
+                        '%s\t %1.0f. %s (%1.3f sec) \n', ...
+                        cStr, ...
+                        n, ...
+                        ceTaskNameActive{n}, ...
+                        dTaskPeriodActive(n) ...
+                    );
                 end
             end
             fprintf(cStr);

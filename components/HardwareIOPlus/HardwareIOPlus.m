@@ -23,10 +23,16 @@ classdef HardwareIOPlus < HandlePlus
     end
 
     properties (SetAccess = private)
+        
+        % @param {char 1xm} cName - the name of the instance.  
+        %   Must be unique within the entire project / codebase
         cName = 'CHANGE ME' % name identifier
         lActive = false   % boolean to tell whether the motor is active or not
         lReady = false  % true when stopped or at its target
-        u8Layout = uint8(1); % {uint8 1x1} to store the layout style
+        
+        % @param {uint8 1x1} [u8Layout = uint8(1)] - the layout.  1 = wide, not
+        %   tall. 2 = narrow, twice as tall. 
+        u8Layout = uint8(1); 
         % lIsThere 
 
     end
@@ -70,7 +76,9 @@ classdef HardwareIOPlus < HandlePlus
         apiv        % virtual Api (for test and debugging).  Builds its own ApivHardwareIO
         api         % Api to the low level controls.  Must be set after initialized.
         
-        clock       % clock 
+        % @param {clock 1x1} clock - the clock
+        clock 
+        % @param {char 1x1} cLabel - the label in the GUI
         cLabel = 'CHANGE ME' % name to be displayed by the UI element
         cDir        % current directory
         cDirSave    
@@ -110,8 +118,22 @@ classdef HardwareIOPlus < HandlePlus
         u8Active
         u8Inactive
         
+        % @param {ConfigHardwareIOPlus 1x1} [config = new ConfigHardwareIOPlus()] - the config instance
+        %   !!! WARNING !!!
+        %   DO NOT USE a single Config for multiple HardwareIO instances
+        %   because deleting one HardwareIO will delete the reference to
+        %   the Config instance that the other Hardware IO is using
         config
         dZeroRaw = 0;
+        
+        % @param {function_handle 1x1} [fhValidateDest =
+        %   this.validateDest()] - a function that returns a
+        %   locical that validates if the requested move is allowed.
+        %   It is called within moveToDest() and if it returns false, a
+        %   message is displayed sayint the current move is not
+        %   allowed.  Is expected that the higher-level class that
+        %   implements this (which may access more than one HardwareIO
+        %   instance) implements this function
         fhValidateDest
         dValRaw % value in raw units (updated by clock)
         
@@ -122,17 +144,34 @@ classdef HardwareIOPlus < HandlePlus
         % asupported as of 2016.10.24.  To add support for other formats,
         % search for uitxVal.cVal and add more to the switch block.
         cConversion = 'f'; 
+       
+        
+        % {logical 1x1} - show the name (on left)
         lShowName = true;
+        % {logical 1x1} - show the value (right of the edit)
         lShowVal = true;
+        % {logical 1x1}
         lShowUnit = true;
+        % {logical 1x1}
         lShowZero = true
+        % {logical 1x1}
         lShowRel = true
+        % {logical 1x1}
         lShowJog = true
+        % {logical 1x1}
         lShowDest = true
+        % {logical 1x1}
         lShowPlay = true
+        % {logical 1x1} - labels above name, val, dest, play, jog, etc.
         lShowLabels = true
+        % {logical 1x1} - show the list of stored positions (only if they
+        % are present in config)
         lShowStores = true
+        % {logical 1x1} - show the clickable toggle / status that shows if
+        % is using real Api or virtual Api
         lShowApi = true
+        % {logical 1x1} - disable the "I" part of HardwareIO (removes jog,
+        % play, dest, stores)
         lDisableI = false
                 
         uitxLabelName
@@ -169,40 +208,6 @@ classdef HardwareIOPlus < HandlePlus
         
         
         %HARDWAREIO Class constructor
-        %@param {char 1xm} cName - the name of the instance.  
-        %   Must be unique within the entire project / codebase
-        %@param {clock 1x1} clock - the clock
-        %@param {char 1x1} cLabel - the label in the GUI
-        %@param {config 1x1} [config = new Config()] - the config instance
-        %   !!! WARNING !!!
-        %   DO NOT USE a single Config for multiple HardwareIO instances
-        %   because deleting one HardwareIO will delete the reference to
-        %   the Config instance that the other Hardware IO is using
-        %@param {function_handle 1x1} [fhValidateDest =
-        %   this.validateDest()] - a function that returns a
-        %   locical that validates if the requested move is allowed.
-        %   It is called within moveToDest() and if it returns false, a
-        %   message is displayed sayint the current move is not
-        %   allowed.  Is expected that the higher-level class that
-        %   implements this (which may access more than one HardwareIO
-        %   instance) implements this function
-        %@param {double 1x1} [u8Layout = uint8(1)] - the layout.  1 = wide, not
-        %   tall. 2 = narrow, twice as tall. 
-        %@param {logical 1x1} [lShowZero = true]
-        %@param {logical 1x1} [lShowRel = true]
-        %@param {logical 1x1} [lShowStores = true]
-        %@param {logical 1x1} [lShowJog = true]
-        %@param {logical 1x1} [lShowPlay = true]
-        %@param {logical 1x1} [lShowDest = true]
-        %@param {logical 1x1} [lShowLabels = true]
-        %@param {logical 1x1} [lShowApi = true] - show the
-        %   clickable toggle / status that shows if is using real Api or
-        %   virtual Api
-        %@param {logical 1x1} [lDisableI = false] - disable the
-        %"I" of HardwareIO (removes jog, play, dest, stores)
-        
- 
-        
         
         function this = HardwareIOPlus(varargin)  
                     
@@ -215,8 +220,8 @@ classdef HardwareIOPlus < HandlePlus
             
             for k = 1 : 2: length(varargin)
                 % this.msg(sprintf('passed in %s', varargin{k}));
-                if isprop(this, varargin{k})
-                    this.msg(sprintf('settting %s', varargin{k}), 6);
+                if this.hasProp( varargin{k})
+                    this.msg(sprintf('settting %s', varargin{k}), 3);
                     this.(varargin{k}) = varargin{k + 1};
                 end
             end
@@ -251,8 +256,6 @@ classdef HardwareIOPlus < HandlePlus
         %   HardwareIO.build(hParent, dLeft, dTop)
         %
         % See also HARDWAREIO, INIT, DELETE       
-
-        
             
         
             if ~isempty(this.clock)
@@ -279,14 +282,14 @@ classdef HardwareIOPlus < HandlePlus
                         'Title', blanks(0), ...
                         'Clipping', 'on', ...
                         'BorderWidth',0, ... 
-                        'Position', Utils.lt2lb([dLeft dTop dWidth dHeight], hParent));
+                        'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent));
                     drawnow
 
                     %{
                     this.hAxes = axes( ...
                         'Parent', this.hPanel, ...
                         'Units', 'pixels', ...
-                        'Position',Utils.lt2lb([0 0 this.dWidthStatus dHeight], this.hPanel),...
+                        'Position',MicUtils.lt2lb([0 0 this.dWidthStatus dHeight], this.hPanel),...
                         'XColor', [0 0 0], ...
                         'YColor', [0 0 0], ...
                         'HandleVisibility','on', ...
@@ -297,7 +300,7 @@ classdef HardwareIOPlus < HandlePlus
                     %}
                     
                     
-                    % set(this.hImage, 'CData', imread(fullfile(Utils.pathAssets(), 'HardwareIO.png')));
+                    % set(this.hImage, 'CData', imread(fullfile(MicUtils.pathAssets(), 'HardwareIO.png')));
 
                     axis('image');
                     axis('off');
@@ -441,7 +444,7 @@ classdef HardwareIOPlus < HandlePlus
                         'Title', blanks(0), ...
                         'Clipping', 'on', ...
                         'BorderWidth',0, ... 
-                        'Position', Utils.lt2lb([ ...
+                        'Position', MicUtils.lt2lb([ ...
                             dLeft ...
                             dTop ...
                             this.dWidth2 ...
@@ -451,7 +454,7 @@ classdef HardwareIOPlus < HandlePlus
                     this.hAxes = axes( ...
                         'Parent', this.hPanel, ...
                         'Units', 'pixels', ...
-                        'Position',Utils.lt2lb([0 0 this.dWidthStatus this.dHeight2], this.hPanel),...
+                        'Position',MicUtils.lt2lb([0 0 this.dWidthStatus this.dHeight2], this.hPanel),...
                         'XColor', [0 0 0], ...
                         'YColor', [0 0 0], ...
                         'HandleVisibility','on', ...
@@ -727,7 +730,7 @@ classdef HardwareIOPlus < HandlePlus
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
-                this.apiv = []; % This is calling the setter
+                this.setApiv([]); % This is calling the setter
             end
             
         end
@@ -742,7 +745,7 @@ classdef HardwareIOPlus < HandlePlus
             % CA 2014.04.14: Make sure Apiv is available
             
             if isempty(this.apiv)
-                this.apiv = this.newApiv();
+                this.setApiv(this.newApiv());
             end
             
             this.lActive = false;
@@ -755,20 +758,23 @@ classdef HardwareIOPlus < HandlePlus
         function setApi(this, api)
             this.api = api;
         end
-        
-        function set.apiv(this, value)
+                
+        function setApiv(this, api)
             
             if ~isempty(this.apiv) && ...
                 isvalid(this.apiv)
                 delete(this.apiv);
             end
 
-            this.apiv = value;
+            this.apiv = api;
+            
+            %{
             try
                 this.uieDest.setVal(this.apiv.get());
             catch err
                 this.uieDest.setVal(0);
             end
+            %}
         end
         
         function delete(this)
@@ -787,17 +793,7 @@ classdef HardwareIOPlus < HandlePlus
                 this.msg('delete() removing clock task'); 
                 this.clock.remove(this.id());
             end
-            
-            % The Apiv instances have clock tasks so need to delete them
-            % first
-            
-            delete(this.apiv);
-            
-            if ~isempty(this.api) && ... % isvalid(this.api) && ...
-                isa(this.api, 'ApivHardwareIOPlus')
-                delete(this.api)
-            end
-            
+                        
             delete(this.uieDest);  
             delete(this.uieStep);
             delete(this.uitxVal);
@@ -824,11 +820,18 @@ classdef HardwareIOPlus < HandlePlus
             delete(this.uitxLabelStores);
             delete(this.uitxLabelPlay);
             delete(this.uitxLabelApi);
-            
-            
-          
-            delete(this.config)
 
+            delete(this.config)
+            
+            % The Apiv instances have clock tasks so need to delete them
+            % first
+            
+            delete(this.apiv);
+            
+            if ~isempty(this.api) && ... % isvalid(this.api) && ...
+                isa(this.api, 'ApivHardwareIOPlus')
+                delete(this.api)
+            end
                         
         end
         
@@ -838,6 +841,7 @@ classdef HardwareIOPlus < HandlePlus
         %   updates the position reading and the hio status (=/~moving)
         
             try
+                
                 %AW 2014-9-9
                 %TODO : this should be refactored in a readRaw function
                 %see HardwareO for example
@@ -1059,6 +1063,16 @@ classdef HardwareIOPlus < HandlePlus
         end
         
         
+        function api = getApi(this)
+            if this.lActive
+                api = this.api;
+            else
+                api = this.apiv;
+            end 
+            
+        end
+        
+        
         
         
 
@@ -1078,24 +1092,24 @@ classdef HardwareIOPlus < HandlePlus
             % work with classes that extend this class
                        
             
-            this.u8Play     = imread(fullfile(Utils.pathAssets(), 'axis-play-24-3.png'));
-            this.u8Pause    = imread(fullfile(Utils.pathAssets(), 'axis-pause-24-3.png'));
-            %this.u8Plus     = imread(fullfile(Utils.pathAssets(), 'axis-plus-24.png'));
-            %this.u8Minus    = imread(fullfile(Utils.pathAssets(), 'axis-minus-24.png'));
-            this.u8Plus     = imread(fullfile(Utils.pathAssets(), 'axis-step-forward-24-7.png'));
-            this.u8Minus    = imread(fullfile(Utils.pathAssets(), 'axis-step-back-24-7.png'));
+            this.u8Play     = imread(fullfile(MicUtils.pathAssets(), 'axis-play-24-3.png'));
+            this.u8Pause    = imread(fullfile(MicUtils.pathAssets(), 'axis-pause-24-3.png'));
+            %this.u8Plus     = imread(fullfile(MicUtils.pathAssets(), 'axis-plus-24.png'));
+            %this.u8Minus    = imread(fullfile(MicUtils.pathAssets(), 'axis-minus-24.png'));
+            this.u8Plus     = imread(fullfile(MicUtils.pathAssets(), 'axis-step-forward-24-7.png'));
+            this.u8Minus    = imread(fullfile(MicUtils.pathAssets(), 'axis-step-back-24-7.png'));
             switch this.u8Layout
                 case 1
-                    this.u8Bg = imread(fullfile(Utils.pathAssets(), 'hio-bg-24x5-red.png'));
+                    this.u8Bg = imread(fullfile(MicUtils.pathAssets(), 'hio-bg-24x5-red.png'));
                 case 2
-                    this.u8Bg = imread(fullfile(Utils.pathAssets(), 'hio-bg-50x5-red.png'));
+                    this.u8Bg = imread(fullfile(MicUtils.pathAssets(), 'hio-bg-50x5-red.png'));
             end
-            this.u8Rel = imread(fullfile(Utils.pathAssets(), 'axis-rel-24-3.png'));
-            this.u8Abs = imread(fullfile(Utils.pathAssets(), 'axis-abs-24-3.png'));
-            this.u8Zero = imread(fullfile(Utils.pathAssets(), 'axis-zero-24-2.png'));
+            this.u8Rel = imread(fullfile(MicUtils.pathAssets(), 'axis-rel-24-3.png'));
+            this.u8Abs = imread(fullfile(MicUtils.pathAssets(), 'axis-abs-24-3.png'));
+            this.u8Zero = imread(fullfile(MicUtils.pathAssets(), 'axis-zero-24-2.png'));
             
-            this.u8Active = imread(fullfile(Utils.pathAssets(), 'hiot-true-24.png'));
-            this.u8Inactive = imread(fullfile(Utils.pathAssets(), 'hiot-false-24.png'));
+            this.u8Active = imread(fullfile(MicUtils.pathAssets(), 'hiot-true-24.png'));
+            this.u8Inactive = imread(fullfile(MicUtils.pathAssets(), 'hiot-false-24.png'));
             
             %activity ribbon on the right
             
@@ -1133,7 +1147,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uibIndex = UIButton( ...
                 'Index', ...
                 true, ...
-                imread(fullfile(Utils.pathAssets(), 'mcindex.png')), ...
+                imread(fullfile(MicUtils.pathAssets(), 'mcindex.png')), ...
                 true, ...
                 'Are you sure you want to index?' ...
                 );
@@ -1164,8 +1178,8 @@ classdef HardwareIOPlus < HandlePlus
                 this.u8Zero ...
                 );
 
-            % imread(fullfile(Utils.pathAssets(), 'movingoff.png')), ...
-            % imread(fullfile(Utils.pathAssets(), 'movingon.png')) ...           
+            % imread(fullfile(MicUtils.pathAssets(), 'movingoff.png')), ...
+            % imread(fullfile(MicUtils.pathAssets(), 'movingon.png')) ...           
             
             %Jog+ button
             this.uibStepPos = UIButton( ...
@@ -1207,7 +1221,7 @@ classdef HardwareIOPlus < HandlePlus
             % Name (on the left)
             this.uitxName = UIText(this.cLabel);
 
-            this.apiv = this.newApiv();
+            this.setApiv(this.newApiv());
             
             
             % if ~isempty(this.config.ceStores)
@@ -1296,7 +1310,7 @@ classdef HardwareIOPlus < HandlePlus
         end
         
         function onDestEnter(this, src, evt)
-            % this.msg('onDestEnter');
+            this.msg('onDestEnter');
             this.moveToDest();
         end
         
@@ -1320,11 +1334,13 @@ classdef HardwareIOPlus < HandlePlus
         
         function onPlayChange(this, src, evt)
             % Ready means it isn't moving
+            
+            this.msg('onPlayChange()');
             if this.lReady
-                % this.msg('handleUI lReady = true. moveToDest()');
+                this.msg('handleUI lReady = true. moveToDest()');
                 this.moveToDest();
             else
-                % this.msg('handleUI lReady = false. stop()');
+                this.msg('handleUI lReady = false. stop()');
                 this.stop();
             end
         end
@@ -1571,14 +1587,7 @@ classdef HardwareIOPlus < HandlePlus
             
         end
         
-        function api = getApi(this)
-            if this.lActive
-                api = this.api;
-            else
-                api = this.apiv;
-            end 
-            
-        end
+        
         
         function dOut = getWidth(this)
             dOut = 0;
