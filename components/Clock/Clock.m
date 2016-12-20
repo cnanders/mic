@@ -547,7 +547,9 @@ classdef Clock < HandlePlus
             this.lBusy = false;
             
             
-            % this.lRemove(strcmp(cName, this.ceTaskName)) = true;                                           
+            % this.lRemove(strcmp(cName, this.ceTaskName)) = true; 
+            
+            this.listTasks();
                       
         end 
         

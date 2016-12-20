@@ -1,3 +1,12 @@
+# 1.0.0-alpha.34
+
+- Added .mat to .gitignore
+- Removed all .mat files from the repository
+
+### HandlePlus
+- Added setVarargin() method since many components are now varargin.  Built a unified way to set properties.
+- It turns out that this doesn’t work because the base class cannot access protected / private methods in the child class. 
+
 # 1.0.0-alpha.33
 
 ### HardwareIOPlus, HardwareIOText

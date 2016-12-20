@@ -24,6 +24,23 @@ classdef HandlePlus < handle
     
     methods
 
+        %{
+        
+        % Override properties with varargin
+        % @param {cell 1xm} the result of varargin
+
+        function setVarargin(this, ce)
+            for k = 1 : 2: length(ce)
+                % this.msg(sprintf('passed in %s', ce{k}));
+                if this.hasProp( ce{k})
+                    this.msg(sprintf('settting %s', ce{k}), 3);
+                    this.(ce{k}) = ce{k + 1};
+                end
+            end  
+        end
+        
+        %}
+        
         function assignPropsFromStruct(this, struct)
             this.loadClassInstance(struct);
         end

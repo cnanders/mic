@@ -283,8 +283,8 @@ classdef JavaDevice < HandlePlus
         
             % javaclasspath
             
-            % Temporarily set user.dir to this folder so nPoint.jar can
-            % load libnPoint.dylib and other files
+            % Temporarily set user.dir to the parent directory of the .jar
+            % so it can load dependencies
             
             [cPath, cName, cExt] = fileparts(this.cJarPath); 
             java.lang.System.setProperty('user.dir', cPath);
