@@ -62,15 +62,15 @@ classdef HardwareIOPlus < HandlePlus
         
         cLabelApi = 'API'
         cLabelInit = ''
-        cLabelInitState = 'INIT'
-        cLabelName = 'NAME';
-        cLabelValue = 'VALUE';
-        cLabelDest = 'GOAL'
-        cLabelPlay = 'GO'
-        cLabelStores = 'STORES'
-        cLabelUnit = 'UNIT'
+        cLabelInitState = 'Init'
+        cLabelName = 'Name';
+        cLabelValue = 'Val';
+        cLabelDest = 'Goal'
+        cLabelPlay = 'Go'
+        cLabelStores = 'Stores'
+        cLabelUnit = 'Unit'
         cLabelJogL = '';
-        cLabelJog = 'STEP';
+        cLabelJog = 'Step';
         cLabelJogR = '';
         cTooltipApiOff = 'Connect to the real Api / hardware';
         cTooltipApiOn = 'Disconnect the real Api / hardware (go into virtual mode)';
@@ -332,6 +332,7 @@ classdef HardwareIOPlus < HandlePlus
                     %}
                     
                     dTop = -1;
+                    dTop = 0;
                     dTopLabel = -1;
                     if this.lShowLabels
                         dTop = this.dHeightLabel;
@@ -346,7 +347,7 @@ classdef HardwareIOPlus < HandlePlus
                             this.uitxLabelApi.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
                         this.uitApi.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn + 5; 
+                        dLeft = dLeft + this.dWidthBtn; 
                     end
                     
                     
@@ -357,7 +358,7 @@ classdef HardwareIOPlus < HandlePlus
                             this.uitxLabelInit.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
                         this.uibInit.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn + 5; 
+                        dLeft = dLeft + this.dWidthBtn; 
                     end
                     
                     if (this.lShowInitState)
@@ -366,7 +367,7 @@ classdef HardwareIOPlus < HandlePlus
                             this.uitxLabelInitState.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
                         end
                         this.uiilInitState.build(this.hPanel, dLeft, dTop);
-                        dLeft = dLeft + this.dWidthBtn + 5; 
+                        dLeft = dLeft + this.dWidthBtn; 
                     end
                     
                     % Need binary state indicator for isInitialized()
