@@ -14,6 +14,13 @@ classdef ApiKeithley6482Data2 < InterfaceApiHardwareOPlus
             d = this.api.read(2);
         end
         
+        function initialize(this)
+        end
+        
+        function l = isInitialized(this)
+            l = true;
+        end
+        
     end
     
     

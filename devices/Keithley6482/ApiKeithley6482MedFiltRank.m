@@ -30,6 +30,13 @@ classdef ApiKeithley6482MedFiltRank < InterfaceApiHardwareIOPlus
         function index(this) % index
         end
         
+        function initialize(this)
+        end
+        
+        function l = isInitialized(this)
+            l = true;
+        end
+        
    end
     
     

@@ -1,3 +1,23 @@
+# 1.0.0-alpha.35
+
+### UIImageLogical
+- New component that has two image states to display the value of a logical
+- This will most likely break other code.  I will need to fix.
+
+### InterfaceHardwareIOPlus
+- Modified the Interface to add initialize() and isInitialized() methods which all of Carl's Axis classes need.  
+
+### HardwareIOPlus
+- Added Init button to send initialize() gommand to API.
+- Added InitState UIImageLogical to show the state of isInitialized()
+- handleClock now polls getApi().isInitialized() along with getApi().get()
+- Both of these UI elements are configurable in varagrin with [lShowInitButton = true] and [lShowInitState = true]
+- Updated image assets for the API toggle
+
+### Keithley6482
+- Updated image assets for the API toggle
+
+
 # 1.0.0-alpha.34
 
 - Added .mat to .gitignore

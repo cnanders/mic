@@ -60,18 +60,21 @@ classdef HardwareIOPlus < HandlePlus
         dPad2 = 0;
         dWidthStatus = 5;
         
-        cLabelApi = 'Api'
-        cLabelName = 'Name';
-        cLabelValue = 'Value';
-        cLabelDest = 'Goal'
-        cLabelPlay = 'Go'
-        cLabelStores = 'Stores'
-        cLabelUnit = 'Unit'
+        cLabelApi = 'API'
+        cLabelInit = ''
+        cLabelInitState = 'INIT'
+        cLabelName = 'NAME';
+        cLabelValue = 'VALUE';
+        cLabelDest = 'GOAL'
+        cLabelPlay = 'GO'
+        cLabelStores = 'STORES'
+        cLabelUnit = 'UNIT'
         cLabelJogL = '';
-        cLabelJog = 'Step';
+        cLabelJog = 'STEP';
         cLabelJogR = '';
         cTooltipApiOff = 'Connect to the real Api / hardware';
         cTooltipApiOn = 'Disconnect the real Api / hardware (go into virtual mode)';
+        cTooltipInitButton = 'Send the initialize command to this device';
         
         apiv        % virtual Api (for test and debugging).  Builds its own ApivHardwareIO
         api         % Api to the low level controls.  Must be set after initialized.
@@ -88,6 +91,8 @@ classdef HardwareIOPlus < HandlePlus
         uieStep     % textbox to input the desired step in disp units
         uitxVal     % label to display the current value
         uitApi      % toggle for real / virtual Api
+        uibInit    % button to perform a initialization sequence
+        uiilInitState % image logical to show isInitialized state
         uibIndex    % button to perform a homing sequence
         
         
@@ -117,6 +122,8 @@ classdef HardwareIOPlus < HandlePlus
         u8Zero
         u8Active
         u8Inactive
+        u8ToggleOff
+        u8ToggleOn
         
         % @param {ConfigHardwareIOPlus 1x1} [config = new ConfigHardwareIOPlus()] - the config instance
         %   !!! WARNING !!!
@@ -170,6 +177,11 @@ classdef HardwareIOPlus < HandlePlus
         % {logical 1x1} - show the clickable toggle / status that shows if
         % is using real Api or virtual Api
         lShowApi = true
+        % {logical 1x1} - show the clickable initialize toggle
+        lShowInitButton = false
+        % {logical 1x1} - show isInitialized() state
+        lShowInitState = false
+        
         % {logical 1x1} - disable the "I" part of HardwareIO (removes jog,
         % play, dest, stores)
         lDisableI = false
@@ -184,6 +196,8 @@ classdef HardwareIOPlus < HandlePlus
         uitxLabelStores
         uitxLabelPlay
         uitxLabelApi
+        uitxLabelInit
+        uitxLabelInitState
         
         % {char 1xm} storage of the last display value.  Used to emit
         % eChange events
@@ -194,6 +208,10 @@ classdef HardwareIOPlus < HandlePlus
         % logic assumes we are dealing with doubles, not uint or int.  For
         % now, I'm going to cast all values as double
         % cTypeDest = 'd'
+        
+        % {logical 1x1} true after the initialize() command has been issued
+        % up until getApi().isInitialized() returns true
+        lIsInitializing = false
     end
     
 
@@ -243,6 +261,7 @@ classdef HardwareIOPlus < HandlePlus
                 this.lShowStores = false; 
                 this.lShowPlay = false; 
                 this.lShowDest = false; 
+                this.lShowInitButton = false;
             end
             
             this.init();
@@ -329,6 +348,28 @@ classdef HardwareIOPlus < HandlePlus
                         this.uitApi.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
                         dLeft = dLeft + this.dWidthBtn + 5; 
                     end
+                    
+                    
+                    % Init button
+                    if (this.lShowInitButton)
+                        if this.lShowLabels
+                            % FIXME
+                            this.uitxLabelInit.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                        end
+                        this.uibInit.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                        dLeft = dLeft + this.dWidthBtn + 5; 
+                    end
+                    
+                    if (this.lShowInitState)
+                        if this.lShowLabels
+                            % FIXME
+                            this.uitxLabelInitState.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                        end
+                        this.uiilInitState.build(this.hPanel, dLeft, dTop);
+                        dLeft = dLeft + this.dWidthBtn + 5; 
+                    end
+                    
+                    % Need binary state indicator for isInitialized()
                     
                     
                     % Name
@@ -798,6 +839,8 @@ classdef HardwareIOPlus < HandlePlus
             delete(this.uieStep);
             delete(this.uitxVal);
             delete(this.uitApi);
+            delete(this.uibInit);
+            delete(this.uiilInitState);
             delete(this.uibIndex);
 
             delete(this.uibtPlay);
@@ -820,6 +863,8 @@ classdef HardwareIOPlus < HandlePlus
             delete(this.uitxLabelStores);
             delete(this.uitxLabelPlay);
             delete(this.uitxLabelApi);
+            delete(this.uitxLabelInit);
+            delete(this.uitxLabelInitState);
 
             delete(this.config)
             
@@ -881,6 +926,19 @@ classdef HardwareIOPlus < HandlePlus
                 else
                     % The Api(V) doesn't implement isReady since this is a
                     % HardwareIO
+                end
+                
+                lInitialized = this.getApi.isInitialized();
+                if this.lShowInitState
+                    this.uiilInitState.setVal(lInitialized);
+                end
+                
+                
+                if this.lIsInitializing && ...
+                   lInitialized
+                    
+                    this.lIsInitializing = false;
+                    % this.enable();
                 end
                 
                
@@ -1001,10 +1059,19 @@ classdef HardwareIOPlus < HandlePlus
             end            
         end
         
+        function initialize(this)
+           
+            this.lIsInitializing = true;
+            this.getApi().initialize();
+            % this.disable();
+            
+        end
         
         function enable(this)
             
             this.uitApi.enable();
+            this.uibInit.enable();
+            this.uiilInitState.disable();
             this.uibtPlay.enable();
             this.uitRel.enable();
             this.uibZero.enable();
@@ -1028,6 +1095,8 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelStores.enable();
             this.uitxLabelPlay.enable();
             this.uitxLabelApi.enable();
+            this.uitxLabelInit.enable();
+            this.uitxLabelInitState.enable();
             
             
         end
@@ -1036,6 +1105,8 @@ classdef HardwareIOPlus < HandlePlus
         function disable(this)
             
             this.uitApi.disable();
+            this.uibInit.disable();
+            this.uiilInitState.disable();
             this.uibtPlay.disable();
             this.uitRel.disable();
             this.uibZero.disable();
@@ -1058,6 +1129,8 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelStores.disable();
             this.uitxLabelPlay.disable();
             this.uitxLabelApi.disable();
+            this.uitxLabelInit.disable();
+            this.uitxLabelInitState.disable();
             
             
         end
@@ -1108,6 +1181,8 @@ classdef HardwareIOPlus < HandlePlus
             this.u8Abs = imread(fullfile(MicUtils.pathAssets(), 'axis-abs-24-3.png'));
             this.u8Zero = imread(fullfile(MicUtils.pathAssets(), 'axis-zero-24-2.png'));
             
+            this.u8ToggleOn = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-true.png'));
+            this.u8ToggleOff = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-false.png'));
             this.u8Active = imread(fullfile(MicUtils.pathAssets(), 'hiot-true-24.png'));
             this.u8Inactive = imread(fullfile(MicUtils.pathAssets(), 'hiot-false-24.png'));
             
@@ -1134,11 +1209,22 @@ classdef HardwareIOPlus < HandlePlus
                 'enable', ...   % (off) not active
                 'disable', ...  % (on) active
                 true, ...
-                this.u8Inactive, ...
-                this.u8Active, ...
+                this.u8ToggleOff, ...
+                this.u8ToggleOn, ...
                 st1, ...
                 st2 ...
             );
+        
+            this.uibInit = UIButton( ...
+                'Init', ...
+                false, ...
+                [], ...
+                true, ...
+                'Are you sure you want to initialize this device?' ...
+            );
+            this.uibInit.setTooltip(this.cTooltipInitButton);
+
+            this.uiilInitState = UIImageLogical();
                         
             
             %{
@@ -1250,6 +1336,7 @@ classdef HardwareIOPlus < HandlePlus
             
             addlistener(this.uieDest, 'eEnter', @this.onDestEnter);
             addlistener(this.uitApi,   'eChange', @this.onApiChange);
+            addlistener(this.uibInit,   'eChange', @this.onInitChange);
             addlistener(this.uibtPlay,   'eChange', @this.onPlayChange);
             addlistener(this.uitRel,   'eChange', @this.onRelChange);
             addlistener(this.uipUnit,   'eChange', @this.onUnitChange);
@@ -1268,6 +1355,8 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelDest = UIText(this.cLabelDest);
             this.uitxLabelPlay = UIText(this.cLabelPlay);
             this.uitxLabelApi = UIText(this.cLabelApi, 'center');
+            this.uitxLabelInit = UIText(this.cLabelInit, 'center');
+            this.uitxLabelInitState = UIText(this.cLabelInitState, 'center');
             this.uitxLabelJogL = UIText(this.cLabelJogL, 'center');
             this.uitxLabelJog = UIText(this.cLabelJog, 'center');
             this.uitxLabelJogR = UIText(this.cLabelJogR, 'center');
@@ -1330,7 +1419,12 @@ classdef HardwareIOPlus < HandlePlus
             this.index();
         end
         
-        
+        function onInitChange(this, src, evt)
+            
+            this.msg('onInitChange()');
+            this.initialize();
+            
+        end
         
         function onPlayChange(this, src, evt)
             % Ready means it isn't moving
@@ -1593,6 +1687,14 @@ classdef HardwareIOPlus < HandlePlus
             dOut = 0;
                     
             if this.lShowApi
+               dOut = dOut + this.dWidthBtn;
+            end
+            
+            if this.lShowInitButton
+               dOut = dOut + this.dWidthBtn;
+            end
+            
+            if this.lShowInitState
                dOut = dOut + this.dWidthBtn;
             end
 

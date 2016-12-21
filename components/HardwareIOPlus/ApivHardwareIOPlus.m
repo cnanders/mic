@@ -7,6 +7,7 @@ classdef ApivHardwareIOPlus < InterfaceApiHardwareIOPlus
 
         dPathCycle = 1;         % Resets every move
         dPeriod = 20/1000;
+        lIsInitialized = false;
     end
 
 
@@ -138,6 +139,14 @@ classdef ApivHardwareIOPlus < InterfaceApiHardwareIOPlus
         
         function index(this)
             % Need to implement this
+        end
+        
+        function initialize(this)
+            this.lIsInitialized = true;
+        end
+        
+        function l = isInitialized(this)
+            l = this.lIsInitialized;
         end
         
         

@@ -7,7 +7,12 @@ classdef InterfaceApiHardwareIOPlus < HandlePlus
        set(this, dDest) % set new destination and move to it
        stop(this) % stop motion to destination
        index(this) % index
-        
+       
+       % Command the device to initialize.
+       initialize(this)
+       
+       % @return {logical 1x1} 
+       l = isInitialized(this)
     end
     
 end

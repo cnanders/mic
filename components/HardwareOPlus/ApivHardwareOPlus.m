@@ -71,6 +71,10 @@ classdef ApivHardwareOPlus < InterfaceApiHardwareOPlus
             end
 
         end
+        
+        function l = isInitialized(true)
+            l = false;
+        end
 
     end %methods
 end %class

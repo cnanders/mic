@@ -30,6 +30,13 @@ classdef ApiKeithley6482Range < InterfaceApiHardwareIOPlus
         function index(this) % index
         end
         
+        function initialize(this)
+        end
+        
+        function l = isInitialized(this)
+            l = true;
+        end
+        
    end
     
     
