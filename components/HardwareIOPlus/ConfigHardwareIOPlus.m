@@ -132,12 +132,15 @@ classdef ConfigHardwareIOPlus < HandlePlus
         
         
         function stOut = unit(this, cName)
-        %UNITDEFINITION Retrieve a unit definition structure (slope, offset, precision)
+        %UNITDEFINITION Retrieve a unit definition structure (name, slope, offset, precision)
         %   by the name of the unit
-        %   @param {char} cName - the name of the unit (must be supported
+        % @param {char} cName - the name of the unit (must be supported
         %       in config)
-        %   @return {struct} - the unit definition structure.  
-        %   
+        % @return {struct 1x1} st - the unit definition structure. 
+        % @return {char 1xm} st.name
+        % @return {double 1x1} st.slope
+        % @return {double 1x1} st.offset
+        % @return {double 1x1} st.precision
         
         
             % The units property of this.stConfig contains a cell array of

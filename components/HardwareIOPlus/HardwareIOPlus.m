@@ -676,7 +676,7 @@ classdef HardwareIOPlus < HandlePlus
         %   See also SETDESTCALABS, SETDESTRAW
 
        
-            if nargin == 1
+            if nargin == 2
                 cUnit = this.unit().name;
             end
             
@@ -766,7 +766,7 @@ classdef HardwareIOPlus < HandlePlus
             % set(this.hImage, 'Visible', 'off');
                         
             % Update destination values to match device values
-            % this.setDestRaw(this.api.get());
+            this.setDestCalDisplay(this.valCalDisplay());
             
             % Kill the Apiv
             if ~isempty(this.apiv) && ...
@@ -793,6 +793,8 @@ classdef HardwareIOPlus < HandlePlus
             this.lActive = false;
             this.uitApi.lVal = false;
             this.uitApi.setTooltip(this.cTooltipApiOff);
+            
+            this.setDestCalDisplay(this.valCalDisplay());
             % set(this.hImage, 'Visible', 'on');
             % set(this.hPanel, 'BackgroundColor', this.dColorOff);
         end
@@ -1041,8 +1043,9 @@ classdef HardwareIOPlus < HandlePlus
         
         end
         
+        % @return {struct 1x1}
         function stOut = unit(this)
-        %UNIT Regrive the active display unit definition structure 
+        %UNIT Retrive the active display unit definition structure 
         % (slope, offset, precision)
             stOut = this.config.unit(this.uipUnit.val());
             
@@ -1292,6 +1295,7 @@ classdef HardwareIOPlus < HandlePlus
                 false, ...
                 'center' ...
             );
+            this.uieStep.setVal(0.1);
             
             % Build cell of unit names
             units = {};

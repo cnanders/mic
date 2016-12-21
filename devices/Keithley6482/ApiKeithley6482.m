@@ -5,7 +5,8 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         % {serial 1x1}
         s
         
-        terminator = 'CR';  % to set: menu --> communication --> terminator
+        cPort = 'COM1';
+        cTerminator = 'CR';  % to set: menu --> communication --> terminator
         % terminator = 'CR/LF';
         
         dPLCMax = 10;
@@ -13,12 +14,21 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
     end
     methods 
         
-        function this = ApiKeithley6482()            
+        function this = ApiKeithley6482(varargin) 
+            
+            for k = 1 : 2: length(varargin)
+                % this.msg(sprintf('passed in %s', varargin{k}));
+                if this.hasProp( varargin{k})
+                    this.msg(sprintf('settting %s', varargin{k}), 3);
+                    this.(varargin{k}) = varargin{k + 1};
+                end
+            end
+            
         end
         
         function init(this)
-            this.s = serial('COM1');
-            this.s.Terminator = this.terminator'; % Default for Instrument
+            this.s = serial(this.cPort);
+            this.s.Terminator = this.cTerminator'; % Default for Instrument
         end
         
         function connect(this)
@@ -278,7 +288,7 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
            
         function c = stateText(this, cIn)
             
-            switch this.terminator
+            switch this.cTerminator
                 case 'CR'
                     if strcmp(cIn, sprintf('1\r'))
                         c = 'on';

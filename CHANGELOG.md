@@ -1,3 +1,13 @@
+# 1.0.0-alpha.36
+
+### Keithley6482
+- Now supports varargin
+- Added cPort property 
+- Renamed terminator property to cTerminator to follow Hungarian
+
+### HardwareIOPlus
+- In turnOn() call this.setDestCalDisplay(this.valCalDisplay()) to update goal to device value.
+
 # 1.0.0-alpha.35
 
 ### UIImageLogical

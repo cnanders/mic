@@ -356,7 +356,7 @@ classdef Keithley6482 < HandlePlus
             dLeft = 150;
             
             this.hoData.build(this.hPanel, dLeft, dTop);
-            dTop = dTop + this.dSepVert2 - 10;
+            dTop = dTop + this.dSepVert2;
             this.hoData2.build(this.hPanel, dLeft, dTop);
             
 
