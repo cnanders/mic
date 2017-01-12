@@ -52,6 +52,7 @@ classdef UIEdit < HandlePlus
         xMin 
         xMax
         cLabel
+        dColorBg = [.94 .94 .94]; % MATLAB default
     end
 
 
@@ -101,6 +102,7 @@ classdef UIEdit < HandlePlus
                     'Style', 'text', ...
                     'String', this.cLabel, ...
                     'FontWeight', 'Normal',...
+                    'BackgroundColor', this.dColorBg, ...
                     'HorizontalAlignment', 'left' ...
                 );
 
@@ -644,7 +646,8 @@ classdef UIEdit < HandlePlus
         %% Destructor ?
         function delete(this)
             
-            % this.msg('delete');
+            cMsg = sprintf('delete() %s', this.cLabel);
+            % this.msg(cMsg);
             
         %     if ~isempty(this.hUI)
         %         delete(this.hUI);

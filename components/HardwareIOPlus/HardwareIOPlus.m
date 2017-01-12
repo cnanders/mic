@@ -30,6 +30,10 @@ classdef HardwareIOPlus < HandlePlus
         lActive = false   % boolean to tell whether the motor is active or not
         lReady = false  % true when stopped or at its target
         
+        % {logical 1x1} store if delete() has been called.  When true,
+        % immediately back out of handleClock()
+        lDeleted = false
+        
         % @param {uint8 1x1} [u8Layout = uint8(1)] - the layout.  1 = wide, not
         %   tall. 2 = narrow, twice as tall. 
         u8Layout = uint8(1); 
@@ -54,6 +58,7 @@ classdef HardwareIOPlus < HandlePlus
         dWidthBtn = 24;
         dWidthStores = 100;
         dWidthStep = 50;
+        dWidthRange = 100;
         
         dWidth2 = 250;
         dHeight2 = 50;
@@ -61,7 +66,7 @@ classdef HardwareIOPlus < HandlePlus
         dWidthStatus = 5;
         
         cLabelApi = 'API'
-        cLabelInit = ''
+        cLabelInit = 'Init'
         cLabelInitState = 'Init'
         cLabelName = 'Name';
         cLabelValue = 'Val';
@@ -93,6 +98,8 @@ classdef HardwareIOPlus < HandlePlus
         uitApi      % toggle for real / virtual Api
         uibInit    % button to perform a initialization sequence
         uiilInitState % image logical to show isInitialized state
+        % {UIButtonToggle 1x1}
+        uibtInit
         uibIndex    % button to perform a homing sequence
         
         
@@ -112,6 +119,12 @@ classdef HardwareIOPlus < HandlePlus
         dColorOff   = [244 245 169]./255;
         dColorOn    = [241 241 241]./255; 
         
+        dColorBg = [.94 .94 .94]; % MATLAB default
+        
+        
+        dColorTextMoving = [0 170 0]./255;
+        dColorTextStopped = [0 0 0]./255;
+        
         u8Play
         u8Pause
         u8Plus
@@ -122,6 +135,8 @@ classdef HardwareIOPlus < HandlePlus
         u8Zero
         u8Active
         u8Inactive
+        u8InitTrue
+        u8InitFalse
         u8ToggleOff
         u8ToggleOn
         
@@ -181,6 +196,8 @@ classdef HardwareIOPlus < HandlePlus
         lShowInitButton = false
         % {logical 1x1} - show isInitialized() state
         lShowInitState = false
+        % {logical 1x1} - show allowed range (config.min - config.max)
+        lShowRange = false
         
         % {logical 1x1} - disable the "I" part of HardwareIO (removes jog,
         % play, dest, stores)
@@ -198,6 +215,8 @@ classdef HardwareIOPlus < HandlePlus
         uitxLabelApi
         uitxLabelInit
         uitxLabelInitState
+        
+        uitxRange
         
         % {char 1xm} storage of the last display value.  Used to emit
         % eChange events
@@ -239,7 +258,7 @@ classdef HardwareIOPlus < HandlePlus
             for k = 1 : 2: length(varargin)
                 % this.msg(sprintf('passed in %s', varargin{k}));
                 if this.hasProp( varargin{k})
-                    this.msg(sprintf('settting %s', varargin{k}), 3);
+                    % this.msg(sprintf('settting %s', varargin{k}), 3);
                     this.(varargin{k}) = varargin{k + 1};
                 end
             end
@@ -300,6 +319,7 @@ classdef HardwareIOPlus < HandlePlus
                         'Units', 'pixels', ...
                         'Title', blanks(0), ...
                         'Clipping', 'on', ...
+                        'BackgroundColor', this.dColorBg, ...
                         'BorderWidth',0, ... 
                         'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent));
                     drawnow
@@ -338,7 +358,7 @@ classdef HardwareIOPlus < HandlePlus
                         dTop = this.dHeightLabel;
                     end
                     
-                    dLeft = 0;
+                    dLeft = 1;
                     
                     % Api toggle
                     if (this.lShowApi)
@@ -375,6 +395,7 @@ classdef HardwareIOPlus < HandlePlus
                     
                     % Name
                     if this.lShowName
+                        dLeft = dLeft + 5;
                         if this.lShowLabels
                             this.uitxLabelName.build(this.hPanel, dLeft, dTopLabel, this.dWidthName, this.dHeightLabel);
                         end
@@ -475,6 +496,11 @@ classdef HardwareIOPlus < HandlePlus
                         dLeft = dLeft + this.dWidthBtn;
                     end
                     
+                    if this.lShowRange
+                        dLeft = dLeft + 5;
+                        this.uitxRange.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthRange, this.dHeightBtn)
+                        dLeft = dLeft + this.dWidthRange;
+                    end
                     
                     
                 case 2
@@ -766,7 +792,7 @@ classdef HardwareIOPlus < HandlePlus
             % set(this.hImage, 'Visible', 'off');
                         
             % Update destination values to match device values
-            this.setDestCalDisplay(this.valCalDisplay());
+            % this.setDestCalDisplay(this.valCalDisplay());
             
             % Kill the Apiv
             if ~isempty(this.apiv) && ...
@@ -794,7 +820,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitApi.lVal = false;
             this.uitApi.setTooltip(this.cTooltipApiOff);
             
-            this.setDestCalDisplay(this.valCalDisplay());
+            % this.setDestCalDisplay(this.valCalDisplay());
             % set(this.hImage, 'Visible', 'on');
             % set(this.hPanel, 'BackgroundColor', this.dColorOff);
         end
@@ -821,13 +847,18 @@ classdef HardwareIOPlus < HandlePlus
             %}
         end
         
+        
         function delete(this)
         %DELETE Class Destructor
         %   HardwareIO.Delete()
         %
         % See also HARDWAREIO, INIT, BUILD
 
+            % I think a good rule for delete should be that it only
+            % deletes things that it adds
+            
             this.msg('delete', 5);
+            this.lDeleted = true;
             this.save();
             
            % Clean up clock tasks
@@ -837,7 +868,8 @@ classdef HardwareIOPlus < HandlePlus
                 this.msg('delete() removing clock task'); 
                 this.clock.remove(this.id());
             end
-                        
+                
+            %{
             delete(this.uieDest);  
             delete(this.uieStep);
             delete(this.uitxVal);
@@ -868,26 +900,35 @@ classdef HardwareIOPlus < HandlePlus
             delete(this.uitxLabelApi);
             delete(this.uitxLabelInit);
             delete(this.uitxLabelInitState);
-
-            delete(this.config)
+            %}
+            
+            % delete(this.config)
             
             % The Apiv instances have clock tasks so need to delete them
             % first
             
-            delete(this.apiv);
+            % delete(this.apiv);
             
+            %{
             if ~isempty(this.api) && ... % isvalid(this.api) && ...
                 isa(this.api, 'ApivHardwareIOPlus')
                 delete(this.api)
             end
+            %}
                         
         end
+        
         
         function handleClock(this) 
         %HANDLECLOCK Callback triggered by the clock
         %   HardwareIO.HandleClock()
         %   updates the position reading and the hio status (=/~moving)
         
+            if this.lDeleted
+                % this.msg('handleClock() returning (already deleted)');
+                return
+            end
+            
             try
                 
                 %AW 2014-9-9
@@ -932,6 +973,16 @@ classdef HardwareIOPlus < HandlePlus
                 end
                 
                 lInitialized = this.getApi.isInitialized();
+                
+                % Update visual appearance of button to reflect state
+                if this.lShowInitButton
+                    if lInitialized
+                        this.uibInit.setU8Img(this.u8InitTrue);
+                    else
+                        this.uibInit.setU8Img(this.u8InitFalse);
+                    end
+                end
+                
                 if this.lShowInitState
                     this.uiilInitState.setVal(lInitialized);
                 end
@@ -939,7 +990,6 @@ classdef HardwareIOPlus < HandlePlus
                 
                 if this.lIsInitializing && ...
                    lInitialized
-                    
                     this.lIsInitializing = false;
                     % this.enable();
                 end
@@ -1186,9 +1236,14 @@ classdef HardwareIOPlus < HandlePlus
             this.u8Zero = imread(fullfile(MicUtils.pathAssets(), 'axis-zero-24-2.png'));
             
             this.u8ToggleOn = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-true.png'));
-            this.u8ToggleOff = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-false.png'));
+            this.u8ToggleOff = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-false-yellow.png'));
+            
             this.u8Active = imread(fullfile(MicUtils.pathAssets(), 'hiot-true-24.png'));
             this.u8Inactive = imread(fullfile(MicUtils.pathAssets(), 'hiot-false-24.png'));
+            
+            this.u8InitTrue = imread(fullfile(MicUtils.pathAssets(), 'init-button-true.png'));
+            this.u8InitFalse = imread(fullfile(MicUtils.pathAssets(), 'init-button-false-yellow.png'));
+            
             
             %activity ribbon on the right
             
@@ -1221,13 +1276,14 @@ classdef HardwareIOPlus < HandlePlus
         
             this.uibInit = UIButton( ...
                 'Init', ...
-                false, ...
-                [], ...
                 true, ...
-                'Are you sure you want to initialize this device?' ...
+                this.u8InitFalse, ...
+                true, ...
+                'Are you sure you want to initialize this device?  It may take a couple minutes.' ...
             );
             this.uibInit.setTooltip(this.cTooltipInitButton);
-
+            addlistener(this.uibInit,   'eChange', @this.onInitChange);
+            
             this.uiilInitState = UIImageLogical();
                         
             
@@ -1295,7 +1351,7 @@ classdef HardwareIOPlus < HandlePlus
                 false, ...
                 'center' ...
             );
-            this.uieStep.setVal(0.1);
+            this.uieStep.setVal(this.config.dStep);
             
             % Build cell of unit names
             units = {};
@@ -1341,7 +1397,6 @@ classdef HardwareIOPlus < HandlePlus
             
             addlistener(this.uieDest, 'eEnter', @this.onDestEnter);
             addlistener(this.uitApi,   'eChange', @this.onApiChange);
-            addlistener(this.uibInit,   'eChange', @this.onInitChange);
             addlistener(this.uibtPlay,   'eChange', @this.onPlayChange);
             addlistener(this.uitRel,   'eChange', @this.onRelChange);
             addlistener(this.uipUnit,   'eChange', @this.onUnitChange);
@@ -1378,6 +1433,9 @@ classdef HardwareIOPlus < HandlePlus
             this.updateZeroTooltip();
             this.updateStepTooltips();
             this.uipUnit.u8Selected = this.u8UnitIndex;
+            
+            this.uitxRange = UIText('[... - ...]');
+            this.updateRange();
             
             this.load();
             
@@ -1483,10 +1541,30 @@ classdef HardwareIOPlus < HandlePlus
             this.updateZeroTooltip();
             this.updateStepTooltips();
             
+            this.updateRange();
+            
             notify(this, 'eUnitChange');
                     
         end
 
+        function updateRange(this)
+           
+            if ~this.lShowRange
+                return
+            end
+            
+            dMin = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
+            dMax = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
+            
+            cVal = sprintf(...
+                '[%.*f, %.*f]', ...
+                this.unit().precision, ...
+                dMin, ...
+                this.unit().precision, ...
+                dMax ...
+            );
+            this.uitxRange.cVal = cVal;            
+        end
         function updateDisplayValue(this)
             
            switch this.cConversion
@@ -1511,6 +1589,16 @@ classdef HardwareIOPlus < HandlePlus
            end
            
            this.uitxVal.cVal = cVal;
+           
+           % Update text color for IO (not O) when value is changing
+           if ~this.lDisableI
+               if this.lReady
+                   this.uitxVal.setColor(this.dColorTextStopped);
+               else
+                   this.uitxVal.setColor(this.dColorTextMoving);
+               end
+           end
+           
            this.cValPrev = cVal;
             
         end
@@ -1637,6 +1725,7 @@ classdef HardwareIOPlus < HandlePlus
             
             this.uieDest.setVal(this.valCalDisplay());
             this.updateRelTooltip();
+            this.updateRange();
             
         end
         
@@ -1704,6 +1793,7 @@ classdef HardwareIOPlus < HandlePlus
             end
 
             if this.lShowName
+                dOut = dOut + 5; % padding
                 dOut = dOut + this.dWidthName;
             end
             
@@ -1732,6 +1822,11 @@ classdef HardwareIOPlus < HandlePlus
             end
             if this.lShowZero
                 dOut = dOut + this.dWidthBtn;
+            end
+            
+            if this.lShowRange
+                dOut = dOut + 5; % space
+                dOut = dOut + this.dWidthRange;
             end
             
             dOut = dOut + 5;

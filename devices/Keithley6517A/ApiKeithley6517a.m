@@ -50,6 +50,7 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         end
         
         function disconnect(this)
+            this.msg('disconnect()');
             if strcmp(this.s.Status, 'open')
                 fclose(this.s);
             end
@@ -325,6 +326,7 @@ classdef ApiKeithley6517a < InterfaceKeithley6517a
         end
         
         function delete(this)
+            this.msg('delete()')'
             this.disconnect();
             delete(this.s);
         end

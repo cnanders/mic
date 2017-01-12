@@ -155,8 +155,13 @@ classdef Keithley6482 < HandlePlus
             this.api.init();
             this.api.connect();
             
+            %{
             this.hoData.setApi(ApiKeithley6482Data(this.api));
             this.hoData2.setApi(ApiKeithley6482Data2(this.api));
+            %}
+            
+            this.hoData.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'data', 1));
+            this.hoData2.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'data', 2));
             
             this.setApiRange();
             this.setApiSettings();
@@ -175,8 +180,15 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
+            %{
             this.hioRange.setApi(ApiKeithley6482Range(this.api));
             this.hiotxAutoRangeState.setApi(ApiKeithley6482AutoRangeState(this.api));
+            %}
+            
+            u8Channel = uint8(1);
+            this.hioRange.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'range', u8Channel));
+            this.hiotxAutoRangeState.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'auto-range-state', u8Channel));
+            
             
         end
         
@@ -185,8 +197,13 @@ classdef Keithley6482 < HandlePlus
             if ~this.lShowRange
                 return
             end
-            this.hioRange2.setApi(ApiKeithley6482Range2(this.api));
-            this.hiotxAutoRangeState2.setApi(ApiKeithley6482AutoRangeState2(this.api));
+            %this.hioRange2.setApi(ApiKeithley6482Range2(this.api));
+            %this.hiotxAutoRangeState2.setApi(ApiKeithley6482AutoRangeState2(this.api));
+            
+            u8Channel = uint8(2);
+            this.hioRange2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'range', u8Channel));
+            this.hiotxAutoRangeState2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'auto-range-state', u8Channel));
+            
            
         end
         
@@ -202,12 +219,25 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            this.hioADCPeriod.setApi(ApiKeithley6482AdcPeriod(this.api));
-            this.hiotxAvgFiltState.setApi(ApiKeithley6482AvgFiltState(this.api));
-            this.hiotxAvgFiltMode.setApi(ApiKeithley6482AvgFiltMode(this.api));
-            this.hioAvgFiltSize.setApi(ApiKeithley6482AvgFiltSize(this.api));
-            this.hiotxMedFiltState.setApi(ApiKeithley6482MedFiltState(this.api));
-            this.hioMedFiltRank.setApi(ApiKeithley6482MedFiltRank(this.api));
+%             this.hioADCPeriod.setApi(ApiKeithley6482AdcPeriod(this.api));
+%             this.hiotxAvgFiltState.setApi(ApiKeithley6482AvgFiltState(this.api));
+%             this.hiotxAvgFiltMode.setApi(ApiKeithley6482AvgFiltMode(this.api));
+%             this.hioAvgFiltSize.setApi(ApiKeithley6482AvgFiltSize(this.api));
+%             this.hiotxMedFiltState.setApi(ApiKeithley6482MedFiltState(this.api));
+%             this.hioMedFiltRank.setApi(ApiKeithley6482MedFiltRank(this.api));
+            
+            % ApiHardwareIOPlusFromKeithley
+            % ApiHardwareIOTextFromKeithley
+            % ApiHardwareOPlusFromKeithley
+            
+            u8Channel = uint8(1);
+            this.hioADCPeriod.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'med-filt-rank', u8Channel));
+
              
         end
         
@@ -223,16 +253,32 @@ classdef Keithley6482 < HandlePlus
             this.hiotxMedFiltState2.setApi(ApiKeithley6482MedFiltState2(this.api));
             this.hioMedFiltRank2.setApi(ApiKeithley6482MedFiltRank2(this.api));
             %}
+            
+            %{
+            % 2017.01.10 syntax
+            u8Channel = uint8(2);
+            this.hioADCPeriod2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'med-filt-rank', u8Channel));
+
+            %}
         end
         
         
         
         
         function setApiv(this, api)
+            
             this.apiv = api;
            
-            this.hoData.setApiv(ApiKeithley6482Data(this.apiv));
-            this.hoData2.setApiv(ApiKeithley6482Data2(this.apiv));
+            % this.hoData.setApiv(ApiKeithley6482Data(this.apiv));
+            % this.hoData2.setApiv(ApiKeithley6482Data2(this.apiv));
+            
+            this.hoData.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'data', 1));
+            this.hoData2.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'data', 2));
             
             this.setApivRange();
             this.setApivSettings();
@@ -251,8 +297,12 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            this.hioRange.setApiv(ApiKeithley6482Range(this.apiv));
-            this.hiotxAutoRangeState.setApiv(ApiKeithley6482AutoRangeState(this.apiv));
+            % this.hioRange.setApiv(ApiKeithley6482Range(this.apiv));
+            % this.hiotxAutoRangeState.setApiv(ApiKeithley6482AutoRangeState(this.apiv));
+            
+            u8Channel = uint8(1);
+            this.hioRange.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'range', u8Channel));
+            this.hiotxAutoRangeState.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'auto-range-state', u8Channel));
             
         end
         
@@ -261,9 +311,13 @@ classdef Keithley6482 < HandlePlus
             if ~this.lShowRange
                 return
             end
-            this.hioRange2.setApiv(ApiKeithley6482Range2(this.apiv));
-            this.hiotxAutoRangeState2.setApiv(ApiKeithley6482AutoRangeState2(this.apiv));
+            %this.hioRange2.setApiv(ApiKeithley6482Range2(this.apiv));
+            %this.hiotxAutoRangeState2.setApiv(ApiKeithley6482AutoRangeState2(this.apiv));
            
+            u8Channel = uint8(2);
+            this.hioRange2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'range', u8Channel));
+            this.hiotxAutoRangeState2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'auto-range-state', u8Channel));
+            
         end
         
         function setApivSettings(this)
@@ -278,12 +332,23 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
+            %{
             this.hioADCPeriod.setApiv(ApiKeithley6482AdcPeriod(this.apiv));
             this.hiotxAvgFiltState.setApiv(ApiKeithley6482AvgFiltState(this.apiv));
             this.hiotxAvgFiltMode.setApiv(ApiKeithley6482AvgFiltMode(this.apiv));
             this.hioAvgFiltSize.setApiv(ApiKeithley6482AvgFiltSize(this.apiv));
             this.hiotxMedFiltState.setApiv(ApiKeithley6482MedFiltState(this.apiv));
             this.hioMedFiltRank.setApiv(ApiKeithley6482MedFiltRank(this.apiv));
+            %}
+            
+            u8Channel = uint8(1);
+            this.hioADCPeriod.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'med-filt-rank', u8Channel));
+
              
         end
         
@@ -298,6 +363,16 @@ classdef Keithley6482 < HandlePlus
             this.hioAvgFiltSize2.setApiv(ApiKeithley6482AvgFiltSize2(this.apiv));
             this.hiotxMedFiltState2.setApiv(ApiKeithley6482MedFiltState2(this.apiv));
             this.hioMedFiltRank2.setApiv(ApiKeithley6482MedFiltRank2(this.apiv));
+            %}
+            
+            %{
+            u8Channel = uint8(2);
+            this.hioADCPeriod2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'med-filt-rank', u8Channel));
             %}
         end
         
@@ -356,7 +431,7 @@ classdef Keithley6482 < HandlePlus
             dLeft = 150;
             
             this.hoData.build(this.hPanel, dLeft, dTop);
-            dTop = dTop + this.dSepVert2;
+            dTop = dTop + this.dSepVert2 - 5;
             this.hoData2.build(this.hPanel, dLeft, dTop);
             
 
@@ -383,7 +458,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 50 this.dWidth - 20 75], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 55 this.dWidth - 20 75], this.hPanel) ...
             );
             drawnow
             
@@ -409,7 +484,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 130 this.dWidth - 20 75], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 135 this.dWidth - 20 75], this.hPanel) ...
             );
             drawnow
             
@@ -430,6 +505,11 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
+            dTop = 55;
+            if this.lShowRange
+                dTop = dTop + 150;
+            end
+            
             this.hPanelSettings1 = uipanel( ...
                 'Parent', this.hPanel, ...
                 'Units', 'pixels', ...
@@ -437,7 +517,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 210 this.dWidth - 20 195], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 195], this.hPanel) ...
             );
             drawnow
             
@@ -854,7 +934,7 @@ classdef Keithley6482 < HandlePlus
         
             this.u8Inactive = imread(fullfile(...
                 MicUtils.pathAssets(), ...
-                'hiot-horiz-24-false.png'...
+                'hiot-horiz-24-false-yellow.png'...
             ));
             
             

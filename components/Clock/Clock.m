@@ -240,7 +240,7 @@ classdef Clock < HandlePlus
         % See also INIT, BUILD, DELETE
             
             if nargin == 1
-                dPeriod = 5/1000;
+                dPeriod = 50/1000;
             end
             
             this.dPeriod = dPeriod;
@@ -693,8 +693,8 @@ classdef Clock < HandlePlus
                     ceTaskFcnToDo{n}();                     
 
                 catch err
-                    this.msg(getReport(err), 1);
-                    rethrow(err);
+                    % this.msg(getReport(err), 1);
+                    % rethrow(err);
                 end
             end
             

@@ -1,13 +1,17 @@
 
-[cPath, cName, cExt] = fileparts(mfilename('fullpath'));
+[cDirThis, cName, cExt] = fileparts(mfilename('fullpath'));
 
 % Add mic
-addpath(genpath(fullfile(cPath, '..', '..')));
+addpath(genpath(fullfile(cDirThis, '..', '..')));
 
 purge
 
 h = figure;
-test = TestHardwareIOPlus();
-test.build(h, 10, 10);
+testObj = TestHardwareIOPlus();
+testObj.build(h, 10, 10);
+
+% cb = @(src, evt) (delete(testObj); delete(h));
+% set(h, 'CloseRequestFcn', cb);
+% addlistener(uip, 'eEnter', cb);
 
 

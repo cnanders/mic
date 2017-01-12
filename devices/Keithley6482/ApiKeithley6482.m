@@ -1,16 +1,43 @@
 classdef ApiKeithley6482 < InterfaceKeithley6482
 
+    % Troubleshooting
+    %
+    % If this class issues timeout warnings, it is a communication error.
+    % Check the the following are working properly:
+    % - NPort (serial to ethernet)
+    % - Routers
+    % - Keithley
+    %
+    % For read speed, the BaudRate is generally not the limiting factor.
+    % There is overhead on the instrument between the measure command and
+    % the fscanf
+    
     properties % (Access = private)
      
         % {serial 1x1}
         s
         
-        cPort = 'COM1';
-        cTerminator = 'CR';  % to set: menu --> communication --> terminator
-        % terminator = 'CR/LF';
+        % {char 1xm} port of MATLAB {serial}
+        cPort = 'COM2'
+        
+        % {char 1xm} terimator of MATLAB {serial}. Must match hardware
+        % To set on hardware: menu --> communication --> rs-232 --> terminator
+        % Short is better for communication; each character is ~ 10 bits.
+        cTerminator = 'CR'  % 'CR/LF'
+        
+        % {uint16 1x1} - baud rate of MATLAB {serial}.  Must match hardware
+        % to set on hardware: menu --> communication --> rs-232 -> baud
+        u16BaudRate = uint16(57600);
+        
+        % {double 1x1} - timeout of MATLAB {serial} - amount of time it will
+        % wait for a response before aborting.  
+        dTimeout = 2
         
         dPLCMax = 10;
         dPLCMin = 0.01;
+        
+        % {double 1x1} storate for number of calls to getData()
+        dCount = 0;
     end
     methods 
         
@@ -28,7 +55,10 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         
         function init(this)
             this.s = serial(this.cPort);
-            this.s.Terminator = this.cTerminator'; % Default for Instrument
+            this.s.Terminator = this.cTerminator; 
+            this.s.BaudRate = this.u16BaudRate;
+            this.s.Timeout = this.dTimeout;
+            % TO DO configure the 
         end
         
         function connect(this)
@@ -36,6 +66,7 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         end
         
         function disconnect(this)
+            this.msg('disconnect()');
             fclose(this.s);
         end
         
@@ -248,7 +279,9 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         end
         
         function delete(this)
+            this.msg('delete()');
             this.disconnect();
+            delete(this.s);
         end
                 
         % @return {double 1x2} - ch1 and ch2 current
@@ -262,11 +295,15 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         
         
         function d = read(this, u8Ch)
+            % this.dCount = this.dCount + 1;
+            % tic
            cCommand = sprintf(':FORM:ELEM CURR%u', u8Ch);
            fprintf(this.s, cCommand);
            cCommand = ':read?';
            fprintf(this.s, cCommand);
            c = fscanf(this.s); % {char 1xm} '+6.925672E-07
+           % time = toc;
+           % fprintf('Read %1.0f time = %1.1f ms\n', this.dCount, time * 1000);
            d = str2double(c);
         end
         

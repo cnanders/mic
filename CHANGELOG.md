@@ -1,3 +1,23 @@
+﻿# 1.0.0-alpha.37
+
+- I think a good rule for delete function is that they are not allowed to delete anything the class did not create.
+
+### ConfigHardwareIOPlus
+- Now supports optional 'step' property which is the step in raw units.
+- If not provided in config.json, defaults to 0.1
+- Now supports optional 'min' and 'max' values (raw unit)
+
+### HardwareIOPlus
+- Now sets uieStep.val() to config.step on load
+
+### Keithley6482
+- Added dTimeout property to set the timeout
+- Now supports setting the baud rate of serial communication
+- Refactored the device API wrappers.  Now have HardwareIOPlusFromKeithley, HardwareIOTextFromKeithley, HardwareOPlusFromKeithley.  
+- Deleted all previous API wrappers
+- Now when lShowSettings = true and lShowRange = false, draws settings at correct height
+- delete() method now calls disconnect() method and calls delete({serial})
+
 # 1.0.0-alpha.36
 
 ### Keithley6482
