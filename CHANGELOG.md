@@ -1,14 +1,31 @@
-﻿# 1.0.0-alpha.37
+# 1.0.0-alpha.38
 
-- I think a good rule for delete function is that they are not allowed to delete anything the class did not create.
+### UIEdit
+- New private property lNotify used to wrap all calls to notify to allow temporary disabling of notify on setVal() [see below]
+- New method setValWithoutNotify() equivalent to setVal() but does not notify 'eChange' event
+
+### HardwareIOPlus
+- Added dWidthPad* properties to allow padding any of each configurable UI component
+- New properties lAskOnApiClick and lAskOnInitClick allow configuring if it shows confirmation dialog when these buttons are clicked.
+- Now dispatches 'eTurnOff' on turnOff() and 'eTurnOn' on turnOn()
+
+### Keithley6482 
+- New property lAskOnApiClick allows configuring if it shows confirmation dialog when the 
+API button is clicked.
+
+
+# 1.0.0-alpha.37
 
 ### ConfigHardwareIOPlus
 - Now supports optional 'step' property which is the step in raw units.
 - If not provided in config.json, defaults to 0.1
-- Now supports optional 'min' and 'max' values (raw unit)
+- Now supports optional 'min' and 'max' values (raw unit).  When not provided, defaults to +/-maxreal()
 
 ### HardwareIOPlus
 - Now sets uieStep.val() to config.step on load
+- Now has option lShowRange.  When true, displays the range [config.min, config.max]
+- Now changes value color during moves
+
 
 ### Keithley6482
 - Added dTimeout property to set the timeout

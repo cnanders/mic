@@ -60,6 +60,20 @@ classdef HardwareIOPlus < HandlePlus
         dWidthStep = 50;
         dWidthRange = 100;
         
+        dWidthPadApi = 0;
+        dWidthPadInitButton = 0;
+        dWidthPadInitState = 0;
+        dWidthPadName = 5;
+        dWidthPadVal = 0;
+        dWidthPadDest = 5;
+        dWidthPadPlay = 0;
+        dWidthPadJog = 0;
+        dWidthPadUnit = 0;
+        dWidthPadRel = 0;
+        dWidthPadZero = 0;
+        dWidthPadStores = 0;
+        dWidthPadRange = 5;
+        
         dWidth2 = 250;
         dHeight2 = 50;
         dPad2 = 0;
@@ -73,6 +87,7 @@ classdef HardwareIOPlus < HandlePlus
         cLabelDest = 'Goal'
         cLabelPlay = 'Go'
         cLabelStores = 'Stores'
+        cLabelRange = 'Range'
         cLabelUnit = 'Unit'
         cLabelJogL = '';
         cLabelJog = 'Step';
@@ -202,6 +217,13 @@ classdef HardwareIOPlus < HandlePlus
         % {logical 1x1} - disable the "I" part of HardwareIO (removes jog,
         % play, dest, stores)
         lDisableI = false
+        
+        % {logical 1x1} - ask the user if they are sure when clicking API
+        % button/toggle
+        lAskOnApiClick = true
+        % {logical 1x1} - ask the user if they are sure when clicking the
+        % Init button
+        lAskOnInitClick = true
                 
         uitxLabelName
         uitxLabelVal
@@ -215,6 +237,7 @@ classdef HardwareIOPlus < HandlePlus
         uitxLabelApi
         uitxLabelInit
         uitxLabelInitState
+        uitxLabelRange
         
         uitxRange
         
@@ -238,6 +261,8 @@ classdef HardwareIOPlus < HandlePlus
         
         eUnitChange
         eChange
+        eTurnOn
+        eTurnOff
     end
 
     
@@ -299,307 +324,219 @@ classdef HardwareIOPlus < HandlePlus
             if ~isempty(this.clock)
                 this.clock.add(@this.handleClock, this.id(), this.config.dDelay);
             end
+                                    %'BorderWidth',0, ... 
+
+            dHeight = this.dHeight;
+            if this.lShowLabels
+                dHeight = dHeight + this.dHeightLabel;
+            end
+
+            dWidth = this.getWidth();
+
+            this.hPanel = uipanel( ...
+                'Parent', hParent, ...
+                'Units', 'pixels', ...
+                'Title', blanks(0), ...
+                'Clipping', 'on', ...
+                'BackgroundColor', this.dColorBg, ...
+                'BorderWidth',0, ... 
+                'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent));
+            drawnow
+
+            %{
+            this.hAxes = axes( ...
+                'Parent', this.hPanel, ...
+                'Units', 'pixels', ...
+                'Position',MicUtils.lt2lb([0 0 this.dWidthStatus dHeight], this.hPanel),...
+                'XColor', [0 0 0], ...
+                'YColor', [0 0 0], ...
+                'HandleVisibility','on', ...
+                'Visible', 'off');
+
+            this.hImage = image(this.u8Bg);
+            set(this.hImage, 'Parent', this.hAxes);
+            %}
+
+
+            % set(this.hImage, 'CData', imread(fullfile(MicUtils.pathAssets(), 'HardwareIO.png')));
+
+            axis('image');
+            axis('off');
+
+            y_rel = -1;
+
+
+            %{
+            this.uibIndex.build(this.hPanel, this.dWidth - 36, 24+y_rel, 36, 12);
+            %}
+
+            dTop = -1;
+            dTop = 0;
+            dTopLabel = -1;
+            if this.lShowLabels
+                dTop = this.dHeightLabel;
+            end
+
+            dLeft = 1;
+
+            % Api toggle
+            if (this.lShowApi)
+                dLeft = dLeft + this.dWidthPadApi;
+                if this.lShowLabels
+                    % FIXME
+                    this.uitxLabelApi.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                end
+                this.uitApi.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                dLeft = dLeft + this.dWidthBtn; 
+            end
+
+
+            % Init button
+            if (this.lShowInitButton)
+                dLeft = dLeft + this.dWidthPadInitButton;
+                if this.lShowLabels
+                    % FIXME
+                    this.uitxLabelInit.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                end
+                this.uibInit.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                dLeft = dLeft + this.dWidthBtn; 
+            end
+
+            if (this.lShowInitState)
+                dLeft = dLeft + this.dWidthPadInitState;
+                if this.lShowLabels
+                    % FIXME
+                    this.uitxLabelInitState.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                end
+                this.uiilInitState.build(this.hPanel, dLeft, dTop);
+                dLeft = dLeft + this.dWidthBtn; 
+            end
+
+            % Name
+            if this.lShowName
+                dLeft = dLeft + this.dWidthPadName;
+                if this.lShowLabels
+                    this.uitxLabelName.build(this.hPanel, dLeft, dTopLabel, this.dWidthName, this.dHeightLabel);
+                end
+                this.uitxName.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthName, this.dHeightText);
+                dLeft = dLeft + this.dWidthName;
+            end
+
+
             
+            % Val
+            if this.lShowVal
+                dLeft = dLeft + this.dWidthPadVal;
+                if this.lShowLabels
+                    this.uitxLabelVal.build(this.hPanel, dLeft, dTopLabel, this.dWidthVal, this.dHeightLabel);
+                end
+                this.uitxVal.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthVal, this.dHeightText);
+                dLeft = dLeft + this.dWidthVal;
+            end
+
+            % Dest
+            if this.lShowDest
+                dLeft = dLeft + this.dWidthPadDest;
+                if this.lShowLabels
+                    this.uitxLabelDest.build(this.hPanel, dLeft, dTopLabel, this.dWidthDest, this.dHeightLabel);
+                end
+                this.uieDest.build(this.hPanel, dLeft, dTop, this.dWidthDest, this.dHeightEdit);
+                dLeft = dLeft + this.dWidthDest;
+            end
+
+
+            % Play
+            if this.lShowPlay
+                dLeft = dLeft + this.dWidthPadPlay;
+                if this.lShowLabels
+                    this.uitxLabelPlay.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                end
+                this.uibtPlay.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                dLeft = dLeft + this.dWidthBtn;
+
+            end 
+
+            % Jog
+            if this.lShowJog
+                dLeft = dLeft + this.dWidthPadJog;
+                if this.lShowLabels
+                    this.uitxLabelJogL.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                end
+                this.uibStepNeg.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                dLeft = dLeft + this.dWidthBtn;
+
+                if this.lShowLabels
+                    this.uitxLabelJog.build(this.hPanel, dLeft, dTopLabel, this.dWidthStep, this.dHeightLabel);
+                end
+                this.uieStep.build(this.hPanel, dLeft, dTop, this.dWidthStep, this.dHeightEdit);
+                dLeft = dLeft + this.dWidthStep;
+
+                if this.lShowLabels
+                    this.uitxLabelJogR.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
+                end
+                this.uibStepPos.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                dLeft = dLeft + this.dWidthBtn;
+
+            end
+
             
-            switch this.u8Layout
+
+            % Stores
+            if this.lShowStores
+                dLeft = dLeft + this.dWidthPadStores;
+                if this.lShowLabels
+                    this.uitxLabelStores.build(this.hPanel, dLeft, dTopLabel, this.dWidthStores, this.dHeight);
+                end
                 
-                case 1
-                    
-                                            %'BorderWidth',0, ... 
-                    
-                    dHeight = this.dHeight;
-                    if this.lShowLabels
-                        dHeight = dHeight + this.dHeightLabel;
-                    end
-                    
-                    dWidth = this.getWidth();
-                    
-                    this.hPanel = uipanel( ...
-                        'Parent', hParent, ...
-                        'Units', 'pixels', ...
-                        'Title', blanks(0), ...
-                        'Clipping', 'on', ...
-                        'BackgroundColor', this.dColorBg, ...
-                        'BorderWidth',0, ... 
-                        'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent));
-                    drawnow
+                % Only draw pulldown if not empty
+                if ~isempty(this.config.ceStores)
+                    this.uipStores.build(this.hPanel, dLeft, dTop, this.dWidthStores, this.dHeightPopup);
+                end
+                dLeft = dLeft + this.dWidthStores;
+            end
 
-                    %{
-                    this.hAxes = axes( ...
-                        'Parent', this.hPanel, ...
-                        'Units', 'pixels', ...
-                        'Position',MicUtils.lt2lb([0 0 this.dWidthStatus dHeight], this.hPanel),...
-                        'XColor', [0 0 0], ...
-                        'YColor', [0 0 0], ...
-                        'HandleVisibility','on', ...
-                        'Visible', 'off');
+            
 
-                    this.hImage = image(this.u8Bg);
-                    set(this.hImage, 'Parent', this.hAxes);
-                    %}
-                    
-                    
-                    % set(this.hImage, 'CData', imread(fullfile(MicUtils.pathAssets(), 'HardwareIO.png')));
-
-                    axis('image');
-                    axis('off');
-
-                    y_rel = -1;
-
-
-                    %{
-                    this.uibIndex.build(this.hPanel, this.dWidth - 36, 24+y_rel, 36, 12);
-                    %}
-                    
-                    dTop = -1;
-                    dTop = 0;
-                    dTopLabel = -1;
-                    if this.lShowLabels
-                        dTop = this.dHeightLabel;
-                    end
-                    
-                    dLeft = 1;
-                    
-                    % Api toggle
-                    if (this.lShowApi)
-                        if this.lShowLabels
-                            % FIXME
-                            this.uitxLabelApi.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
-                        end
-                        this.uitApi.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn; 
-                    end
-                    
-                    
-                    % Init button
-                    if (this.lShowInitButton)
-                        if this.lShowLabels
-                            % FIXME
-                            this.uitxLabelInit.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
-                        end
-                        this.uibInit.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn; 
-                    end
-                    
-                    if (this.lShowInitState)
-                        if this.lShowLabels
-                            % FIXME
-                            this.uitxLabelInitState.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
-                        end
-                        this.uiilInitState.build(this.hPanel, dLeft, dTop);
-                        dLeft = dLeft + this.dWidthBtn; 
-                    end
-                    
-                    % Need binary state indicator for isInitialized()
-                    
-                    
-                    % Name
-                    if this.lShowName
-                        dLeft = dLeft + 5;
-                        if this.lShowLabels
-                            this.uitxLabelName.build(this.hPanel, dLeft, dTopLabel, this.dWidthName, this.dHeightLabel);
-                        end
-                        this.uitxName.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthName, this.dHeightText);
-                        dLeft = dLeft + this.dWidthName;
-                    end
-                    
-                   
-                    % Val
-                    if this.lShowVal
-                        if this.lShowLabels
-                            this.uitxLabelVal.build(this.hPanel, dLeft, dTopLabel, this.dWidthVal, this.dHeightLabel);
-                        end
-                        this.uitxVal.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthVal, this.dHeightText);
-                        dLeft = dLeft + this.dWidthVal + 5;
-                    end
-                                        
-                    % Dest
-                    if this.lShowDest
-                        if this.lShowLabels
-                            this.uitxLabelDest.build(this.hPanel, dLeft, dTopLabel, this.dWidthDest, this.dHeightLabel);
-                        end
-                        this.uieDest.build(this.hPanel, dLeft, dTop, this.dWidthDest, this.dHeightEdit);
-                        dLeft = dLeft + this.dWidthDest;
-                    end
-                    
-                    
-                    % Play
-                    if this.lShowPlay
-                        if this.lShowLabels
-                            this.uitxLabelPlay.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
-                        end
-                        this.uibtPlay.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn;
-                        
-                    end 
-                    
-                    % Jog
-                    if this.lShowJog
-                        
-                        if this.lShowLabels
-                            this.uitxLabelJogL.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
-                        end
-                        this.uibStepNeg.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn;
-                        
-                        if this.lShowLabels
-                            this.uitxLabelJog.build(this.hPanel, dLeft, dTopLabel, this.dWidthStep, this.dHeightLabel);
-                        end
-                        this.uieStep.build(this.hPanel, dLeft, dTop, this.dWidthStep, this.dHeightEdit);
-                        dLeft = dLeft + this.dWidthStep;
-                        
-                        
-                        
-                        
-                        if this.lShowLabels
-                            this.uitxLabelJogR.build(this.hPanel, dLeft, dTopLabel, this.dWidthBtn, this.dHeightLabel);
-                        end
-                        this.uibStepPos.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn;
-                        
-                    end
-                    
-                    
-                    
-                   
-                    
-                    
-                    % Unit
-                    if this.lShowUnit
-                        if this.lShowLabels
-                            this.uitxLabelUnit.build(this.hPanel, dLeft, dTopLabel, this.dWidthUnit, this.dHeight);
-                        end
-                        this.uipUnit.build(this.hPanel, dLeft, dTop, this.dWidthUnit, this.dHeightPopup);
-                        dLeft = dLeft + this.dWidthUnit;
-                    end
-                    
-                    % Stores
-                    if this.lShowStores && ...
-                       ~isempty(this.config.ceStores)
-                        if this.lShowLabels
-                            this.uitxLabelStores.build(this.hPanel, dLeft, dTopLabel, this.dWidthStores, this.dHeight);
-                        end
-                        this.uipStores.build(this.hPanel, dLeft, dTop, this.dWidthStores, this.dHeightPopup);
-                        dLeft = dLeft + this.dWidthStores;
-                    end
-                    
-                     % Rel
-                    if this.lShowRel
-                        this.uitRel.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn;
-                    end
-                    
-                    % Zero
-                    
-                    if this.lShowZero
-                        this.uibZero.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
-                        dLeft = dLeft + this.dWidthBtn;
-                    end
-                    
-                    if this.lShowRange
-                        dLeft = dLeft + 5;
-                        this.uitxRange.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthRange, this.dHeightBtn)
-                        dLeft = dLeft + this.dWidthRange;
-                    end
-                    
-                    
-                case 2
-                    
-
-                    this.hPanel = uipanel( ...
-                        'Parent', hParent, ...
-                        'Units', 'pixels', ...
-                        'Title', blanks(0), ...
-                        'Clipping', 'on', ...
-                        'BorderWidth',0, ... 
-                        'Position', MicUtils.lt2lb([ ...
-                            dLeft ...
-                            dTop ...
-                            this.dWidth2 ...
-                            this.dHeight2], hParent));
-                    drawnow
-
-                    this.hAxes = axes( ...
-                        'Parent', this.hPanel, ...
-                        'Units', 'pixels', ...
-                        'Position',MicUtils.lt2lb([0 0 this.dWidthStatus this.dHeight2], this.hPanel),...
-                        'XColor', [0 0 0], ...
-                        'YColor', [0 0 0], ...
-                        'HandleVisibility','on', ...
-                        'Visible', 'off');
-
-                    this.hImage = image(this.u8Bg);
-                    set(this.hImage, 'Parent', this.hAxes);
-
-                    axis('image');
-                    axis('off');
-
-                    %{
-                    this.uibIndex.build(this.hPanel, this.dWidth - 36, 24+y_rel, 36, 12);
-                    %}
-
-                    
-                    % First row, from right to left
-                    
-                    dTop = this.dPad2;
-                    right = this.dWidth2;
-                    
-                    % Unit
-                    if this.lShowUnit
-                        right = right + 2 * this.dPad2 - this.dWidthUnit - this.dPad2;                     
-                        this.uipUnit.build(this.hPanel, right, dTop, this.dWidthUnit, this.dHeight);
-                    end
-
-                    
-                    right = right - 75 - 3;
-                    this.uitxVal.build(this.hPanel, right, 3 + dTop, 75, 12);
-                    
-                    dPad = 5;
-
-                    this.uitxName.build(this.hPanel, this.dWidthStatus + dPad, 3 + dTop, right - this.dWidthStatus - dPad, 12);
-                    
-                    % Second row, from right to left
-                    
-                    dTop = 24;
-                    right = this.dWidth2;
-                    
-                    if this.lShowZero
-                        right = right + 2 * this.dPad2 - this.dWidthBtn - this.dPad2; 
-                        this.uibZero.build(this.hPanel, right, dTop, this.dWidthBtn, this.dHeight);
-                    end
-                    
-                    if this.lShowRel
-                        right = right - this.dWidthBtn;
-                        this.uitRel.build(this.hPanel, right, dTop + 1, this.dWidthBtn, this.dHeight);
-                    end
-
-                    if this.lShowJog
-                        right = right - this.dWidthBtn;
-                        this.uibStepPos.build(this.hPanel, right, dTop, this.dWidthBtn, this.dHeight);
-
-                        right = right - 50;
-                        this.uieStep.build(this.hPanel, right, dTop, 50, this.dHeight);
-
-                        right = right - this.dWidthBtn;
-                        this.uibStepNeg.build(this.hPanel, right, dTop, this.dWidthBtn, this.dHeight);
-                    end
-                    
-                    if this.lShowPlay
-                        right = right - this.dWidthBtn;
-                        this.uibtPlay.build(this.hPanel, right, dTop, this.dWidthBtn, this.dHeight);
-                    end
-                    
-                    % Absorb rest of the width with the edit
-                    
-                    if this.lShowDest
-                        dWidth = right - this.dWidthStatus;
-                        this.uieDest.build(this.hPanel, this.dWidthStatus, dTop, dWidth, this.dHeight);
-                    end
-                    
+            % Range
+            if this.lShowRange
+                dLeft = dLeft + this.dWidthPadRange;
+                
+                dLeft = dLeft + this.dWidthPadStores;
+                if this.lShowLabels
+                    this.uitxLabelRange.build(this.hPanel, dLeft, dTopLabel, this.dWidthStores, this.dHeight);
+                end
+                
+                this.uitxRange.build(this.hPanel, dLeft, dTop + (this.dHeight - this.dHeightText)/2, this.dWidthRange, this.dHeightBtn)
+                dLeft = dLeft + this.dWidthRange;
             end
             
             
+            
+            % Unit
+            if this.lShowUnit
+                dLeft = dLeft + this.dWidthPadUnit;
+                if this.lShowLabels
+                    this.uitxLabelUnit.build(this.hPanel, dLeft, dTopLabel, this.dWidthUnit, this.dHeight);
+                end
+                this.uipUnit.build(this.hPanel, dLeft, dTop, this.dWidthUnit, this.dHeightPopup);
+                dLeft = dLeft + this.dWidthUnit;
+            end
+            
+            % Abs/Rel (to zero)
+            if this.lShowRel
+                dLeft = dLeft + this.dWidthPadRel;
+                this.uitRel.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                dLeft = dLeft + this.dWidthBtn;
+            end
 
+            % Zero
+            if this.lShowZero
+                dLeft = dLeft + this.dWidthPadZero;
+                this.uibZero.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dHeightBtn);
+                dLeft = dLeft + this.dWidthBtn;
+            end
+            
+                    
         end
 
 
@@ -801,6 +738,8 @@ classdef HardwareIOPlus < HandlePlus
                 this.setApiv([]); % This is calling the setter
             end
             
+            notify(this, 'eTurnOn');
+            
         end
         
         
@@ -823,6 +762,8 @@ classdef HardwareIOPlus < HandlePlus
             % this.setDestCalDisplay(this.valCalDisplay());
             % set(this.hImage, 'Visible', 'on');
             % set(this.hPanel, 'BackgroundColor', this.dColorOff);
+            
+            notify(this, 'eTurnOff');
         end
         
         function setApi(this, api)
@@ -1147,6 +1088,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelJogL.enable();
             this.uitxLabelJogR.enable();
             this.uitxLabelStores.enable();
+            this.uitxLabelRange.enable();
             this.uitxLabelPlay.enable();
             this.uitxLabelApi.enable();
             this.uitxLabelInit.enable();
@@ -1181,6 +1123,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelJogL.disable();
             this.uitxLabelJogR.disable();
             this.uitxLabelStores.disable();
+            this.uitxLabelRange.disable();
             this.uitxLabelPlay.disable();
             this.uitxLabelApi.disable();
             this.uitxLabelInit.disable();
@@ -1248,7 +1191,7 @@ classdef HardwareIOPlus < HandlePlus
             %activity ribbon on the right
             
             st1 = struct();
-            st1.lAsk        = true;
+            st1.lAsk        = this.lAskOnApiClick;
             st1.cTitle      = 'Switch?';
             st1.cQuestion   = 'Do you want to change from the virtual Api to the real Api?';
             st1.cAnswer1    = 'Yes of course!';
@@ -1257,7 +1200,7 @@ classdef HardwareIOPlus < HandlePlus
 
 
             st2 = struct();
-            st2.lAsk        = true;
+            st2.lAsk        = this.lAskOnApiClick;
             st2.cTitle      = 'Switch?';
             st2.cQuestion   = 'Do you want to change from the real Api to the virtual Api?';
             st2.cAnswer1    = 'Yes of course!';
@@ -1421,6 +1364,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitxLabelJog = UIText(this.cLabelJog, 'center');
             this.uitxLabelJogR = UIText(this.cLabelJogR, 'center');
             this.uitxLabelStores = UIText(this.cLabelStores);
+            this.uitxLabelRange = UIText(this.cLabelRange);
             
             this.uitApi.setTooltip(this.cTooltipApiOff);
             this.uitxName.setTooltip('The name of this device');
@@ -1781,52 +1725,50 @@ classdef HardwareIOPlus < HandlePlus
             dOut = 0;
                     
             if this.lShowApi
-               dOut = dOut + this.dWidthBtn;
+               dOut = dOut + this.dWidthPadApi + this.dWidthBtn;
             end
             
             if this.lShowInitButton
-               dOut = dOut + this.dWidthBtn;
+               dOut = dOut + this.dWidthPadInitButton + this.dWidthBtn;
             end
             
             if this.lShowInitState
-               dOut = dOut + this.dWidthBtn;
+               dOut = dOut + this.dWidthPadInitState + this.dWidthBtn;
             end
 
             if this.lShowName
-                dOut = dOut + 5; % padding
-                dOut = dOut + this.dWidthName;
+                dOut = dOut + this.dWidthPadName + this.dWidthName;
             end
             
             if this.lShowVal
-                dOut = dOut + this.dWidthVal + 5;
+                dOut = dOut + this.dWidthPadVal + this.dWidthVal;
             end
             
             if this.lShowDest
-                dOut = dOut + this.dWidthDest;
+                dOut = dOut + this.dWidthPadDest + this.dWidthDest;
             end
             if this.lShowPlay
-                dOut = dOut + this.dWidthBtn;
+                dOut = dOut + this.dWidthPadPlay + this.dWidthBtn;
             end
             if this.lShowJog
-                dOut = dOut + 2 * this.dWidthBtn + this.dWidthStep;
+                dOut = dOut + this.dWidthPadJog + 2 * this.dWidthBtn + this.dWidthStep;
             end
             
             if this.lShowUnit
-                dOut = dOut + this.dWidthUnit;
+                dOut = dOut + this.dWidthPadUnit + this.dWidthUnit;
             end
-            if this.lShowStores && ~isempty(this.config.ceStores)
-                dOut = dOut + this.dWidthStores;
+            if this.lShowStores % && ~isempty(this.config.ceStores)
+                dOut = dOut + this.dWidthPadStores + this.dWidthStores;
             end
             if this.lShowRel
-                dOut = dOut + this.dWidthBtn;
+                dOut = dOut + this.dWidthPadRel +  this.dWidthBtn;
             end
             if this.lShowZero
-                dOut = dOut + this.dWidthBtn;
+                dOut = dOut + this.dWidthPadZero + this.dWidthBtn;
             end
             
             if this.lShowRange
-                dOut = dOut + 5; % space
-                dOut = dOut + this.dWidthRange;
+                dOut = dOut + this.dWidthPadRange + this.dWidthRange;
             end
             
             dOut = dOut + 5;

@@ -676,6 +676,9 @@ classdef Clock < HandlePlus
             
             for n = 1:length(ceTaskFcnToDo)
                 
+%                 if ~isvalid(ceTaskFcnToDo{n})
+%                     continue
+%                 end
                 % Execute
                 try
                     
@@ -693,8 +696,8 @@ classdef Clock < HandlePlus
                     ceTaskFcnToDo{n}();                     
 
                 catch err
-                    % this.msg(getReport(err), 1);
-                    % rethrow(err);
+                    this.msg(getReport(err), 1);
+                    rethrow(err);
                 end
             end
             

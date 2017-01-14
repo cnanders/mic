@@ -59,6 +59,7 @@ classdef Keithley6482 < HandlePlus
         apiv
         api
         
+        lAskOnApiClick = true;
         lShowApi = true;
         lShowLabels = false;
         
@@ -939,7 +940,7 @@ classdef Keithley6482 < HandlePlus
             
             
             st1 = struct();
-            st1.lAsk        = true;
+            st1.lAsk        = this.lAskOnApiClick;
             st1.cTitle      = 'Switch?';
             st1.cQuestion   = 'Do you want to change from the virtual Api to the real Api?';
             st1.cAnswer1    = 'Yes of course!';
@@ -947,7 +948,7 @@ classdef Keithley6482 < HandlePlus
             st1.cDefault    = st1.cAnswer2;
 
             st2 = struct();
-            st2.lAsk        = true;
+            st2.lAsk        = this.lAskOnApiClick;
             st2.cTitle      = 'Switch?';
             st2.cQuestion   = 'Do you want to change from the real Api to the virtual Api?';
             st2.cAnswer1    = 'Yes of course!';

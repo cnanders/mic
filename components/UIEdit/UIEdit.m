@@ -40,6 +40,9 @@ classdef UIEdit < HandlePlus
         hUI % made private 2013.06.11 % made setAccess private 3013/06/20
         cTooltip = 'Tooltip: set me!';
         cKeyPressLast = '';
+        % {logical 1x1} - used to wrap all calls to notify to allow
+        % temporary disabling of notify
+        lNotify = true;
     end
 
 
@@ -138,7 +141,9 @@ classdef UIEdit < HandlePlus
             end  
             
             if uint8(this.cKeyPressLast) == 13
-                notify(this, 'eEnter');
+                if (this.lNotify)
+                    notify(this, 'eEnter');
+                end
             end
         end
 
@@ -431,7 +436,9 @@ classdef UIEdit < HandlePlus
                     this.xVal = uint64(eval(this.cData));
             end
 
-            notify(this,'eChange');
+            if this.lNotify
+                notify(this,'eChange');
+            end
 
         end
 
@@ -520,7 +527,11 @@ classdef UIEdit < HandlePlus
             
         end
 
-
+        function setValWithoutNotify(this, xVal)
+            this.lNotify = false;
+            this.setVal(xVal);
+            this.lNotify = true;
+        end
         function setVal(this, xVal)
            % @parameter {mixed 1x1} xVal: can be any type the UIEdit supports
 
@@ -587,7 +598,9 @@ classdef UIEdit < HandlePlus
          
          function onKeyRelease(this, src, evt)
              if uint8(evt.Character') == 13
-                 notify(this, 'eEnter');
+                 if this.lNotify
+                    notify(this, 'eEnter');
+                 end
              end
          end
          function uie_keyPressFcn(this, src, evt)
