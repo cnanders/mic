@@ -21,7 +21,7 @@ classdef TestKeithley6482 < HandlePlus
             this.clock = Clock('master');
             this.keithley6482 = Keithley6482(...
                 'clock', this.clock, ...
-                'lShowSettings', false, ...
+                'lShowSettings', true, ...
                 'lShowRange', true ...
             );
         
@@ -35,7 +35,7 @@ classdef TestKeithley6482 < HandlePlus
         function build(this)
             
             this.h = figure;
-            this.keithley6482.build(this.h, 10, 10);
+            this.keithley6482.build(this.h, 0, 0);
             
         end
         

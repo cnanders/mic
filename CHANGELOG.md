@@ -1,3 +1,13 @@
+# 1.0.0-alpha.39
+
+### HandlePlus
+- saveClassInstance() now does not save properties unless they have SetAccess = 'public'
+- loadClassInstance() now when it identifies a field that is a structure, instead of assuming it reference a class instance that extends HandlePlus, it checks that this.field is an object and that this.field has a method named 'loadClassInstance()' if both of these additional criteria are satisfied, it proceeds with recursively calling, i.e., this.field.loadClassInstance(stSave.field)
+
+### Keithley6482
+- Improved configurability by assigning some label and padding values to class properties\
+
+
 # 1.0.0-alpha.38
 
 ### UIEdit
