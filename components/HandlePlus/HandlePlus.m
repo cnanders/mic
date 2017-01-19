@@ -69,6 +69,15 @@ classdef HandlePlus < handle
                     continue
                 end
                 
+                if isempty(sSaveStruct.(ceFields{k}))
+                    cMsg = sprintf(...
+                        'loadClassInstance() skipping %s.  It is [] ', ...
+                        ceFields{k}...
+                    );
+                    this.msg(cMsg);
+                    continue
+                end
+                
                 % If this field represents a structure, recursively load children
                 % CNA 2016 FIXME.  This is a problem when a public property
                 % of a class is a structure.  Yes it is.  Need to check 

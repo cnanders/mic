@@ -866,7 +866,7 @@ classdef HardwareIOPlus < HandlePlus
         %   updates the position reading and the hio status (=/~moving)
         
             if this.lDeleted
-                % this.msg('handleClock() returning (already deleted)');
+                fprintf('handleClock() %s returning (already deleted)', this.cName);
                 return
             end
             
@@ -882,18 +882,7 @@ classdef HardwareIOPlus < HandlePlus
                 
                 this.dValRaw = this.getApi().get();  
                 
-                % Temp
-                % this.msg(sprintf('%1.3f', this.destCalDisplay()));
-                      
-                % update uitxVal
                 
-                % Precision can be a number, or an asterisk (*) to refer to an
-                % argument in the input list. For example, the input list
-                % ('%6.4f', pi) is equivalent to ('%*.*f', 6, 4, pi).
-                
-                this.updateDisplayValue();
-                
-                                
                 % 2014.05.19 
                 % Need to update a property lIsThere which is true when
                 % the destination and the position match within a tolerance
@@ -912,6 +901,8 @@ classdef HardwareIOPlus < HandlePlus
                     % The Api(V) doesn't implement isReady since this is a
                     % HardwareIO
                 end
+                
+                this.updateDisplayValue();
                 
                 lInitialized = this.getApi.isInitialized();
                 
@@ -1348,7 +1339,7 @@ classdef HardwareIOPlus < HandlePlus
             addlistener(this.uieStep, 'eChange', @this.onStepChange);
             addlistener(this.uibStepPos, 'eChange', @this.onStepPosPress);
             addlistener(this.uibStepNeg, 'eChange', @this.onStepNegPress);
-            addlistener(this.uibZero, 'eChange', @this.onZeroPress);
+            addlistener(this.uibZero, 'eChange', @this.onSetZeroPress);
                  
            
             
@@ -1511,6 +1502,10 @@ classdef HardwareIOPlus < HandlePlus
         end
         function updateDisplayValue(this)
             
+            % Precision can be a number, or an asterisk (*) to refer to an
+            % argument in the input list. For example, the input list
+            % ('%6.4f', pi) is equivalent to ('%*.*f', 6, 4, pi).
+                
            switch this.cConversion
                 case 'f'
                     
@@ -1652,8 +1647,55 @@ classdef HardwareIOPlus < HandlePlus
             
         end
         
-        function onZeroPress(this, src, evt)
+        
+        % Allow the user to set the current raw position to any desired calibrated value
+        function onSetPress(this, src, evt)
+                       
+            cePrompt = {'New calibrated value of current position:'};
+            cTitle = 'Input';
+            dLines = 1;
+            ceDefaultAns = {num2str(this.valCalDisplay())};
+            ceAnswer = inputdlg(...
+                cePrompt,...
+                cTitle,...
+                dLines,...
+                ceDefaultAns);
+            
+            if isempty(ceAnswer)
+                return
+            end
+              
+            % Two equations, one unknown.
+            %
+            % The motor is at raw position "RAW"
+            % cal0 = curent calibrated value at RAW 
+            % cal1 = future calibrated value at RAW 
+            % slope0 = slope before change (from config) (unaffected by
+            % this change)
+            % offset0 = offset before change (from config)
+            % offset1 = offset after change
+            %
+            % EQ1: cal0 = slope0 * (RAW - offset0)
+            % EQ2: cal1 = slope0 * (RAW - offset1)
+            % Subtract EQ1 from EQ2:
+            % cal1 - cal0 = slope0 * (-offset1 + offset0)
+            % Solve for offset1 (offsets are alway in RAW units)
+            % offset1 = offset0 - (cal1 - cal0)/slope0  
            
+            dNewOffset = this.unit().offset - (str2double(ceAnswer{1}) - this.valCalDisplay())/this.unit().slope;
+            this.dZeroRaw = dNewOffset;
+            
+            this.updateZeroTooltip();
+            % Force to "Rel" mode
+            this.uitRel.lVal = true;
+            
+        end
+        
+        function onSetZeroPress(this, src, evt)
+           
+            this.onSetPress(src, evt);
+            return;
+            
             this.dZeroRaw = this.valRaw(); % raw units            
             this.updateZeroTooltip();
             

@@ -1,3 +1,9 @@
+# 1.0.0-alpha.40
+
+### HardwareIOPlus
+- SetZero button now allows the user to set the current raw position to any desired calibrated value.  Prior to this change, the SetZero button set the current raw position to a calibrated value of 0.  This change adds more utility.  Internally, this button still sets dRawZero, but there is additional math required to figure out the dRawZero required to make it work.
+- In handleClock(), the call to updateDisplayVal() no comes after lReady is checked/set so the text color immediately displays correct color and doesn't have to wait for next clock cycle.
+
 # 1.0.0-alpha.39
 
 ### HandlePlus
