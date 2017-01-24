@@ -113,7 +113,16 @@ classdef UIText < HandlePlus
             end
 
         end
-        
+        % @param {double 1x3} dColor - RGB triplet, i.e., [1 1 0] [0.5 0.5
+        % 0]
+        function setBackgroundColor(this, dColor)
+            
+           if ~ishandle(this.hUI)
+                return
+            end
+            
+            set(this.hUI, 'BackgroundColor', dColor) 
+        end
         % @param {double 1x3} dColor - RGB triplet, i.e., [1 1 0] [0.5 0.5
         % 0]
         function setColor(this, dColor)

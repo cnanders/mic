@@ -1,3 +1,14 @@
+# 1.0.0-alpha.41
+
+### HardwareIOPlus
+- Now saves and loads: unit selection (UiPulldown), abs/rel mode (UiToggle), and dZeroRaw
+
+### UIText
+- new method setBackgroundColor()
+
+### MicUtils
+- gained some new utility methods
+
 # 1.0.0-alpha.40
 
 ### HardwareIOPlus

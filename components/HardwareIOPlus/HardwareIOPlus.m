@@ -13,13 +13,16 @@ classdef HardwareIOPlus < HandlePlus
     % Hungarian: hio
 
     properties (Constant)
-        
-
-        
+                
     end
 
     properties      
+        % {uint8 1x1} storage of the index of uipUnit
         u8UnitIndex = 1;
+        % {double 1x1 zero offset in raw units when in relative mode}
+        dZeroRaw = 0;
+        % {logical 1x1 value of uitRel}
+        lRelVal = false;
     end
 
     properties (SetAccess = private)
@@ -161,7 +164,6 @@ classdef HardwareIOPlus < HandlePlus
         %   because deleting one HardwareIO will delete the reference to
         %   the Config instance that the other Hardware IO is using
         config
-        dZeroRaw = 0;
         
         % @param {function_handle 1x1} [fhValidateDest =
         %   this.validateDest()] - a function that returns a
@@ -1609,27 +1611,44 @@ classdef HardwareIOPlus < HandlePlus
                 
         function load(this)
             
-            this.msg('load()', 7);
-
+            this.msg('load()');
+            
+            
             if exist(this.file(), 'file') == 2
                 load(this.file()); % populates variable s in local workspace
                 this.loadClassInstance(s); 
             end
             
+            % Update unit UiPopup to saved state
+            if  this.lShowUnit && ...
+                ~isempty(this.uipUnit)
+                this.uipUnit.u8Selected = this.u8UnitIndex;
+            end
+            
+            % Set dZeroRaw (happens automaticallY)
+            
+            % Update abs/rel UiToggle toggle to saved state
+            % The first set does not trigger a nofity (should probably
+            % address this at some point) so manually call the handler.
+
+            this.uitRel.lVal = this.lRelVal;
+            this.onRelChange([],[]);
             
         end
         
         function save(this)
             
-            this.msg('save()', 7);
+            this.msg('save()');
             
             % Create a nested recursive structure of all public properties
-            % s = this.saveClassInstance();
+            s = this.saveClassInstance();
             
             % Only want to save u8UnitIndex
             
+            %{
             s = struct();
             s.u8UnitIndex = this.u8UnitIndex;
+            %}
                                     
             % Save
             
@@ -1706,9 +1725,11 @@ classdef HardwareIOPlus < HandlePlus
         
         function onRelChange(this, src, evt)
            
+            this.msg('onRelChange');
             % Set the destination to the hardware value in the new
             % calibrated unit
             
+            this.lRelVal = this.uitRel.lVal;
             this.uieDest.setVal(this.valCalDisplay());
             this.updateRelTooltip();
             this.updateRange();
