@@ -240,7 +240,7 @@ classdef Clock < HandlePlus
         % See also INIT, BUILD, DELETE
             
             if nargin == 1
-                dPeriod = 5/1000;
+                dPeriod = 50/1000;
             end
             
             this.dPeriod = dPeriod;
@@ -676,6 +676,9 @@ classdef Clock < HandlePlus
             
             for n = 1:length(ceTaskFcnToDo)
                 
+%                 if ~isvalid(ceTaskFcnToDo{n})
+%                     continue
+%                 end
                 % Execute
                 try
                     

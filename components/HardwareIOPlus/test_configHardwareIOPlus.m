@@ -5,11 +5,11 @@ addpath(genpath(fullfile(cPath, '..', '..')));
 
 cPathConfig = fullfile(...
     cPath, ...
-    'config-default-stores.json' ...
+    'config-default.json' ...
 );
         
 tic
-config = ConfigHardwareIOPlus();
+config = ConfigHardwareIOPlus(cPathConfig);
 toc
 
 

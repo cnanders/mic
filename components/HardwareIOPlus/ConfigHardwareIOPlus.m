@@ -11,17 +11,28 @@ classdef ConfigHardwareIOPlus < HandlePlus
     end
     
     properties (SetAccess = private)
-        dDelay   % @prop {double} dDelay - the delay in seconds for UI updates
-        ceUnits  % @prop {cell of struct 1xm} ceUnits - list of unit definitions
-                 % @prop {char} ceUnits[].name - the name of the unit
-                 % @prop {double} ceUnits[].slope - the slope (cal = slope * (raw - offset))
-                 % @prop {double} ceUnits[].offset - the offset
-                 % @prop {double} ceUnits[].precision - the display precision
-        ceStores % @prop {cell of struct 1xm} ceStores - list of stored raw positions
-                 % @prop {char 1xm} ceStores[].name - the name of the
-                 % stored position
-                 % @prop {double 1x1} ceStores[].raw - the raw value of the
-                 % stored position
+        
+         
+         % {double 1x1} dDelay - the delay in seconds for UI updates
+         dDelay 
+         % {cell of struct 1xm} ceUnits - list of unit definitions
+         % {char} ceUnits[].name - the name of the unit
+         % {double} ceUnits[].slope - the slope (cal = slope * (raw - offset))
+         % {double} ceUnits[].offset - the offset
+         % {double} ceUnits[].precision - the display precision
+         ceUnits
+         
+         % {cell of struct 1xm} ceStores - list of stored raw positions
+         % {char 1xm} ceStores[].name - the name of the stored position
+         % {double 1x1} ceStores[].raw - the raw value of the stored position
+         ceStores 
+         
+         % {double 1x1} dStep - step size in raw units
+         dStep
+         % {double 1x1} dMin - min value in raw units
+         dMin
+         % {double 1x1} dMax - max value in raw units
+         dMax
     end
     
     properties (Access = private)
@@ -62,10 +73,12 @@ classdef ConfigHardwareIOPlus < HandlePlus
                     'config-default-stores.json' ...
                 );
                 cPath = this.cPathJsonDefault;
+                %{
                 this.msg(...
                     sprintf('setting default arg: %s', cPath), ...
                     3 ...
                 );
+                %}
                    
             end
             
@@ -107,8 +120,31 @@ classdef ConfigHardwareIOPlus < HandlePlus
                 this.ceStores = {}; % 0x0 cell
             end
             
+            if isfield(this.stJson, 'step')
+                this.dStep = this.stJson.step;
+            else
+                this.dStep = 0.1;
+            end
             
+            if isfield(this.stJson, 'min')
+                this.dMin = this.stJson.min;
+            else
+                this.dMin = -realmax('double');
+            end
             
+            if isfield(this.stJson, 'max')
+                this.dMax= this.stJson.max;
+            else
+                this.dMax = realmax('double');
+            end
+            
+            if ischar(this.dMin)
+                this.dMin = eval(this.dMin);
+            end
+            if ischar(this.dMax)
+                this.dMax = eval(this.dMax);
+            end
+                        
             % If slope, offset, precision are a string, run eval on them.
             % This allows using mathematical expressions for these values
             % in the JSON

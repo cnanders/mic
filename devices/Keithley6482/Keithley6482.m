@@ -13,19 +13,7 @@ classdef Keithley6482 < HandlePlus
         dSepVert2 = 25;
         dSepSection = 10;
         dWidthPanel = 255;
-        
-        
-        dWidthHioName = 90;
-        dWidthHioNameData = 50;
-        dWidthHioVal = 70;
-        dWidthHioStores = 90;
-        dWidthHioDest = 90;
-        
-        dBackgroundColor = [.94 .94 .94]
-        
-        dWidthName = 100;
-        dHeightText = 16;
-        
+         
         cTooltipApiOff = 'Connect to the real Api / hardware';
         cTooltipApiOn = 'Disconnect the real Api / hardware (go into virtual mode)';
 
@@ -46,6 +34,31 @@ classdef Keithley6482 < HandlePlus
     end
     
     properties (Access = protected)
+        
+        dWidthPadName = 5;
+        dWidthPadData = 0;
+        
+        dWidthHioName = 90;
+        dWidthHioNameData = 50;
+        dWidthHioVal = 70;
+        dWidthHioStores = 90;
+        dWidthHioDest = 90;
+        dWidthName = 100;
+        dHeightText = 16;
+        
+        cLabelName = 'Name';
+        cLabelValue = 'Val';
+        cLabelDest = 'Goal'
+        cLabelChannel1 = 'Channel 1';
+        cLabelChannel2 = 'Channel 2';
+        cLabelPanelRange1 = 'Range Channel 1';
+        cLabelPanelRange2 = 'Range Channel 2';
+        cLabelPanelSettings1 = 'Settings';
+        cLabelPanelSettings2 = 'Settings';
+        
+        dBackgroundColor = [.94 .94 .94]
+        
+        
         clock
         
         uitxName
@@ -59,7 +72,11 @@ classdef Keithley6482 < HandlePlus
         apiv
         api
         
+        lAskOnApiClick = true;
         lShowApi = true;
+        lShowName = true;
+        lShowDataChannel1 = true;
+        lShowDataChannel2 = true;
         lShowLabels = false;
         
         % {logical 1x1} build HIO UI for ADC period, avg filter and med filter
@@ -155,8 +172,13 @@ classdef Keithley6482 < HandlePlus
             this.api.init();
             this.api.connect();
             
+            %{
             this.hoData.setApi(ApiKeithley6482Data(this.api));
             this.hoData2.setApi(ApiKeithley6482Data2(this.api));
+            %}
+            
+            this.hoData.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'data', 1));
+            this.hoData2.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'data', 2));
             
             this.setApiRange();
             this.setApiSettings();
@@ -175,8 +197,15 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
+            %{
             this.hioRange.setApi(ApiKeithley6482Range(this.api));
             this.hiotxAutoRangeState.setApi(ApiKeithley6482AutoRangeState(this.api));
+            %}
+            
+            u8Channel = uint8(1);
+            this.hioRange.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'range', u8Channel));
+            this.hiotxAutoRangeState.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'auto-range-state', u8Channel));
+            
             
         end
         
@@ -185,8 +214,13 @@ classdef Keithley6482 < HandlePlus
             if ~this.lShowRange
                 return
             end
-            this.hioRange2.setApi(ApiKeithley6482Range2(this.api));
-            this.hiotxAutoRangeState2.setApi(ApiKeithley6482AutoRangeState2(this.api));
+            %this.hioRange2.setApi(ApiKeithley6482Range2(this.api));
+            %this.hiotxAutoRangeState2.setApi(ApiKeithley6482AutoRangeState2(this.api));
+            
+            u8Channel = uint8(2);
+            this.hioRange2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'range', u8Channel));
+            this.hiotxAutoRangeState2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'auto-range-state', u8Channel));
+            
            
         end
         
@@ -202,12 +236,25 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            this.hioADCPeriod.setApi(ApiKeithley6482AdcPeriod(this.api));
-            this.hiotxAvgFiltState.setApi(ApiKeithley6482AvgFiltState(this.api));
-            this.hiotxAvgFiltMode.setApi(ApiKeithley6482AvgFiltMode(this.api));
-            this.hioAvgFiltSize.setApi(ApiKeithley6482AvgFiltSize(this.api));
-            this.hiotxMedFiltState.setApi(ApiKeithley6482MedFiltState(this.api));
-            this.hioMedFiltRank.setApi(ApiKeithley6482MedFiltRank(this.api));
+%             this.hioADCPeriod.setApi(ApiKeithley6482AdcPeriod(this.api));
+%             this.hiotxAvgFiltState.setApi(ApiKeithley6482AvgFiltState(this.api));
+%             this.hiotxAvgFiltMode.setApi(ApiKeithley6482AvgFiltMode(this.api));
+%             this.hioAvgFiltSize.setApi(ApiKeithley6482AvgFiltSize(this.api));
+%             this.hiotxMedFiltState.setApi(ApiKeithley6482MedFiltState(this.api));
+%             this.hioMedFiltRank.setApi(ApiKeithley6482MedFiltRank(this.api));
+            
+            % ApiHardwareIOPlusFromKeithley
+            % ApiHardwareIOTextFromKeithley
+            % ApiHardwareOPlusFromKeithley
+            
+            u8Channel = uint8(1);
+            this.hioADCPeriod.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'med-filt-rank', u8Channel));
+
              
         end
         
@@ -223,16 +270,32 @@ classdef Keithley6482 < HandlePlus
             this.hiotxMedFiltState2.setApi(ApiKeithley6482MedFiltState2(this.api));
             this.hioMedFiltRank2.setApi(ApiKeithley6482MedFiltRank2(this.api));
             %}
+            
+            %{
+            % 2017.01.10 syntax
+            u8Channel = uint8(2);
+            this.hioADCPeriod2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState2.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank2.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'med-filt-rank', u8Channel));
+
+            %}
         end
         
         
         
         
         function setApiv(this, api)
+            
             this.apiv = api;
            
-            this.hoData.setApiv(ApiKeithley6482Data(this.apiv));
-            this.hoData2.setApiv(ApiKeithley6482Data2(this.apiv));
+            % this.hoData.setApiv(ApiKeithley6482Data(this.apiv));
+            % this.hoData2.setApiv(ApiKeithley6482Data2(this.apiv));
+            
+            this.hoData.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'data', 1));
+            this.hoData2.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'data', 2));
             
             this.setApivRange();
             this.setApivSettings();
@@ -251,8 +314,12 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            this.hioRange.setApiv(ApiKeithley6482Range(this.apiv));
-            this.hiotxAutoRangeState.setApiv(ApiKeithley6482AutoRangeState(this.apiv));
+            % this.hioRange.setApiv(ApiKeithley6482Range(this.apiv));
+            % this.hiotxAutoRangeState.setApiv(ApiKeithley6482AutoRangeState(this.apiv));
+            
+            u8Channel = uint8(1);
+            this.hioRange.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'range', u8Channel));
+            this.hiotxAutoRangeState.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'auto-range-state', u8Channel));
             
         end
         
@@ -261,9 +328,13 @@ classdef Keithley6482 < HandlePlus
             if ~this.lShowRange
                 return
             end
-            this.hioRange2.setApiv(ApiKeithley6482Range2(this.apiv));
-            this.hiotxAutoRangeState2.setApiv(ApiKeithley6482AutoRangeState2(this.apiv));
+            %this.hioRange2.setApiv(ApiKeithley6482Range2(this.apiv));
+            %this.hiotxAutoRangeState2.setApiv(ApiKeithley6482AutoRangeState2(this.apiv));
            
+            u8Channel = uint8(2);
+            this.hioRange2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'range', u8Channel));
+            this.hiotxAutoRangeState2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'auto-range-state', u8Channel));
+            
         end
         
         function setApivSettings(this)
@@ -278,12 +349,23 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
+            %{
             this.hioADCPeriod.setApiv(ApiKeithley6482AdcPeriod(this.apiv));
             this.hiotxAvgFiltState.setApiv(ApiKeithley6482AvgFiltState(this.apiv));
             this.hiotxAvgFiltMode.setApiv(ApiKeithley6482AvgFiltMode(this.apiv));
             this.hioAvgFiltSize.setApiv(ApiKeithley6482AvgFiltSize(this.apiv));
             this.hiotxMedFiltState.setApiv(ApiKeithley6482MedFiltState(this.apiv));
             this.hioMedFiltRank.setApiv(ApiKeithley6482MedFiltRank(this.apiv));
+            %}
+            
+            u8Channel = uint8(1);
+            this.hioADCPeriod.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'med-filt-rank', u8Channel));
+
              
         end
         
@@ -298,6 +380,16 @@ classdef Keithley6482 < HandlePlus
             this.hioAvgFiltSize2.setApiv(ApiKeithley6482AvgFiltSize2(this.apiv));
             this.hiotxMedFiltState2.setApiv(ApiKeithley6482MedFiltState2(this.apiv));
             this.hioMedFiltRank2.setApiv(ApiKeithley6482MedFiltRank2(this.apiv));
+            %}
+            
+            %{
+            u8Channel = uint8(2);
+            this.hioADCPeriod2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'adc-period', u8Channel));
+            this.hiotxAvgFiltState2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-state', u8Channel));
+            this.hiotxAvgFiltMode2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'avg-filt-mode', u8Channel));
+            this.hioAvgFiltSize2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'avg-filt-size', u8Channel));
+            this.hiotxMedFiltState2.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'med-filt-state', u8Channel));
+            this.hioMedFiltRank2.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'med-filt-rank', u8Channel));
             %}
         end
         
@@ -335,32 +427,41 @@ classdef Keithley6482 < HandlePlus
                 end
                 this.uitApi.build(this.hPanel, dLeft, dTop, this.dWidthBtn, this.dWidthBtn);
                 
+                dLeft = dLeft + this.dWidthBtn;
             end
             
-            this.uitxName.build(this.hPanel, ...
-                dLeft + this.dWidthBtn + 5, ... % left
-                dTop + (this.dHeightBtn - this.dHeightText)/2, ... % top
-                this.dWidthName, ... % width 
-                this.dHeightText ... % height
-            ); 
-        
-        
-                    
-                        
+            if this.lShowName
+                
+                dLeft = dLeft + this.dWidthPadName;
+                
+                this.uitxName.build(this.hPanel, ...
+                    dLeft, ... % left
+                    dTop + (this.dHeightBtn - this.dHeightText)/2, ... % top
+                    this.dWidthName, ... % width 
+                    this.dHeightText ... % height
+                );
+            
+                dLeft = dLeft + this.dWidthName;
+            end
+                  
             % this.uitxLabelChannel1.build(this.hPanel, dLeft, dTop, 60, this.dHeightText);
             % this.uitxLabelChannel2.build(this.hPanel, dLeft, dTop, 60, this.dHeightText);
 %             this.uitxLabelCurrent.build(this.hPanel, dLeft1 + 40, dTop, 60, this.dHeightText);
 %             this.uitxLabelRange.build(this.hPanel, dLeft2, dTop, 60, this.dHeightText);
 %             this.uitxLabelAutoRange.build(this.hPanel, dLeft3, dTop, 100, this.dHeightText);
           
-            dLeft = 150;
+            dTop = 8;
             
-            this.hoData.build(this.hPanel, dLeft, dTop);
-            dTop = dTop + this.dSepVert2;
-            this.hoData2.build(this.hPanel, dLeft, dTop);
+            if this.lShowDataChannel1
+                dLeft = dLeft + this.dWidthPadData;
+                this.hoData.build(this.hPanel, dLeft, dTop);
+                dTop = dTop + this.dSepVert2 - 5;
+            end
             
-
-                        
+            if this.lShowDataChannel2
+                this.hoData2.build(this.hPanel, dLeft, dTop);
+            end
+                                    
             % Settings
             this.buildRange1();
             this.buildRange2();
@@ -379,11 +480,11 @@ classdef Keithley6482 < HandlePlus
             this.hPanelRange1 = uipanel( ...
                 'Parent', this.hPanel, ...
                 'Units', 'pixels', ...
-                'Title', 'RANGE CH 1', ...
+                'Title', this.cLabelPanelRange1, ...
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 50 this.dWidth - 20 75], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 55 this.dWidth - 20 75], this.hPanel) ...
             );
             drawnow
             
@@ -405,11 +506,11 @@ classdef Keithley6482 < HandlePlus
             this.hPanelRange2 = uipanel( ...
                 'Parent', this.hPanel, ...
                 'Units', 'pixels', ...
-                'Title', 'RANGE CH 2', ...
+                'Title', this.cLabelPanelRange2, ...
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 130 this.dWidth - 20 75], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 135 this.dWidth - 20 75], this.hPanel) ...
             );
             drawnow
             
@@ -430,14 +531,19 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
+            dTop = 55;
+            if this.lShowRange
+                dTop = dTop + 160;
+            end
+            
             this.hPanelSettings1 = uipanel( ...
                 'Parent', this.hPanel, ...
                 'Units', 'pixels', ...
-                'Title', 'SETTINGS', ...
+                'Title', this.cLabelPanelSettings1, ...
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 210 this.dWidth - 20 195], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 195], this.hPanel) ...
             );
             drawnow
             
@@ -472,7 +578,7 @@ classdef Keithley6482 < HandlePlus
             this.hPanelSettings2 = uipanel( ...
                 'Parent', this.hPanel, ...
                 'Units', 'pixels', ...
-                'Title', 'SETTINGS CH 2', ...
+                'Title',  this.cLabelPanelSettings1, ...
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
@@ -854,12 +960,12 @@ classdef Keithley6482 < HandlePlus
         
             this.u8Inactive = imread(fullfile(...
                 MicUtils.pathAssets(), ...
-                'hiot-horiz-24-false.png'...
+                'hiot-horiz-24-false-yellow.png'...
             ));
             
             
             st1 = struct();
-            st1.lAsk        = true;
+            st1.lAsk        = this.lAskOnApiClick;
             st1.cTitle      = 'Switch?';
             st1.cQuestion   = 'Do you want to change from the virtual Api to the real Api?';
             st1.cAnswer1    = 'Yes of course!';
@@ -867,7 +973,7 @@ classdef Keithley6482 < HandlePlus
             st1.cDefault    = st1.cAnswer2;
 
             st2 = struct();
-            st2.lAsk        = true;
+            st2.lAsk        = this.lAskOnApiClick;
             st2.cTitle      = 'Switch?';
             st2.cQuestion   = 'Do you want to change from the real Api to the virtual Api?';
             st2.cAnswer1    = 'Yes of course!';
@@ -886,14 +992,14 @@ classdef Keithley6482 < HandlePlus
             this.uitApi.setTooltip(this.cTooltipApiOff);
             this.lhApi = addlistener(this.uitApi, 'eChange', @this.onApiChange);
 
-            this.uitxName = UIText('KEITHLEY 6482', 'left');            
+            this.uitxName = UIText(this.cLabelName, 'left');            
             cPathConfigData = fullfile(this.cPathConfig, 'config-data.json');
             
             
             configData = ConfigHardwareIOPlus(cPathConfigData);
             this.hoData = HardwareOPlus(...
                 'cName', sprintf('%s-data', this.cName), ...
-                'cLabel', 'CH1 (A)', ...
+                'cLabel', this.cLabelChannel1, ...
                 'config', configData, ...
                 'cConversion', 'e', ...
                 'lShowJog', false, ...
@@ -914,7 +1020,7 @@ classdef Keithley6482 < HandlePlus
             configData2 = ConfigHardwareIOPlus(cPathConfigData);            
             this.hoData2 = HardwareOPlus(...
                 'cName', sprintf('%s-data2', this.cName), ...
-                'cLabel', 'CH2 (A)', ...
+                'cLabel', this.cLabelChannel2, ...
                 'config', configData2, ...
                 'cConversion', 'e', ...
                 'lShowJog', false, ...
@@ -974,7 +1080,7 @@ classdef Keithley6482 < HandlePlus
             configRange = ConfigHardwareIOPlus(cPathConfigRange);
             this.hioRange = HardwareIOPlus(...
                 'cName', sprintf('%s-range', this.cName), ...
-                'cLabel', 'VALUE (A)', ...
+                'cLabel', 'Value (A)', ...
                 'config', configRange, ...
                 'cConversion', 'e', ...
                 'lShowName', true, ...
@@ -987,6 +1093,8 @@ classdef Keithley6482 < HandlePlus
                 'lShowStores', true, ...
                 'lShowApi', false, ...
                 'lShowLabels', false, ...
+                'dWidthPadName', 0, ...
+                'dWidthPadStores', 5, ...
                 'dWidthName', this.dWidthHioName, ...
                 'dWidthVal', this.dWidthHioVal, ...
                 'dWidthStores', this.dWidthHioStores, ...
@@ -1028,7 +1136,7 @@ classdef Keithley6482 < HandlePlus
             configRange2 = ConfigHardwareIOPlus(cPathConfigRange);
             this.hioRange2 = HardwareIOPlus(...
                 'cName', sprintf('%s-range2', this.cName), ...
-                'cLabel', 'VALUE (A)', ...
+                'cLabel', 'Value (A)', ...
                 'config', configRange2, ...
                 'cConversion', 'e', ...
                 'lShowName', true, ...
@@ -1041,6 +1149,8 @@ classdef Keithley6482 < HandlePlus
                 'lShowStores', true, ...
                 'lShowApi', false, ...
                 'lShowLabels', false, ...
+                'dWidthPadName', 0, ...
+                'dWidthPadStores', 5, ...
                 'dWidthName', this.dWidthHioName, ...
                 'dWidthVal', this.dWidthHioVal, ...
                 'dWidthStores', this.dWidthHioStores, ...
@@ -1068,7 +1178,7 @@ classdef Keithley6482 < HandlePlus
                 'cLabel', 'adc period (ms)', ...
                 'config', configADCPeriod, ...
                 'cLabelDest', 'Command', ...
-                'cLabelName', 'NAME', ...
+                'cLabelName', 'Name', ...
                 'lShowJog', false, ...
                 'lShowUnit', false, ...
                 'lShowRel', false, ...
@@ -1077,6 +1187,7 @@ classdef Keithley6482 < HandlePlus
                 'lShowApi', false, ...
                 'lShowLabels', true, ...
                 'lShowPlay', false, ...
+                'dWidthPadName', 0, ...
                 'dWidthName', this.dWidthHioName, ...
                 'dWidthVal', this.dWidthHioVal, ...
                 'dWidthStores', this.dWidthHioStores, ...
@@ -1123,6 +1234,8 @@ classdef Keithley6482 < HandlePlus
                 'cName', sprintf('%s-avg-filt-size', this.cName), ...
                 'cLabel', 'avg. filter size', ...
                 'config', configAvgFiltSize, ...
+                'dWidthPadName', 0, ...
+                'dWidthPadStores', 5, ...
                 'dWidthName', this.dWidthHioName, ...
                 'dWidthVal', this.dWidthHioVal, ...
                 'dWidthStores', this.dWidthHioStores, ...
@@ -1160,6 +1273,8 @@ classdef Keithley6482 < HandlePlus
                 'cName', sprintf('%s-med-filter-rank', this.cName), ...
                 'cLabel', 'med. filter rank', ...
                 'config', configMedFiltRank, ...
+                'dWidthPadName', 0, ...
+                'dWidthPadStores', 5, ...
                 'dWidthName', this.dWidthHioName, ...
                 'dWidthVal', this.dWidthHioVal, ...
                 'dWidthStores', this.dWidthHioStores, ...

@@ -69,14 +69,40 @@ classdef HandlePlus < handle
                     continue
                 end
                 
+                if isempty(sSaveStruct.(ceFields{k}))
+                    cMsg = sprintf(...
+                        'loadClassInstance() skipping %s.  It is [] ', ...
+                        ceFields{k}...
+                    );
+                    this.msg(cMsg);
+                    continue
+                end
+                
                 % If this field represents a structure, recursively load children
                 % CNA 2016 FIXME.  This is a problem when a public property
-                % of a class is a structure
+                % of a class is a structure.  Yes it is.  Need to check 
                 
-                if isstruct(sSaveStruct.(ceFields{k}))
-                    this.msg(sprintf('loadClassInstance() recursive on %s', ceFields{k}), 9);
+                % If the field is a structure, it could reference a Class
+                % instance that extends HandlePlus.  If it does, want to 
+                % recursively call.  But we need to be sure.  
+                % 1) Is the field is a structure
+                % 2) If (1), is the this.field an object?
+                % 3) If (2), does this.field have a 'loadClassInstance'
+                % method?
+                
+                
+                
+                if isstruct(sSaveStruct.(ceFields{k})) && ...
+                   isobject(this.(ceFields{k})) && ...
+                   any(strcmp('loadClassInstance', methods(this.(ceFields{k}))))
                     
-                     this.(ceFields{k}).loadClassInstance(sSaveStruct.(ceFields{k}));
+                    cMsg = sprintf(...
+                        'loadClassInstance() recursive on %s.  Field references < HandlePlus ', ...
+                        ceFields{k}...
+                    );
+                    this.msg(cMsg);
+                    
+                    this.(ceFields{k}).loadClassInstance(sSaveStruct.(ceFields{k}));
                 else
                     
                     % Otherwise, add this field value to the class
@@ -102,7 +128,11 @@ classdef HandlePlus < handle
                             % It is also not (access = private) 
                             % in this case, we can set it
                     
-                            this.msg(sprintf('loadClassInstance() setting %s', ceFields{k}), 9);
+                            cMsg = sprintf(...
+                                'loadClassInstance() setting %s', ...
+                                ceFields{k}...
+                            );
+                            this.msg(cMsg);
                             % sSaveStruct.(ceFields{k})
                             this.(ceFields{k}) = sSaveStruct.(ceFields{k});
                         end
@@ -129,11 +159,50 @@ classdef HandlePlus < handle
             % Loop through properties:
             for k = 1:length(ceProperties)
                 
+                % 2017.01.17 CNA
+                % Making it so we don't try to save properties with
+                % SetAccess = private. This code looks for the property
+                % on "this", which is the class calling the
+                % saveClassInstance() method.  If it can't find the
+                % property, it means it isn't public.
+
+                mp = findprop(this, ceProperties{k});  % returns instance of meta.property
+
+                if isempty(mp)
+                    cMsg = sprintf(...
+                        'saveClassInstance() skipping %s. Cannot be found.', ...
+                        ceProperties{k} ...
+                    );
+                    this.msg(cMsg);
+                    continue
+                end
+                
+                if strcmp(mp.SetAccess, 'private')
+                    % Not settable
+                    cMsg = sprintf(...
+                        'saveClassInstance() skipping %s. SetAccess is private.', ...
+                        ceProperties{k} ...
+                    );
+                    this.msg(cMsg);
+                    continue;
+                end
+                
+                if mp.Constant
+                    cMsg = sprintf(...
+                        'saveClassInstance() skipping %s. It is a Constant.', ...
+                        ceProperties{k} ...
+                    );
+                    this.msg(cMsg);
+                    continue;
+                end
+                
+               
+                
                 % If this property is an object, recursively save children
                 if isobject(this.(ceProperties{k}))  %  && ... ishandle(this.(ceProperties{k})
                
                     cMsg = sprintf(...
-                        'saveClassStructure() property %s IS object, recursively calling', ...
+                        'saveClassInstance() recursively calling on %s. Is object', ...
                         ceProperties{k} ...
                     );
                     this.msg(cMsg);
@@ -142,16 +211,16 @@ classdef HandlePlus < handle
                     % Otherwise, add this property to the save structure
                 else
                     cMsg = sprintf(...
-                        'saveClassStructure() setting property %s', ...
+                        'saveClassInstance() saving %s', ...
                         ceProperties{k} ...
                     );
                     this.msg(cMsg);
                     
                     % Check if property is constant:
-                    mpProp = findprop(this, ceProperties{k});
-                    if ~mpProp.Constant
+                    % mpProp = findprop(this, ceProperties{k});
+                    % if ~mpProp.Constant
                         sSaveStruct.(ceProperties{k}) = this.(ceProperties{k});
-                    end
+                    % end
                 end
             end
             
