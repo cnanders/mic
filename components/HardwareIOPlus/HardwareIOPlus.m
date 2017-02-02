@@ -680,11 +680,16 @@ classdef HardwareIOPlus < HandlePlus
                 cUnit = this.unit().name;
             end
             
+            if ~this.lShowDest
+                return
+            end
+            
             % Convert from the passed unit to raw, then convert from raw to
             % the display unit
             
             dRaw = this.cal2raw(dCal, cUnit, this.uitRel.lVal);
-            this.uieDest.setVal(this.raw2cal(dRaw, this.unit().name, this.uitRel.lVal));
+            dDisplay = this.raw2cal(dRaw, this.unit().name, this.uitRel.lVal)
+            this.uieDest.setVal(dDisplay);
             
            
         end
@@ -766,7 +771,13 @@ classdef HardwareIOPlus < HandlePlus
             % set(this.hImage, 'Visible', 'off');
                         
             % Update destination values to match device values
-            this.setDestCalDisplay(this.valCalDisplay());
+            
+            % 2017.01.09 THIS LINE IS FUCKING EVERYTHING AND I DO NOT KNOW WHY
+            
+            if ~this.lDisableI
+                % dVal = this.valCalDisplay()
+                % this.setDestCalDisplay(dVal);
+            end
             
             % Kill the Apiv
             if ~isempty(this.apiv) && ...
@@ -794,7 +805,10 @@ classdef HardwareIOPlus < HandlePlus
             this.uitApi.lVal = false;
             this.uitApi.setTooltip(this.cTooltipApiOff);
             
-            this.setDestCalDisplay(this.valCalDisplay());
+            % THIS LINE IS FUCKING THINGS AND I DO NOT KNOW WHY
+            if ~this.lDisableI
+                % this.setDestCalDisplay(this.valCalDisplay());
+            end
             % set(this.hImage, 'Visible', 'on');
             % set(this.hPanel, 'BackgroundColor', this.dColorOff);
         end
