@@ -1,3 +1,8 @@
+# 1.0.0-alpha.42
+
+### UIButton
+
+Added setText() method
 
 # 1.0.0-alpha.41
 
