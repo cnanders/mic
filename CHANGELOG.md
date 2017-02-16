@@ -1,4 +1,68 @@
+
+# 1.0.0-alpha.41
+
+### HardwareIOPlus
+- Now saves and loads: unit selection (UiPulldown), abs/rel mode (UiToggle), and dZeroRaw
+
+### UIText
+- new method setBackgroundColor()
+
+### MicUtils
+- gained some new utility methods
+
+# 1.0.0-alpha.40
+
+### HardwareIOPlus
+- SetZero button now allows the user to set the current raw position to any desired calibrated value.  Prior to this change, the SetZero button set the current raw position to a calibrated value of 0.  This change adds more utility.  Internally, this button still sets dRawZero, but there is additional math required to figure out the dRawZero required to make it work.
+- In handleClock(), the call to updateDisplayVal() no comes after lReady is checked/set so the text color immediately displays correct color and doesn't have to wait for next clock cycle.
+
+# 1.0.0-alpha.39
+
+### HandlePlus
+- saveClassInstance() now does not save properties unless they have SetAccess = 'public'
+- loadClassInstance() now when it identifies a field that is a structure, instead of assuming it reference a class instance that extends HandlePlus, it checks that this.field is an object and that this.field has a method named 'loadClassInstance()' if both of these additional criteria are satisfied, it proceeds with recursively calling, i.e., this.field.loadClassInstance(stSave.field)
+
+### Keithley6482
+- Improved configurability by assigning some label and padding values to class properties
+
+
+# 1.0.0-alpha.38
+
+### UIEdit
+- New private property lNotify used to wrap all calls to notify to allow temporary disabling of notify on setVal() [see below]
+- New method setValWithoutNotify() equivalent to setVal() but does not notify 'eChange' event
+
+### HardwareIOPlus
+- Added dWidthPad* properties to allow padding any of each configurable UI component
+- New properties lAskOnApiClick and lAskOnInitClick allow configuring if it shows confirmation dialog when these buttons are clicked.
+- Now dispatches 'eTurnOff' on turnOff() and 'eTurnOn' on turnOn()
+
+### Keithley6482 
+- New property lAskOnApiClick allows configuring if it shows confirmation dialog when the 
+API button is clicked.
+
+
 # 1.0.0-alpha.37
+
+### ConfigHardwareIOPlus
+- Now supports optional 'step' property which is the step in raw units.
+- If not provided in config.json, defaults to 0.1
+- Now supports optional 'min' and 'max' values (raw unit).  When not provided, defaults to +/-maxreal()
+
+### HardwareIOPlus
+- Now sets uieStep.val() to config.step on load
+- Now has option lShowRange.  When true, displays the range [config.min, config.max]
+- Now changes value color during moves
+
+
+### Keithley6482
+- Added dTimeout property to set the timeout
+- Now supports setting the baud rate of serial communication
+- Refactored the device API wrappers.  Now have HardwareIOPlusFromKeithley, HardwareIOTextFromKeithley, HardwareOPlusFromKeithley.  
+- Deleted all previous API wrappers
+- Now when lShowSettings = true and lShowRange = false, draws settings at correct height
+- delete() method now calls disconnect() method and calls delete({serial})
+
 
 ### Keithley6517a
 - All wrappers of ApiKeithley6517a that implement InterfaceHardwareIOPlus now implement initialize() and isInitialized() methods to they satisfy the  requirements of the updates to InterfaceHardwareIOPlus Abstract class that were added in v1.0.0-alpha.35

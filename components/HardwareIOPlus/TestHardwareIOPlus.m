@@ -32,8 +32,15 @@ classdef TestHardwareIOPlus < HandlePlus
         
         function this = TestHardwareIOPlus()
               
-            this.clock = Clock('master');           
-            this.config = ConfigHardwareIOPlus();
+            this.clock = Clock('master');   
+            [cDirThis, cName, cExt] = fileparts(mfilename('fullpath'));
+
+            cPathConfig = fullfile(...
+                cDirThis, ...
+                'config-default-offset.json' ...
+            );
+
+            this.config = ConfigHardwareIOPlus(cPathConfig);
             
             
              %'lShowLabels', false, ...
@@ -49,7 +56,8 @@ classdef TestHardwareIOPlus < HandlePlus
                 'lShowStores', true, ...
                 'lShowUnit', true, ...
                 'lShowInitButton', true, ...
-                'lShowInitState', true, ...
+                'lShowInitState', false, ...
+                'lShowRange', true, ...
                 'cConversion' , 'e', ... % exponential notaion
                 'fhValidateDest', @this.validateDest ...
             );
@@ -92,7 +100,8 @@ classdef TestHardwareIOPlus < HandlePlus
         end
         
         function delete(this)
-            this.msg('delete', 5);
+            this.msg('delete()');
+            
             delete(this.hio);
             delete(this.clock);
         end

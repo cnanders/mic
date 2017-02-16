@@ -25,6 +25,82 @@ classdef MicUtils
     %% Static Methods
     methods (Static)
 
+        % @param {cell of struct 1xm} ce - data, i.e.,
+        % ce{1}.car = 'ferrari'
+        % ce{2}.car = 'tesla'
+        % ce{1}.location = 'San Francisco'
+        % ce{2}.location = 'Los Angeles'
+        % @return {struct array 1xm} st
+        % st(1).car = 'ferrari'
+        % st(2).car = 'tesla'
+        
+        function st = cellOfSt2structAr(ce)
+            
+            % {double 1xm} - list of indexes of ce that are not empty
+            % https://www.mathworks.com/matlabcentral/answers/42283-index-non-empty-cells-in-cell-array
+            dIndex = find(~cellfun(@isempty, ce));
+            
+            if isempty(dIndex)
+                st = struct();
+                return;
+            end
+            % {cell of struct 1xm} - subset of ce that contains non-empty
+            % structures
+            ceSub = ce(dIndex);
+            
+            % Initialize 1 x length(ceSub) list of structures.  Each structure
+            % in the list is a clone of ce{1} so it has correct properties.
+           
+            st = repmat(ceSub{1}, length(ceSub), 1);
+            
+            % Overwrite each element of st with the corresponding
+            % element of the ceSub
+            
+            for n = 1:length(ceSub)
+                if isempty(ceSub{n})
+                    continue
+                end
+                st(n) = ceSub{n};
+            end
+            
+        end
+        
+        function cTruncated = truncate(cText, dLength, lFront)
+        %ABBREVIATE truncate a string to the number of specified characters
+        %   @param {char 1xm} cText - the text string
+        %   @param {double 1x1} dLength - desired length
+        %   @param {logical 1x1} lFront - true if you want beginning cut,
+        %       false if you want end cut
+        %   @return {char 1xm} - truncated text string
+        
+            if nargin < 3
+                dLength = 30;
+            end
+            
+            if nargin < 4
+                lFront = false;
+            end
+            
+            if length(cText) > dLength
+                if lFront
+                    cTruncated = sprintf('...%s', cText(end - dLength : end));
+                else
+                    cTruncated = sprintf('%s...', cText(1 : dLength));
+                end
+            else
+                cTruncated = cText;
+            end
+            
+        end
+        
+        % Convert a relative directory path into a canonical path
+        % i.e., C:\A\B\..\C becomes C:\A\C.  Uses java io interface
+        
+        function c = path2canonical(cPath)
+           jFile = java.io.File(cPath);
+           c = char(jFile.getCanonicalPath);
+        end
+        
         
         function c = pathAssets()
             [cPath, cName, cExt] = fileparts(mfilename('fullpath'));

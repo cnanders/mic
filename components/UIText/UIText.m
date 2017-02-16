@@ -21,7 +21,7 @@ classdef UIText < HandlePlus
         cFontWeight
         dFontSize
         cTooltip = 'Tooltip: set me!';
-        
+        dColorBg = [.94 .94 .94]; % MATLAB default
     end
     
     
@@ -62,10 +62,10 @@ classdef UIText < HandlePlus
             this.hUI = uicontrol( ...
                 'Parent', hParent, ...
                 'HorizontalAlignment', this.cHorizontalAlignment, ...
-                'FontWeight', this.cFontWeight, ...
-                'FontSize', this.dFontSize, ...
+                'FontWeight', this.cFontWeight, ... % 'FontSize', this.dFontSize, ...
                 'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent), ...
                 'Style', 'text', ...
+                'BackgroundColor', this.dColorBg, ...
                 'TooltipString', this.cTooltip, ...
                 'String', this.cVal ...
                 );
@@ -113,6 +113,27 @@ classdef UIText < HandlePlus
             end
 
         end
+        % @param {double 1x3} dColor - RGB triplet, i.e., [1 1 0] [0.5 0.5
+        % 0]
+        function setBackgroundColor(this, dColor)
+            
+           if ~ishandle(this.hUI)
+                return
+            end
+            
+            set(this.hUI, 'BackgroundColor', dColor) 
+        end
+        % @param {double 1x3} dColor - RGB triplet, i.e., [1 1 0] [0.5 0.5
+        % 0]
+        function setColor(this, dColor)
+            
+            if ~ishandle(this.hUI)
+                return
+            end
+            
+            set(this.hUI, 'ForegroundColor', dColor)
+            
+        end
         
         function setTooltip(this, cText)
         %SETTOOLTIP
@@ -135,6 +156,11 @@ classdef UIText < HandlePlus
                 set(this.hUI, 'Enable', 'off');
             end
             
+        end
+        
+        function delete(this)
+            cMsg = sprintf('delete() %s', this.cVal);
+            % this.msg(cMsg);
         end
        
        
