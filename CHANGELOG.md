@@ -1,3 +1,9 @@
+# 1.0.0-alpha.37
+
+### Keithley6517a
+- All wrappers of ApiKeithley6517a that implement InterfaceHardwareIOPlus now implement initialize() and isInitialized() methods to they satisfy the  requirements of the updates to InterfaceHardwareIOPlus Abstract class that were added in v1.0.0-alpha.35
+
+
 # 1.0.0-alpha.36
 
 ### Keithley6482

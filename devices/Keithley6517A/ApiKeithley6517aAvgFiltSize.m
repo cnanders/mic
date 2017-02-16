@@ -1,6 +1,7 @@
 classdef ApiKeithley6517aAvgFiltSize < InterfaceApiHardwareIOPlus
 
     properties (Access = private)
+        % {< ApiKeithley6517a 1x1}
         api
     end
     
@@ -28,6 +29,13 @@ classdef ApiKeithley6517aAvgFiltSize < InterfaceApiHardwareIOPlus
         
         
         function index(this) % index
+        end
+        
+        function initialize(this)
+        end
+        
+        function l = isInitialized(this)
+            l = true;
         end
         
    end

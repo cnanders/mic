@@ -1,6 +1,7 @@
 classdef ApiKeithley6517aAutoRangeState < InterfaceApiHardwareIOText
     
     properties (Access = private)
+        % {< ApiKeithley6517a 1x1}
         api
     end
     

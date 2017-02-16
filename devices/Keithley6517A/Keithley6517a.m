@@ -84,7 +84,7 @@ classdef Keithley6517a < HandlePlus
         
         % listener handles
         lhApi
-        lhAutoRangeStat
+        lhAutoRangeState
         lhAvgFiltState
         lhMedFiltState
         

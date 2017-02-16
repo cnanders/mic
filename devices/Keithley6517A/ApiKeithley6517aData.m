@@ -1,6 +1,7 @@
 classdef ApiKeithley6517aData < InterfaceApiHardwareOPlus
     
     properties (Access = private)
+        % {< ApiKeithley6517a 1x1}
         api
     end
     
@@ -12,6 +13,10 @@ classdef ApiKeithley6517aData < InterfaceApiHardwareOPlus
         
         function d = get(this) % retrieve value
             d = this.api.getDataLatest();
+        end
+        
+        function l = isInitialized(true)
+            l = false;
         end
         
     end
