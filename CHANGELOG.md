@@ -1,3 +1,9 @@
+# 1.0.0-alpha.42
+
+### UIButton
+
+Added setText() method
+
 # 1.0.0-alpha.41
 
 ### HardwareIOPlus
@@ -22,7 +28,7 @@
 - loadClassInstance() now when it identifies a field that is a structure, instead of assuming it reference a class instance that extends HandlePlus, it checks that this.field is an object and that this.field has a method named 'loadClassInstance()' if both of these additional criteria are satisfied, it proceeds with recursively calling, i.e., this.field.loadClassInstance(stSave.field)
 
 ### Keithley6482
-- Improved configurability by assigning some label and padding values to class properties\
+- Improved configurability by assigning some label and padding values to class properties
 
 
 # 1.0.0-alpha.38
@@ -61,6 +67,11 @@ API button is clicked.
 - Deleted all previous API wrappers
 - Now when lShowSettings = true and lShowRange = false, draws settings at correct height
 - delete() method now calls disconnect() method and calls delete({serial})
+
+
+### Keithley6517a
+- All wrappers of ApiKeithley6517a that implement InterfaceHardwareIOPlus now implement initialize() and isInitialized() methods to they satisfy the  requirements of the updates to InterfaceHardwareIOPlus Abstract class that were added in v1.0.0-alpha.35
+
 
 # 1.0.0-alpha.36
 
