@@ -16,7 +16,6 @@ classdef HandlePlus < handle
     %}
     
     
-    
     properties (Access = protected)
         u8verbosity = 5;
     end
