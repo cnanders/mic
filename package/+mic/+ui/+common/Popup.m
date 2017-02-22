@@ -1,4 +1,4 @@
-classdef UIPopup < HandlePlus
+classdef Popup < mic.Base
     
     % uip
     
@@ -15,14 +15,14 @@ classdef UIPopup < HandlePlus
     
     properties
         
-        u8Selected      % get selected index (force uint8)
+        u8Selected = uint8(1)     % get selected index (force uint8)
         % cSelected
 
     end
     
     properties (SetAccess = private)
         
-        ceOptions       % cell array of mixed type
+        ceOptions = {'one' 'two' 'three'}      % cell array of mixed type
     end
     
     properties (Access = private)
@@ -43,16 +43,18 @@ classdef UIPopup < HandlePlus
     methods
         
        % constructor
-       
-       function this= UIPopup( ....
-                ceOptions, ...
-                cLabel, ...
-                lShowLabel ...
-                )
+       % LEGACY ORDER ceOptions,cLabel, lShowLabel ...
+       function this = Popup(varargin)
                         
-            this.setOptions(ceOptions);
-            this.cLabel = cLabel;
-            this.lShowLabel = lShowLabel;
+            for k = 1 : 2: length(varargin)
+                % this.msg(sprintf('passed in %s', varargin{k}));
+                if this.hasProp( varargin{k})
+                    this.msg(sprintf('settting %s', varargin{k}), 3);
+                    this.(varargin{k}) = varargin{k + 1};
+                end
+            end
+            
+            this.setOptions(this.ceOptions);
             
        end
        
@@ -63,7 +65,7 @@ classdef UIPopup < HandlePlus
                
                this.hLabel = uicontrol( ...
                     'Parent', hParent, ...
-                    'Position', MicUtils.lt2lb([dLeft dTop dWidth 20], hParent),...
+                    'Position', mic.Utils.lt2lb([dLeft dTop dWidth 20], hParent),...
                     'Style', 'text', ...
                     'String', this.cLabel, ...
                     'FontWeight', 'Normal',...
@@ -77,7 +79,7 @@ classdef UIPopup < HandlePlus
            this.hUI = uicontrol( ...
                 'Parent', hParent, ...
                 'BackgroundColor', 'white', ...
-                'Position', MicUtils.lt2lb([dLeft dTop dWidth dHeight], hParent), ...
+                'Position', mic.Utils.lt2lb([dLeft dTop dWidth dHeight], hParent), ...
                 'Style', 'popupmenu', ...
                 'String', this.ceOptions, ...
                 'Callback', @this.cb, ...
