@@ -1,0 +1,16 @@
+{
+ 	
+ 	"delay": 1,
+    "stores": [
+        {
+            "name": "pos a",
+            "val": "pos a"
+        },
+        {
+            "name": "pos b",
+            "val": "pos b"
+        }
+    ]
+}	
+	
+	
