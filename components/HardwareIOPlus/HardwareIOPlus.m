@@ -871,14 +871,10 @@ classdef HardwareIOPlus < HandlePlus
             end
             
             try
-                
-                
-               
+                               
                 % 2016.11.02 CNA always cast as double.  Underlying unit
                 % may not be double
-                
-                this.msg('handleClock() device.get()');
-                
+                                
                 if ~this.lDisableI
                     this.lReady = this.getApi().isReady();
                     this.updatePlayButton()
@@ -931,7 +927,7 @@ classdef HardwareIOPlus < HandlePlus
                 
             end %try/catch
 
-            this.msg('handleClock() end');
+            % this.msg('handleClock() end');
         end 
         
         function dOut = valCal(this, cUnit)

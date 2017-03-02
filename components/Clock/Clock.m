@@ -174,7 +174,7 @@ classdef Clock < HandlePlus
     
     properties (Access = private)
         lBusy = false;
-        lEcho = true;                      % Print statements
+        lEcho = false;                      % Print statements
         t                                   % Timer
         
         
@@ -689,7 +689,7 @@ classdef Clock < HandlePlus
                             sum(lItems), ...
                             ceTaskNameToDo{n} ...
                         );
-                        this.msg(cMsg, 3);
+                        this.msg(cMsg, 6);
                     % end
                     
                     
