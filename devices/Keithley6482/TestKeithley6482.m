@@ -26,9 +26,12 @@ classdef TestKeithley6482 < HandlePlus
             );
         
             % Set the Api
+            this.keithley6482.setApi(ApivKeithley6482);
+            %{
             this.keithley6482.setApi(ApiKeithley6482(...
                 'cPort', 'COM2' ...
             ));
+            %}
             
         end
         

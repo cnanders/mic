@@ -77,6 +77,13 @@ classdef UIButton < HandlePlus
             end
 
         end
+        
+        function setText(this, cText)
+            if ~ishandle(this.hUI)
+                return
+            end
+            set(this.hUI, 'String', cText);
+        end
 
         %% Event handlers
         function cb(this, src, evt)
