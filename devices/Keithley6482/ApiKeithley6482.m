@@ -62,7 +62,13 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         end
         
         function connect(this)
-            fopen(this.s); 
+            try
+                fopen(this.s); 
+            catch
+                disp('Error connecting to Keithley, check ethernet and power to the Keithley NPORT unit');
+                disp('Press any key to continue');
+                pause;
+            end
         end
         
         function disconnect(this)

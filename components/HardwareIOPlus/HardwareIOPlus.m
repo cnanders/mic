@@ -72,7 +72,7 @@ classdef HardwareIOPlus < HandlePlus
         dWidthPadPlay = 0;
         dWidthPadJog = 0;
         dWidthPadUnit = 0;
-        dWidthPadRel = 0;
+        dWidthPadRel = 5;
         dWidthPadZero = 0;
         dWidthPadStores = 0;
         dWidthPadRange = 5;
@@ -1167,9 +1167,9 @@ classdef HardwareIOPlus < HandlePlus
                 case 2
                     this.u8Bg = imread(fullfile(MicUtils.pathAssets(), 'hio-bg-50x5-red.png'));
             end
-            this.u8Rel = imread(fullfile(MicUtils.pathAssets(), 'axis-rel-24-3.png'));
-            this.u8Abs = imread(fullfile(MicUtils.pathAssets(), 'axis-abs-24-3.png'));
-            this.u8Zero = imread(fullfile(MicUtils.pathAssets(), 'axis-zero-24-2.png'));
+            this.u8Rel = imread(fullfile(MicUtils.pathAssets(), 'abs-rel-rel-24-3.png'));
+            this.u8Abs = imread(fullfile(MicUtils.pathAssets(), 'abs-rel-abs-24.png'));
+            this.u8Zero = imread(fullfile(MicUtils.pathAssets(), 'set-24.png'));
             
             this.u8ToggleOn = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-true.png'));
             this.u8ToggleOff = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-false-yellow.png'));
@@ -1248,7 +1248,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitRel = UIToggle( ...
                 'abs', ... % off (showing abs)
                 'rel', ... % on (showing rel)
-                false, ...
+                true, ...
                 this.u8Abs, ...
                 this.u8Rel ...
             );
@@ -1671,7 +1671,7 @@ classdef HardwareIOPlus < HandlePlus
         function onSetPress(this, src, evt)
                        
             cePrompt = {'New calibrated value of current position:'};
-            cTitle = 'Input';
+            cTitle = 'Set Value';
             dLines = 1;
             ceDefaultAns = {num2str(this.valCalDisplay())};
             ceAnswer = inputdlg(...

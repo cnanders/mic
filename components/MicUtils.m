@@ -73,11 +73,11 @@ classdef MicUtils
         %       false if you want end cut
         %   @return {char 1xm} - truncated text string
         
-            if nargin < 3
+            if nargin < 2
                 dLength = 30;
             end
             
-            if nargin < 4
+            if nargin < 3
                 lFront = false;
             end
             

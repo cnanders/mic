@@ -1,3 +1,8 @@
+# 1.0.0-alpha.42
+
+### HardwareIOPlus
+- Updated abs/rel and setZero images
+
 # 1.0.0-alpha.41
 
 ### HardwareIOPlus
