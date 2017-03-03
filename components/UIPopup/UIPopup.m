@@ -29,9 +29,9 @@ classdef UIPopup < HandlePlus
         
         hLabel
         hUI
-        lShowLabel
-        cLabel
-        cTooltip = 'Tooltip: set me!';
+        lShowLabel = true
+        cLabel = 'Fix me'
+        cTooltip = 'Tooltip: set me!'
     end
     
     

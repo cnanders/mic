@@ -211,8 +211,14 @@ classdef StateScan < HandlePlus
 
         function stop(this)
         %STOP abort the scan, reset back to start index
+        
+            % 2017.02.02 Be advised that is is possible to call this in the
+            % middle of an acquire.  Make sure that fhOnAbort doesn't
+            % modify anything that would be unexpected in the middle of the
+            % acquire.
+            
              this.removeClockTask();
-             this.u8Index = 1;
+             % this.u8Index = 1;
              
              % notify(this,'eScanComplete');
              this.fhOnAbort(this.stUnit);

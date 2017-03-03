@@ -1,3 +1,15 @@
+
+# 1.0.0-alpha.43
+
+### HardwareIOPlus
+- Removed dValRaw property and no longer explicitly calling `getApi().get()` in `onClock()` since it only used to update the display value and `updateDisplayValue()` already calls it.  This solved the problem that `get()` was called two times sequentially in every `onClock()`
+
+# 1.0.0-alpha.42.1
+
+### HardwareIOPlus
+- Updated abs/rel and setZero images
+
+
 # 1.0.0-alpha.42
 
 ### UIButton

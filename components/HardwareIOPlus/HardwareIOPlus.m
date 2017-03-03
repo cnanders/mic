@@ -72,7 +72,7 @@ classdef HardwareIOPlus < HandlePlus
         dWidthPadPlay = 0;
         dWidthPadJog = 0;
         dWidthPadUnit = 0;
-        dWidthPadRel = 0;
+        dWidthPadRel = 5;
         dWidthPadZero = 0;
         dWidthPadStores = 0;
         dWidthPadRange = 5;
@@ -174,8 +174,6 @@ classdef HardwareIOPlus < HandlePlus
         %   implements this (which may access more than one HardwareIO
         %   instance) implements this function
         fhValidateDest
-        dValRaw % value in raw units (updated by clock)
-        
         
         uipStores % UIPopupStruct
         
@@ -890,29 +888,10 @@ classdef HardwareIOPlus < HandlePlus
             end
             
             try
-                
-                %AW 2014-9-9
-                %TODO : this should be refactored in a readRaw function
-                %see HardwareO for example
-                %make sure diode etc have it also
-               
+                               
                 % 2016.11.02 CNA always cast as double.  Underlying unit
                 % may not be double
-                
-                this.dValRaw = this.getApi().get();  
-                
-                
-                % 2014.05.19 
-                % Need to update a property lIsThere which is true when
-                % the destination and the position match within a tolerance
-                % (for now we will set tolerance to zero)
-                % 2014.11.19: changing this so that there is a tolerance:
-                
-                
-                % 2014.11.20: Linking this check to the api call which asks
-                % stage if it's ready, which means that it's either stopped
-                % or reached its target.
-                
+                                
                 if ~this.lDisableI
                     this.lReady = this.getApi().isReady();
                     this.updatePlayButton()
@@ -923,7 +902,7 @@ classdef HardwareIOPlus < HandlePlus
                 
                 this.updateDisplayValue();
                 
-                lInitialized = this.getApi.isInitialized();
+                lInitialized = this.getApi().isInitialized();
                 
                 % Update visual appearance of button to reflect state
                 if this.lShowInitButton
@@ -965,6 +944,7 @@ classdef HardwareIOPlus < HandlePlus
                 
             end %try/catch
 
+            % this.msg('handleClock() end');
         end 
         
         function dOut = valCal(this, cUnit)
@@ -996,8 +976,7 @@ classdef HardwareIOPlus < HandlePlus
         end
         
         function dOut = valRaw(this)
-        %VALRAW Get the value (not the destination) in raw units. This
-        %value is also accessible with the dValRaw property
+        %VALRAW Get the value (not the destination) in raw units. 
            dOut = this.getApi().get(); 
         end
         
@@ -1184,9 +1163,9 @@ classdef HardwareIOPlus < HandlePlus
                 case 2
                     this.u8Bg = imread(fullfile(MicUtils.pathAssets(), 'hio-bg-50x5-red.png'));
             end
-            this.u8Rel = imread(fullfile(MicUtils.pathAssets(), 'axis-rel-24-3.png'));
-            this.u8Abs = imread(fullfile(MicUtils.pathAssets(), 'axis-abs-24-3.png'));
-            this.u8Zero = imread(fullfile(MicUtils.pathAssets(), 'axis-zero-24-2.png'));
+            this.u8Rel = imread(fullfile(MicUtils.pathAssets(), 'abs-rel-rel-24-3.png'));
+            this.u8Abs = imread(fullfile(MicUtils.pathAssets(), 'abs-rel-abs-24.png'));
+            this.u8Zero = imread(fullfile(MicUtils.pathAssets(), 'set-24.png'));
             
             this.u8ToggleOn = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-true.png'));
             this.u8ToggleOff = imread(fullfile(MicUtils.pathAssets(), 'hiot-horiz-24-false-yellow.png'));
@@ -1265,7 +1244,7 @@ classdef HardwareIOPlus < HandlePlus
             this.uitRel = UIToggle( ...
                 'abs', ... % off (showing abs)
                 'rel', ... % on (showing rel)
-                false, ...
+                true, ...
                 this.u8Abs, ...
                 this.u8Rel ...
             );
@@ -1688,7 +1667,7 @@ classdef HardwareIOPlus < HandlePlus
         function onSetPress(this, src, evt)
                        
             cePrompt = {'New calibrated value of current position:'};
-            cTitle = 'Input';
+            cTitle = 'Set Value';
             dLines = 1;
             ceDefaultAns = {num2str(this.valCalDisplay())};
             ceAnswer = inputdlg(...

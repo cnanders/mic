@@ -2,8 +2,6 @@
 
 % Purges the workspace of all variables, classes, timers, etc.
 
-
-
 % close all executes the 'CloseRequestFunction' of every window that has a
 % visible handle.
 
