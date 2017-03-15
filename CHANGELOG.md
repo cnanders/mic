@@ -1,3 +1,8 @@
+# 1.0.0-alpha.45
+
+### HardwareIOPlus
+When using inverted units and an offset such that the calibrated values surround zero, `updateRange()` now properly shows a dual range from [-inf -X] [Y inf].
+
 # 1.0.0-alpha.44
 
 ### ConfigHardwareIOPlus
@@ -5,7 +10,7 @@
 
 ### HardwareIOPlus
 - Updated `cal2raw()` and `raw2cal()` to support inverse units.
-- Updated `updateRange()` to support inverse units
+- Updated `updateRange()` to support inverse units, which includes a check to see if dMin and dMax surround zero.  If they do, there is a dual range from [-inf -X] [Y inf].
 
 
 # 1.0.0-alpha.43

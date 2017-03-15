@@ -1495,21 +1495,24 @@ classdef HardwareIOPlus < HandlePlus
                 % does, there will be two ranges. One from [-inf to 1/dMin]
                 % and one from [1/dMax to +inf]
                 
-                if this.config.dMin < 0 && this.config.dMax > 0
-                    dMinNeg = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
-                    dMinPos = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
+                dCalMin = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
+                dCalMax = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
+                    
+                    
+                if dCalMin < 0 && dCalMax > 0
                     
                     cVal = sprintf(...
                         '[-inf, %.*f] [%.*f, inf]', ...
                         this.unit().precision, ...
-                        dMinNeg, ...
+                        dCalMin, ...
                         this.unit().precision, ...
-                        dMinPos ...
+                        dCalMax ...
                     );
                 else
                     
-                    % The min value of the inverse unit will be 1/rangeMax
-                    % The max value of the inverse unit is 1/rangeMin
+                    % Since we are inverting, the min value will be the cal
+                    % val of dMax and the max value will be the cal value
+                    % of dMin
                     
                     dMin = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
                     dMax = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
