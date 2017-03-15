@@ -21,6 +21,7 @@ classdef HardwareIOPlus < HandlePlus
         u8UnitIndex = 1;
         % {double 1x1 zero offset in raw units when in relative mode}
         dZeroRaw = 0;
+        
         % {logical 1x1 value of uitRel}
         lRelVal = false;
     end
@@ -1486,17 +1487,60 @@ classdef HardwareIOPlus < HandlePlus
                 return
             end
             
-            dMin = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
-            dMax = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
+            stUnitDef = this.unit() ;
+             
+            if stUnitDef.invert
+                
+                % Need to check of the min/max range surrounds zero.  If it
+                % does, there will be two ranges. One from [-inf to 1/dMin]
+                % and one from [1/dMax to +inf]
+                
+                if this.config.dMin < 0 && this.config.dMax > 0
+                    dMinNeg = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
+                    dMinPos = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
+                    
+                    cVal = sprintf(...
+                        '[-inf, %.*f] [%.*f, inf]', ...
+                        this.unit().precision, ...
+                        dMinNeg, ...
+                        this.unit().precision, ...
+                        dMinPos ...
+                    );
+                else
+                    
+                    % The min value of the inverse unit will be 1/rangeMax
+                    % The max value of the inverse unit is 1/rangeMin
+                    
+                    dMin = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
+                    dMax = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
+
+                    cVal = sprintf(...
+                        '[%.*f, %.*f]', ...
+                        this.unit().precision, ...
+                        dMin, ...
+                        this.unit().precision, ...
+                        dMax ...
+                    );
+
+                    
+                end
+                
+            else
+                dMin = this.raw2cal(this.config.dMin, this.unit().name, this.uitRel.lVal);
+                dMax = this.raw2cal(this.config.dMax, this.unit().name, this.uitRel.lVal);
+
+                cVal = sprintf(...
+                    '[%.*f, %.*f]', ...
+                    this.unit().precision, ...
+                    dMin, ...
+                    this.unit().precision, ...
+                    dMax ...
+                );
+                
+            end
             
-            cVal = sprintf(...
-                '[%.*f, %.*f]', ...
-                this.unit().precision, ...
-                dMin, ...
-                this.unit().precision, ...
-                dMax ...
-            );
-            this.uitxRange.cVal = cVal;            
+            this.uitxRange.cVal = cVal; 
+            
         end
         function updateDisplayValue(this)
             
@@ -1565,15 +1609,34 @@ classdef HardwareIOPlus < HandlePlus
         % See also RAW2CAL
         
             stUnitDef = this.config.unit(cUnit);
-                    
+            
+            
+            % INVERT == false
             % cal = slope * (raw - offset)
             % (cal / slope) + offset = raw
             
+            
+            % INVERT == true
+            % cal = slope * (raw - offset)^-1
+            % slope / cal = raw - offset
+            % raw = slope / cal + offset
+            
+            
+            
             if (lRel)
                 % Offset is replaced by the stored dZeroRaw in rel mode
-                dOut = dCal/stUnitDef.slope + this.dZeroRaw;
+                
+                if stUnitDef.invert
+                    dOut = stUnitDef.slope / dCal + this.dZeroRaw;
+                else
+                    dOut = dCal/stUnitDef.slope + this.dZeroRaw;
+                end
             else
-                dOut = dCal/stUnitDef.slope + stUnitDef.offset;
+                if stUnitDef.invert
+                    dOut = stUnitDef.slope / dCal + stUnitDef.offset;
+                else
+                    dOut = dCal/stUnitDef.slope + stUnitDef.offset;
+                end
             end
 
         end
@@ -1594,9 +1657,17 @@ classdef HardwareIOPlus < HandlePlus
             
             if (lRel)
                 % Offset is replaced by the stored dZeroRaw in rel mode
-                dOut = stUnitDef.slope * (dRaw - this.dZeroRaw);
+                if (stUnitDef.invert)
+                    dOut = stUnitDef.slope * (dRaw - this.dZeroRaw)^-1;
+                else
+                    dOut = stUnitDef.slope * (dRaw - this.dZeroRaw);
+                end
             else
-                dOut = stUnitDef.slope * (dRaw - stUnitDef.offset);
+                if stUnitDef.invert
+                    dOut = stUnitDef.slope * (dRaw - stUnitDef.offset)^-1;
+                else
+                    dOut = stUnitDef.slope * (dRaw - stUnitDef.offset);
+                end
             end
             
             
@@ -1695,10 +1766,19 @@ classdef HardwareIOPlus < HandlePlus
             % Subtract EQ1 from EQ2:
             % cal1 - cal0 = slope0 * (-offset1 + offset0)
             % Solve for offset1 (offsets are alway in RAW units)
-            % offset1 = offset0 - (cal1 - cal0)/slope0  
+            % offset1 = offset0 - (cal1 - cal0)/slope0 
+            
+            % 2017.03.15 This works the same way if invert is true,
+            % fortunately.  I didn't write out the math but I think two
+            % things cancel 1: there are different equations since in
+            % invert mode the equation is cal = slope * (raw - offset)^-1
+            % additionally, you have to consider that the value the person
+            % types in is in inverse units.
            
             dNewOffset = this.unit().offset - (str2double(ceAnswer{1}) - this.valCalDisplay())/this.unit().slope;
             this.dZeroRaw = dNewOffset;
+            
+            
             
             this.updateZeroTooltip();
             % Force to "Rel" mode

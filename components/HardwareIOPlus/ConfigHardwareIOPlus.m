@@ -20,6 +20,7 @@ classdef ConfigHardwareIOPlus < HandlePlus
          % {double} ceUnits[].slope - the slope (cal = slope * (raw - offset))
          % {double} ceUnits[].offset - the offset
          % {double} ceUnits[].precision - the display precision
+         % {logical} ceUnits[].invert - tre if you want y = m(1/x) + b
          ceUnits
          
          % {cell of struct 1xm} ceStores - list of stored raw positions
@@ -161,6 +162,14 @@ classdef ConfigHardwareIOPlus < HandlePlus
 
                 if ischar(this.ceUnits{n}.precision)
                     this.ceUnits{n}.precision = eval(this.ceUnits{n}.precision);
+                end
+                
+                
+                if ~isfield(this.ceUnits{n}, 'invert')
+                    % Default to false
+                    this.ceUnits{n}.invert = false;
+                else
+                    this.ceUnits{n}.invert = eval(this.ceUnits{n}.invert);
                 end
             end
             

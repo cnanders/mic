@@ -1,3 +1,12 @@
+# 1.0.0-alpha.44
+
+### ConfigHardwareIOPlus
+- Added support for “invert” property in config.  Defaults to false if not provided in the configuration file
+
+### HardwareIOPlus
+- Updated `cal2raw()` and `raw2cal()` to support inverse units.
+- Updated `updateRange()` to support inverse units
+
 
 # 1.0.0-alpha.43
 

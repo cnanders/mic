@@ -1,15 +1,16 @@
-[cPath, cName, cExt] = fileparts(mfilename('fullpath'));            
+[cDirThis, cName, cExt] = fileparts(mfilename('fullpath'));            
 
 % Add mic library
-addpath(genpath(fullfile(cPath, '..', '..')));
+cDirLib = fullfile(cDirThis, '..', '..');
+addpath(genpath(cDirLib));
 
-cPathConfig = fullfile(...
-    cPath, ...
-    'config-default.json' ...
+cDirThisConfig = fullfile(...
+    cDirThis, ...
+    'config-inverse.json' ...
 );
         
 tic
-config = ConfigHardwareIOPlus(cPathConfig);
+config = ConfigHardwareIOPlus(cDirThisConfig);
 toc
 
 
