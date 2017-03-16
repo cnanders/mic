@@ -42,6 +42,8 @@ classdef HardwareIOPlus < HandlePlus
         %   tall. 2 = narrow, twice as tall. 
         u8Layout = uint8(1); 
         % lIsThere 
+        
+        dValApivDefault = 0
 
     end
 
@@ -1920,7 +1922,7 @@ classdef HardwareIOPlus < HandlePlus
         
         function api = newApiv(this)
         %@return {ApivHardwareIO}
-            api = ApivHardwareIOPlus(this.cName, 0, this.clock);
+            api = ApivHardwareIOPlus(this.cName, this.dValApivDefault, this.clock);
         end
         
         
