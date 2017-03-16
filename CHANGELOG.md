@@ -1,3 +1,9 @@
+# 1.0.0-alpha.46
+
+### HardwareIOPlus
+
+- Added property dValApivDefault to allow setting the defatult value of the virtual API on instantiation.
+
 # 1.0.0-alpha.45
 
 ### HardwareIOPlus
