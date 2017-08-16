@@ -24,6 +24,11 @@ classdef ApivKeithley6482 < InterfaceKeithley6482
         dMean = 10e-6;
         % {double 1x1} - standard deviation of reported current
         dSig = 1e-6;
+        
+        ceOffsetState = {'OFF', 'OFF'}
+        dOffsetValue = [1.1e-6, 1.2e-6]
+        
+        
     end
 
     methods
@@ -213,7 +218,82 @@ classdef ApivKeithley6482 < InterfaceKeithley6482
         
         function d = read(this, u8Ch)
             d = this.dMean + this.dSig*randn(1);
-        end  
+        end 
+        
+        %% OFFSET (CH1)
+         
+        % Sets the offset to the current reading
+        function setChannel1OffsetValueToCurrentReading(this)
+           this.dOffsetValue(1) = 1.25e-6;
+        end
+        
+        
+        % @param {double 1x1} dVal - the desired offset
+        function setChannel1OffsetValue(this, dVal)
+            this.dOffsetValue(1) = dVal;
+        end
+        
+        % @param {char 1xm} cVal - the state: "ON" of "OFF"
+        function setChannel1OffsetState(this, cVal)
+            this.ceOffsetState{1} = cVal;
+        end
+        
+        function d = getChannel1OffsetValue(this)
+            d = this.dOffsetValue(1);
+        end
+        
+        % @return {char 1xm} "ON" or "OFF"
+        function c = getChannel1OffsetState(this)
+            c = this.ceOffsetState{1};
+        end
+        
+        % When CALC3 is enabled, the returned value will include the offset
+        function d = getChannel1CalcResult(this)
+           switch lower(this.ceOffsetState{1})
+               case "on"
+                   d = this.read(1) - this.dOffsetValue(1);
+               case "off"
+                   d = this.read(1);
+           end
+        end
+        
+        
+        %% OFFSET (CH2)
+        
+        % Sets the offset to the current reading
+        function setChannel2OffsetValueToCurrentReading(this)
+           this.dOffsetValue(2) = 1.4e-6;
+        end
+        
+        
+        % @param {double 1x1} dVal - the desired offset
+        function setChannel2OffsetValue(this, dVal)
+            this.dOffsetValue(2) = dVal;
+        end
+        
+        % @param {char 1xm} cVal - the state: "ON" of "OFF"
+        function setChannel2OffsetState(this, cVal)
+            this.ceOffsetState{2} = cVal;
+        end
+        
+        function d = getChannel2OffsetValue(this)
+            d = this.dOffsetValue(2);
+        end
+        
+        % @return {char 1xm} "ON" or "OFF"
+        function c = getChannel2OffsetState(this)
+            c = this.ceOffsetState{2};
+        end
+        
+        % When CALC3 is enabled, the returned value will include the offset
+        function d = getChannel2CalcResult(this)
+           switch lower(this.ceOffsetState{2})
+               case "on"
+                   d = this.read(2) - this.dOffsetValue(2);
+               case "off"
+                   d = this.read(2);
+           end
+        end
 
     end
 

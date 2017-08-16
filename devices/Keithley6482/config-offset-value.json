@@ -1,0 +1,13 @@
+{
+	"delay": 1,
+	"units": [
+		{
+			"name": "Amps",
+			"slope": 1,
+			"offset": 0,
+			"precision": 3
+		}
+	]
+}	
+	
+	

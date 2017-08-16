@@ -318,7 +318,7 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         end
         
         % Sets the offset to the current reading
-        function setChannel1OffsetValueToCurrendReading(this)
+        function setChannel1OffsetValueToCurrentReading(this)
            cCommand = ':CALC3:NULL:ACQ';
            fprintf(this.s, cCommand);
         end
@@ -351,7 +351,7 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         end
         
         % When CALC3 is enabled, the returned value will include the offset
-        function c = getChannel1CalcResult(this)
+        function d = getChannel1CalcResult(this)
            % See Appendix B of the manual to learn about data flow.  Need 
            % to send the INIT command to place new data in the sample
            % buffer which subsequently feeds the result to the CALC system so a new CALC
@@ -362,12 +362,13 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
            cCommand = ':CALC3:DATA?';
            fprintf(this.s, cCommand);
            c = fscanf(this.s);
+           d = str2double(c);
         end
         
         
         
         % Sets the offset to the current reading
-        function setChannel2OffsetValueToCurrendReading(this)
+        function setChannel2OffsetValueToCurrentReading(this)
            cCommand = ':CALC4:NULL:ACQ';
            fprintf(this.s, cCommand);
         end
@@ -400,7 +401,7 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         end
         
         % When CALC3 is enabled, the returned value will include the offset
-        function c = getChannel2CalcResult(this)
+        function d = getChannel2CalcResult(this)
            % See Appendix B of the manual to learn about data flow.  Need 
            % to send the INIT command to place new data in the sample
            % buffer which subsequently feeds the result to the CALC system so a new CALC
@@ -411,6 +412,7 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
            cCommand = ':CALC4:DATA?';
            fprintf(this.s, cCommand);
            c = fscanf(this.s);
+           d = str2double(c);
         end
         
         

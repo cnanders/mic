@@ -1,7 +1,7 @@
 {
 	"delay": 1,
 	"stores": [
-		{
+    {
 			"name": "Off",
 			"val": "off"
     },

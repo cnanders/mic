@@ -140,6 +140,52 @@ classdef InterfaceKeithley6482 < HandlePlus
         % @param {uint8 1x1} u8Ch - the channel (1 or 2)
         % @return {double 1x1} dVal - current
         d = read(this, u8Ch)
+        
+        
+        %% OFFSET (CH1)
+        
+        % Sets the offset of channel 1 to the current channel 1 reading
+        setChannel1OffsetValueToCurrentReading(this)
+        
+        % Sets the offset of channel 1 to provided value
+        setChannel1OffsetValue(this, dVal)
+        
+        % @param {char 1xm} cVal - the state: "ON" of "OFF"
+        setChannel1OffsetState(this, cVal)
+        
+        % @return {double 1x1} - the offset value
+        d = getChannel1OffsetValue(this)
+        
+        % @return {char 1xm} "ON" or "OFF"
+        c = getChannel1OffsetState(this)
+        
+        % When CALC3 is enabled, the returned value will include the offset
+        d = getChannel1CalcResult(this)
+        
+        
+        %% OFFSET (CH2)
+        
+        % Sets the offset of channel 1 to the current channel 1 reading
+        setChannel2OffsetValueToCurrentReading(this)
+        
+        % Sets the offset of channel 1 to provided value
+        setChannel2OffsetValue(this, dVal)
+        
+        % @param {char 1xm} cVal - the state: "ON" of "OFF"
+        setChannel2OffsetState(this, cVal)
+        
+        % @return {double 1x1} - the offset value
+        d = getChannel2OffsetValue(this)
+        
+        % @return {char 1xm} "ON" or "OFF"
+        c = getChannel2OffsetState(this)
+        
+        % When CALC4 is enabled, the returned value will include the offset
+        d = getChannel2CalcResult(this)
+
+        
+        
+        
                
     end
     

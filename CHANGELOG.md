@@ -1,3 +1,26 @@
+# 1.0.0-alpha.47
+
+### ApiKeithley6482
+
+- Added methods to set and get the offset of both channels
+- Added methods to read the calculated value of both channels (includes substracting the offset)
+
+### Keithley6482
+
+- Built UI for the offset of both channels
+
+### ApiHardwareOPlusFromKeithley6482
+
+- Added support for “calc-result”
+
+### ApiHardwareIOPlusFromKeithley6482
+
+- Added support for “offset-value”
+
+### ApiHardwareIOTextFromKeithley6482
+
+- Added support for “offset-state”
+
 # 1.0.0-alpha.46
 
 ### HardwareIOPlus

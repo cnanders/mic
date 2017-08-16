@@ -22,6 +22,13 @@ classdef ApiHardwareIOTextFromKeithley6482 < InterfaceApiHardwareIOText
         
         function c = get(this) % retrieve value
             switch this.cProp
+                case 'offset-state'
+                    switch this.u8Channel
+                        case 1
+                            c = this.api.getChannel1OffsetState();
+                        case 2
+                            c = this.api.getChannel2OffsetState();
+                    end
                 case 'avg-filt-state'
                     c = this.api.getAverageState(this.u8Channel);
                 case 'avg-filt-type'
@@ -33,7 +40,7 @@ classdef ApiHardwareIOTextFromKeithley6482 < InterfaceApiHardwareIOText
                 case 'med-filt-state'
                     c = this.api.getMedianState(this.u8Channel);
                 otherwise
-                    cMsg = sprintf('WARNING: ApiHardwareIOTextFromKeithley does not support prop %s', this.cProp);
+                    cMsg = sprintf('WARNING: ApiHardwareIOTextFromKeithley get() does not support prop %s', this.cProp);
                     disp(cMsg);
                 
             end
@@ -41,6 +48,13 @@ classdef ApiHardwareIOTextFromKeithley6482 < InterfaceApiHardwareIOText
     
         function set(this, cVal) % set new destination and move to it
             switch this.cProp
+                case 'offset-state'
+                    switch this.u8Channel
+                        case 1
+                            this.api.setChannel1OffsetState(cVal);
+                        case 2
+                            this.api.setChannel2OffsetState(cVal);
+                    end
                 case 'avg-filt-state'
                     this.api.setAverageState(this.u8Channel, cVal);
                 case 'avg-filt-type'
@@ -51,7 +65,9 @@ classdef ApiHardwareIOTextFromKeithley6482 < InterfaceApiHardwareIOText
                     this.api.setAutoRangeState(this.u8Channel, cVal);
                 case 'med-filt-state'
                     this.api.setMedianState(this.u8Channel, cVal);
-                
+                otherwise
+                    cMsg = sprintf('WARNING: ApiHardwareIOTextFromKeithley set() does not support prop %s', this.cProp);
+                    disp(cMsg);
                     
             end
         end

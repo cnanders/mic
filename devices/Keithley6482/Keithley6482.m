@@ -17,7 +17,10 @@ classdef Keithley6482 < HandlePlus
         cTooltipApiOff = 'Connect to the real Api / hardware';
         cTooltipApiOn = 'Disconnect the real Api / hardware (go into virtual mode)';
 
-        
+        dHeightPanelOffset = 125
+        dHeightPanelRange = 75
+        dHeightPanelSettings = 200
+        dHeightPanelPad = 10
     end
             
     properties
@@ -51,6 +54,8 @@ classdef Keithley6482 < HandlePlus
         cLabelDest = 'Goal'
         cLabelChannel1 = 'Channel 1';
         cLabelChannel2 = 'Channel 2';
+        cLabelPanelOffset1 = 'Offset Channel 1';
+        cLabelPanelOffset2 = 'Offset Channel 2';
         cLabelPanelRange1 = 'Range Channel 1';
         cLabelPanelRange2 = 'Range Channel 2';
         cLabelPanelSettings1 = 'Settings';
@@ -80,10 +85,13 @@ classdef Keithley6482 < HandlePlus
         lShowLabels = false;
         
         % {logical 1x1} build HIO UI for ADC period, avg filter and med filter
-        lShowSettings = false;
+        lShowSettings = true;
         
         % {logical 1x1} Build HIO UI for range and auto range state
-        lShowRange = false;
+        lShowRange = true;
+        
+        % {logical 1x1} build hio ui for offset
+        lShowOffset = true
         
         hPanel
         hPanelRange1
@@ -91,12 +99,23 @@ classdef Keithley6482 < HandlePlus
         hPanelSettings1
         hPanelSettings2
         
+        hPanelOffset1
+        hPanelOffset2
+        
         hoData
         hoData2
         
         % Range 1
-        hioRange
-        hiotxAutoRangeState
+        hioRange1
+        hiotxAutoRangeState1
+        
+        hioOffset1Value
+        hiotxOffset1State
+        hioOffset2Value
+        hiotxOffset2State
+        
+        uibSetOffset1ToCurrentReading
+        uibSetOffset2ToCurrentReading
         
         % Settings 1
         hioADCPeriod
@@ -132,12 +151,15 @@ classdef Keithley6482 < HandlePlus
         uitxLabelAutoRange
         
         lhApi
-        lhAutoRangeState
+        lhAutoRangeState1
         lhAutoRangeState2
         lhAvgFiltState
         lhMedFiltState
         lhAvgFiltState2
         lhMedFiltState2
+        
+        lhSetOffset1ToCurrentReading
+        lhSetOffset2ToCurrentReading
     end
     
     
@@ -177,14 +199,42 @@ classdef Keithley6482 < HandlePlus
             this.hoData2.setApi(ApiKeithley6482Data2(this.api));
             %}
             
-            this.hoData.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'data', 1));
-            this.hoData2.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'data', 2));
+            this.hoData.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'calc-result', 1));
+            this.hoData2.setApi(ApiHardwareOPlusFromKeithley6482(this.api, 'calc-result', 2));
             
+            this.setApiOffset();
             this.setApiRange();
             this.setApiSettings();
             
         end
         
+        function setApiOffset(this)
+            this.setApiOffset1();
+            this.setApiOffset2();
+        end
+        
+        function setApiOffset1(this)
+            if ~this.lShowOffset
+                return
+            end
+            
+            u8Channel = uint8(1);
+            this.hioOffset1Value.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'offset-value', u8Channel));
+            this.hiotxOffset1State.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'offset-state', u8Channel));
+            
+        end
+        
+        
+        function setApiOffset2(this)
+            if ~this.lShowOffset
+                return
+            end
+            
+            u8Channel = uint8(2);
+            this.hioOffset2Value.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'offset-value', u8Channel));
+            this.hiotxOffset2State.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'offset-state', u8Channel));
+            
+        end
         
         function setApiRange(this)
             this.setApiRange1();
@@ -198,13 +248,13 @@ classdef Keithley6482 < HandlePlus
             end
             
             %{
-            this.hioRange.setApi(ApiKeithley6482Range(this.api));
-            this.hiotxAutoRangeState.setApi(ApiKeithley6482AutoRangeState(this.api));
+            this.hioRange1.setApi(ApiKeithley6482Range(this.api));
+            this.hiotxAutoRangeState1.setApi(ApiKeithley6482AutoRangeState(this.api));
             %}
             
             u8Channel = uint8(1);
-            this.hioRange.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'range', u8Channel));
-            this.hiotxAutoRangeState.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'auto-range-state', u8Channel));
+            this.hioRange1.setApi(ApiHardwareIOPlusFromKeithley6482(this.api, 'range', u8Channel));
+            this.hiotxAutoRangeState1.setApi(ApiHardwareIOTextFromKeithley6482(this.api, 'auto-range-state', u8Channel));
             
             
         end
@@ -294,14 +344,19 @@ classdef Keithley6482 < HandlePlus
             % this.hoData.setApiv(ApiKeithley6482Data(this.apiv));
             % this.hoData2.setApiv(ApiKeithley6482Data2(this.apiv));
             
-            this.hoData.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'data', 1));
-            this.hoData2.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'data', 2));
+            this.hoData.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'calc-result', 1));
+            this.hoData2.setApiv(ApiHardwareOPlusFromKeithley6482(this.apiv, 'calc-result', 2));
             
+            this.setApivOffset();
             this.setApivRange();
             this.setApivSettings();
             
         end
         
+        function setApivOffset(this)
+            this.setApivOffset1();
+            this.setApivOffset2();
+        end
         
         function setApivRange(this)
             this.setApivRange1();
@@ -314,12 +369,12 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            % this.hioRange.setApiv(ApiKeithley6482Range(this.apiv));
-            % this.hiotxAutoRangeState.setApiv(ApiKeithley6482AutoRangeState(this.apiv));
+            % this.hioRange1.setApiv(ApiKeithley6482Range(this.apiv));
+            % this.hiotxAutoRangeState1.setApiv(ApiKeithley6482AutoRangeState(this.apiv));
             
             u8Channel = uint8(1);
-            this.hioRange.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'range', u8Channel));
-            this.hiotxAutoRangeState.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'auto-range-state', u8Channel));
+            this.hioRange1.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'range', u8Channel));
+            this.hiotxAutoRangeState1.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'auto-range-state', u8Channel));
             
         end
         
@@ -342,6 +397,28 @@ classdef Keithley6482 < HandlePlus
             this.setApivSettings2();
         end
         
+        function setApivOffset1(this)
+            if ~this.lShowOffset
+                return
+            end
+            
+            u8Channel = uint8(1);
+            this.hioOffset1Value.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'offset-value', u8Channel));
+            this.hiotxOffset1State.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'offset-state', u8Channel));
+            
+        end
+        
+        
+        function setApivOffset2(this)
+            if ~this.lShowOffset
+                return
+            end
+            
+            u8Channel = uint8(2);
+            this.hioOffset2Value.setApiv(ApiHardwareIOPlusFromKeithley6482(this.apiv, 'offset-value', u8Channel));
+            this.hiotxOffset2State.setApiv(ApiHardwareIOTextFromKeithley6482(this.apiv, 'offset-state', u8Channel));
+            
+        end
         
         function setApivSettings1(this)
             
@@ -463,6 +540,8 @@ classdef Keithley6482 < HandlePlus
             end
                                     
             % Settings
+            this.buildOffset1();
+            this.buildOffset2();
             this.buildRange1();
             this.buildRange2();
             this.buildSettings();
@@ -471,10 +550,85 @@ classdef Keithley6482 < HandlePlus
         end
         
         
+        function buildOffset1(this)
+            
+            
+            if ~this.lShowOffset
+                return
+            end
+            
+            dTop = 55;
+            
+            this.hPanelOffset1 = uipanel( ...
+                'Parent', this.hPanel, ...
+                'Units', 'pixels', ...
+                'Title', this.cLabelPanelOffset1, ...
+                'Clipping', 'on', ...
+                'BorderWidth', 1, ... 
+                'BackgroundColor', this.dBackgroundColor, ...
+                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelOffset], this.hPanel) ...
+            );
+            drawnow
+            
+            dTop = 20;
+            dLeft = 10;
+            
+            this.hioOffset1Value.build(this.hPanelOffset1, dLeft, dTop);
+            dTop = dTop + this.dSepVert;
+                                    
+            this.hiotxOffset1State.build(this.hPanelOffset1, dLeft, dTop);
+            dTop = dTop + this.dSepVert2;
+            
+            this.uibSetOffset1ToCurrentReading.build(this.hPanelOffset1, dLeft, dTop, 250, 24);
+            dTop = dTop + this.dSepVert2;
+            
+        end
+        
+        function buildOffset2(this)
+            
+            if ~this.lShowOffset
+                return
+            end
+            
+            dTop = 55;
+            dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+
+            
+            this.hPanelOffset2 = uipanel( ...
+                'Parent', this.hPanel, ...
+                'Units', 'pixels', ...
+                'Title', this.cLabelPanelOffset2, ...
+                'Clipping', 'on', ...
+                'BorderWidth', 1, ... 
+                'BackgroundColor', this.dBackgroundColor, ...
+                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelOffset], this.hPanel) ...
+            );
+            drawnow
+            
+            dTop = 20;
+            dLeft = 10;
+            
+            
+            this.hioOffset2Value.build(this.hPanelOffset2, dLeft, dTop);
+            dTop = dTop + this.dSepVert;
+                                    
+            this.hiotxOffset2State.build(this.hPanelOffset2, dLeft, dTop);
+            dTop = dTop + this.dSepVert2;
+            
+            this.uibSetOffset2ToCurrentReading.build(this.hPanelOffset2, dLeft, dTop, 250, 24);
+            dTop = dTop + this.dSepVert2;
+        end
+        
         function buildRange1(this)
             
             if ~this.lShowRange
                 return
+            end
+            
+            dTop = 55;
+            if this.lShowOffset
+                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
             end
             
             this.hPanelRange1 = uipanel( ...
@@ -484,17 +638,17 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 55 this.dWidth - 20 75], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelRange], this.hPanel) ...
             );
             drawnow
             
             dTop = 20;
             dLeft = 10;
             
-            this.hioRange.build(this.hPanelRange1, dLeft, dTop);
+            this.hioRange1.build(this.hPanelRange1, dLeft, dTop);
             dTop = dTop + this.dSepVert2;
             
-            this.hiotxAutoRangeState.build(this.hPanelRange1, dLeft, dTop);
+            this.hiotxAutoRangeState1.build(this.hPanelRange1, dLeft, dTop);
         end
         
         function buildRange2(this)
@@ -503,6 +657,15 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
+            dTop = 55;
+            
+            if this.lShowOffset
+                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+            end
+            
+            dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
+            
             this.hPanelRange2 = uipanel( ...
                 'Parent', this.hPanel, ...
                 'Units', 'pixels', ...
@@ -510,7 +673,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 135 this.dWidth - 20 75], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelRange], this.hPanel) ...
             );
             drawnow
             
@@ -532,8 +695,15 @@ classdef Keithley6482 < HandlePlus
             end
             
             dTop = 55;
+            
+            if this.lShowOffset
+                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+            end
+            
             if this.lShowRange
-                dTop = dTop + 160;
+                dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
+                dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
             end
             
             this.hPanelSettings1 = uipanel( ...
@@ -543,13 +713,12 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 195], this.hPanel) ...
+                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelSettings], this.hPanel) ...
             );
             drawnow
             
             dTop = 20;
             dLeft = 10;
-            
             
             this.hioADCPeriod.build(this.hPanelSettings1, dLeft, dTop);
             dTop = dTop + this.dSepVert;
@@ -610,16 +779,42 @@ classdef Keithley6482 < HandlePlus
             
         end
         
+        
+        function deleteOffset1(this)
+            
+            if ~this.lShowOffset
+                return;
+            end
+
+            delete(this.lhSetOffset1ToCurrentReading);
+            delete(this.hioOffset1Value);
+            delete(this.hiotxOffset1State);
+        
+        end
+        
+        
+        function deleteOffset2(this)
+            
+            if ~this.lShowOffset
+                return;
+            end
+
+            delete(this.lhSetOffset2ToCurrentReading);
+            delete(this.hioOffset2Value);
+            delete(this.hiotxOffset2State);
+        
+        end
+        
         function deleteRange1(this)
             
             if ~this.lShowRange
                 return;
             end
 
-            delete(this.lhAutoRangeState);
+            delete(this.lhAutoRangeState1);
 
-            delete(this.hioRange);
-            delete(this.hiotxAutoRangeState);
+            delete(this.hioRange1);
+            delete(this.hiotxAutoRangeState1);
         
        
         end
@@ -686,6 +881,9 @@ classdef Keithley6482 < HandlePlus
             delete(this.hoData);
             delete(this.hoData2);
             
+            this.deleteOffset1();
+            this.deleteOffset2();
+            
             this.deleteRange1();
             this.deleteRange2();
             this.deleteSettings1();
@@ -746,10 +944,17 @@ classdef Keithley6482 < HandlePlus
             this.hoData.turnOn();
             this.hoData2.turnOn();
             
+            this.turnOnOffset();
             this.turnOnRange();
             this.turnOnSettings();
             
             
+        end
+        
+        
+        function turnOnOffset(this)
+            this.turnOnOffset1()
+            this.turnOnOffset2()
         end
         
         function turnOnRange(this)
@@ -757,12 +962,32 @@ classdef Keithley6482 < HandlePlus
             this.turnOnRange2();
         end
         
+        function turnOnOffset1(this)
+            if ~this.lShowRange
+                return
+            end
+            
+            this.hioOffset1Value.turnOn();
+            this.hiotxOffset1State.turnOn();
+        end
+        
+        function turnOnOffset2(this)
+            if ~this.lShowRange
+                return
+            end
+            
+            this.hioOffset2Value.turnOn();
+            this.hiotxOffset2State.turnOn();
+        end
+        
+        
+        
         function turnOnRange1(this)
             if ~this.lShowRange
                 return
             end
-            this.hioRange.turnOn();
-            this.hiotxAutoRangeState.turnOn();
+            this.hioRange1.turnOn();
+            this.hiotxAutoRangeState1.turnOn();
         end
         
         function turnOnRange2(this)
@@ -829,10 +1054,37 @@ classdef Keithley6482 < HandlePlus
             this.hoData.turnOff();
             this.hoData2.turnOff();
             
+            this.turnOffOffset();
             this.turnOffRange();
             this.turnOffSettings();
             
            
+        end
+        
+        function turnOffOffset(this)
+            this.turnOffOffset1();
+            this.turnOffOffset2();
+            
+        end
+        
+        function turnOffOffset1(this)
+            if ~this.lShowOffset
+                return
+            end
+            
+            this.hioOffset1Value.turnOff();
+            this.hiotxOffset1State.turnOff();
+            
+        end
+        
+        function turnOffOffset2(this)
+            if ~this.lShowOffset
+                return
+            end
+            
+            this.hioOffset2Value.turnOff();
+            this.hiotxOffset2State.turnOff();
+            
         end
         
         function turnOffRange(this)
@@ -844,8 +1096,8 @@ classdef Keithley6482 < HandlePlus
             if ~this.lShowRange
                 return
             end
-            this.hioRange.turnOff();
-            this.hiotxAutoRangeState.turnOff();
+            this.hioRange1.turnOff();
+            this.hiotxAutoRangeState1.turnOff();
         end
         
         function turnOffRange2(this)
@@ -907,6 +1159,10 @@ classdef Keithley6482 < HandlePlus
                 l = true;
             end
             
+        end
+        
+        function l = validateOffsetValue(this)
+            l = true; 
         end
         
         % Digital average filter size must be betweem 1 and 100
@@ -1039,6 +1295,8 @@ classdef Keithley6482 < HandlePlus
             );
         
         
+            this.initOffset1();
+            this.initOffset2();
             this.initRange1();
             this.initRange2();
             this.initSettings(); % see initSettings2()
@@ -1048,22 +1306,47 @@ classdef Keithley6482 < HandlePlus
               
         end
         
+        function initOffset1(this)
+            
+           if ~this.lShowOffset
+               return
+           end
+           
+           
+            cPathConfigOffset1Value = fullfile(this.cPathConfig, 'config-offset-value.json');
+            cPathConfigOffset1State = fullfile(this.cPathConfig, 'config-offset-state.json');
+            
+            configOffset1Value = ConfigHardwareIOPlus(cPathConfigOffset1Value);
+            this.hioOffset1Value = HardwareIOPlus(...
+                'cName', sprintf('%s-offset1-value', this.cName), ...
+                'cLabel', 'Value (A)', ...
+                'config', configOffset1Value, ...
+                'cLabelDest', 'Command', ...
+                'cLabelName', 'Name', ...
+                'cConversion', 'e', ...
+                'lShowJog', false, ...
+                'lShowUnit', false, ...
+                'lShowRel', false, ...
+                'lShowZero', false, ...
+                'lShowStores', false, ...
+                'lShowApi', false, ...
+                'lShowLabels', true, ...
+                'lShowPlay', false, ...
+                'dWidthPadName', 0, ...
+                'dWidthName', this.dWidthHioName, ...
+                'dWidthVal', this.dWidthHioVal, ...
+                'dWidthStores', this.dWidthHioStores, ...
+                'dWidthDest', this.dWidthHioDest, ...
+                'fhValidateDest', @this.validateOffsetValue, ...
+                'clock', this.clock ...
+            );
         
         
-        function initRange1(this)
-            
-            if ~this.lShowRange
-                return
-            end
-            
-            cPathConfigRange = fullfile(this.cPathConfig, 'config-range.json');
-            cPathAutoRangeState = fullfile(this.cPathConfig, 'config-auto-range-state.json');
-            
-            configAutoRangeState = ConfigHardwareIOText(cPathAutoRangeState);
-            this.hiotxAutoRangeState = HardwareIOText(...
-                'cName', sprintf('%s-auto-range-state', this.cName), ...
-                'cLabel', 'auto range', ...
-                'config', configAutoRangeState, ...
+            configOffset1State = ConfigHardwareIOText(cPathConfigOffset1State);
+            this.hiotxOffset1State = HardwareIOText(...
+                'cName', sprintf('%s-offset1-state', this.cName), ...
+                'cLabel', 'State', ...
+                'config', configOffset1State, ...
                 'dWidthName', this.dWidthHioName, ...
                 'dWidthVal', this.dWidthHioVal, ...
                 'dWidthStores', this.dWidthHioStores, ...
@@ -1077,11 +1360,123 @@ classdef Keithley6482 < HandlePlus
                 'clock', this.clock ...
             );
         
-            configRange = ConfigHardwareIOPlus(cPathConfigRange);
-            this.hioRange = HardwareIOPlus(...
-                'cName', sprintf('%s-range', this.cName), ...
+            this.uibSetOffset1ToCurrentReading = UIButton( ...
+                'Set offset to current signal level' ...
+            );
+            this.uibSetOffset1ToCurrentReading.setTooltip(...
+                'Set the offset of channel 1 to the current (now) signal level of channel 1 and include the offset in reported values (turn on)' ...
+            );
+        
+            this.lhSetOffset1ToCurrentReading = addlistener(...
+                 this.uibSetOffset1ToCurrentReading, ...
+                 'eChange', ...
+                 @this.onSetOffset1ToCurrentReadingClick ...
+            );
+           
+                      
+        end
+        
+        
+        function initOffset2(this)
+            
+           if ~this.lShowOffset
+               return
+           end
+           
+            cPathConfigOffset2Value = fullfile(this.cPathConfig, 'config-offset-value.json');
+            cPathConfigOffset2State = fullfile(this.cPathConfig, 'config-offset-state.json');
+            
+            configOffset2Value = ConfigHardwareIOPlus(cPathConfigOffset2Value);
+            this.hioOffset2Value = HardwareIOPlus(...
+                'cName', sprintf('%s-offset2-value', this.cName), ...
                 'cLabel', 'Value (A)', ...
-                'config', configRange, ...
+                'config', configOffset2Value, ...
+                'cLabelDest', 'Command', ...
+                'cLabelName', 'Name', ...
+                'cConversion', 'e', ...
+                'lShowJog', false, ...
+                'lShowUnit', false, ...
+                'lShowRel', false, ...
+                'lShowZero', false, ...
+                'lShowStores', false, ...
+                'lShowApi', false, ...
+                'lShowLabels', true, ...
+                'lShowPlay', false, ...
+                'dWidthPadName', 0, ...
+                'dWidthName', this.dWidthHioName, ...
+                'dWidthVal', this.dWidthHioVal, ...
+                'dWidthStores', this.dWidthHioStores, ...
+                'dWidthDest', this.dWidthHioDest, ...
+                'fhValidateDest', @this.validateOffsetValue, ...
+                'clock', this.clock ...
+            );
+        
+        
+            configOffset2State = ConfigHardwareIOText(cPathConfigOffset2State);
+            this.hiotxOffset2State = HardwareIOText(...
+                'cName', sprintf('%s-offset2-state', this.cName), ...
+                'cLabel', 'State', ...
+                'config', configOffset2State, ...
+                'dWidthName', this.dWidthHioName, ...
+                'dWidthVal', this.dWidthHioVal, ...
+                'dWidthStores', this.dWidthHioStores, ...
+                'cLabelStores', 'Command', ...
+                'cLabelName', 'Setting', ...
+                'lShowName', true, ...
+                'lShowPlay', false, ...
+                'lShowApi', false, ...
+                'lShowLabels', false, ...
+                'lShowDest', false, ...
+                'clock', this.clock ...
+            );
+        
+        
+            this.uibSetOffset2ToCurrentReading = UIButton( ...
+                'Set offset to current signal level' ...
+            );
+            this.uibSetOffset2ToCurrentReading.setTooltip(...
+                'Set the offset of channel 2 to the current (now) signal level of channel 2 and include the offset in reported values (turn on).' ...
+            );
+        
+            this.lhSetOffset2ToCurrentReading = addlistener(...
+                 this.uibSetOffset2ToCurrentReading, ...
+                 'eChange', ...
+                 @this.onSetOffset2ToCurrentReadingClick ...
+            );
+           
+        end
+        
+        function initRange1(this)
+            
+            if ~this.lShowRange
+                return
+            end
+            
+            cPathConfigRange = fullfile(this.cPathConfig, 'config-range.json');
+            cPathAutoRangeState = fullfile(this.cPathConfig, 'config-auto-range-state.json');
+            
+            configAutoRangeState1 = ConfigHardwareIOText(cPathAutoRangeState);
+            this.hiotxAutoRangeState1 = HardwareIOText(...
+                'cName', sprintf('%s-auto-range-state1', this.cName), ...
+                'cLabel', 'auto range', ...
+                'config', configAutoRangeState1, ...
+                'dWidthName', this.dWidthHioName, ...
+                'dWidthVal', this.dWidthHioVal, ...
+                'dWidthStores', this.dWidthHioStores, ...
+                'cLabelStores', 'Command', ...
+                'cLabelName', 'Setting', ...
+                'lShowName', true, ...
+                'lShowPlay', false, ...
+                'lShowApi', false, ...
+                'lShowLabels', false, ...
+                'lShowDest', false, ...
+                'clock', this.clock ...
+            );
+            configRange1 = ConfigHardwareIOPlus(cPathConfigRange);
+            this.hioRange1 = HardwareIOPlus(...
+                'cName', sprintf('%s-range1', this.cName), ...
+                'cLabel', 'Value (A)', ...
+                'config', configRange1, ...
                 'cConversion', 'e', ...
                 'lShowName', true, ...
                 'lShowJog', false, ...
@@ -1100,11 +1495,8 @@ classdef Keithley6482 < HandlePlus
                 'dWidthStores', this.dWidthHioStores, ...
                 'clock', this.clock ...
             );
-        
-            this.lhAutoRangeState = addlistener(this.hiotxAutoRangeState, 'eChange', @this.onAutoRangeStateChange);
-            
-            
-            
+            this.lhAutoRangeState1 = addlistener(this.hiotxAutoRangeState1, 'eChange', @this.onAutoRangeStateChange1);
+                    
         end
         
         function initRange2(this)
@@ -1157,6 +1549,8 @@ classdef Keithley6482 < HandlePlus
                 'clock', this.clock ...
             );
             this.lhAutoRangeState2 = addlistener(this.hiotxAutoRangeState2, 'eChange', @this.onAutoRangeStateChange2);
+        
+        
         end
         
         function initSettings(this)
@@ -1426,7 +1820,44 @@ classdef Keithley6482 < HandlePlus
             api = ApivKeithley6482;
         end
         
-        function onAutoRangeStateChange(this, src, evt)
+        function onSetOffset1ToCurrentReadingClick(this, src, evt)
+           
+            if this.lActive
+                this.api.setChannel1OffsetValueToCurrentReading();
+                % this.api.setChannel1OffsetState('ON');
+
+            else
+                this.apiv.setChannel1OffsetValueToCurrentReading();
+                % this.apiv.setChannel1OffsetState('ON');
+
+            end
+            
+            % Update the state throught the UI as if the user had
+            % done it
+            this.hiotxOffset1State.setDest('ON');
+            this.hiotxOffset1State.moveToDest();
+            
+        end
+        
+        function onSetOffset2ToCurrentReadingClick(this, src, evt)
+           
+            if this.lActive
+                this.api.setChannel2OffsetValueToCurrentReading();
+                %this.api.setChannel2OffsetState("ON");
+            else
+                this.apiv.setChannel2OffsetValueToCurrentReading();
+                %this.apiv.setChannel2OffsetState("ON");
+            end
+            
+            % Update the state throught the UI as if the user had
+            % done it
+            this.hiotxOffset2State.setDest('ON');
+            this.hiotxOffset2State.moveToDest();
+            
+        end
+        
+        
+        function onAutoRangeStateChange1(this, src, evt)
             switch src.val()
                 case 'on'
                     this.disableRange();
@@ -1472,11 +1903,11 @@ classdef Keithley6482 < HandlePlus
         end
         
         function enableRange(this)
-            this.hioRange.enable();
+            this.hioRange1.enable();
         end
 
         function disableRange(this)
-            this.hioRange.disable();
+            this.hioRange1.disable();
         end
         
         
@@ -1537,14 +1968,20 @@ classdef Keithley6482 < HandlePlus
         % @return {double 1x1} d - the height of the panel
         function d = getHeight(this)
            
-            d = 60;
+            d = 55;
+            
+            if this.lShowOffset
+                d = d + this.dHeightPanelOffset + this.dHeightPanelPad;
+                d = d + this.dHeightPanelOffset + this.dHeightPanelPad;
+            end
             
             if this.lShowRange
-                d = d + 155;
+                d = d + this.dHeightPanelRange + this.dHeightPanelPad;
+                d = d + this.dHeightPanelRange + this.dHeightPanelPad;
             end
             
             if this.lShowSettings
-                d = d + 200;
+                d = d + this.dHeightPanelSettings + this.dHeightPanelPad;
             end
         end
         

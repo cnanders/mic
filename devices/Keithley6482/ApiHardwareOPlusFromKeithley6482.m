@@ -22,6 +22,13 @@ classdef ApiHardwareOPlusFromKeithley6482 < InterfaceApiHardwareOPlus
         
         function d = get(this) % retrieve value
             switch this.cProp
+                case 'calc-result'
+                    switch this.u8Channel
+                        case 1
+                            d = this.api.getChannel1CalcResult();
+                        case 2
+                            d = this.api.getChannel2CalcResult();
+                    end
                 case 'data'
                     d = this.api.read(this.u8Channel);
                 otherwise

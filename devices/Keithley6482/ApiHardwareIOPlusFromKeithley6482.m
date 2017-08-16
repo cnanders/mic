@@ -22,6 +22,14 @@ classdef ApiHardwareIOPlusFromKeithley6482 < InterfaceApiHardwareIOPlus
         
         function d = get(this) 
             switch this.cProp
+              
+                case 'offset-value'
+                    switch this.u8Channel
+                        case 1
+                            d = this.api.getChannel1OffsetValue();
+                        case 2
+                            d = this.api.getChannel2OffsetValue();
+                    end
                 case 'adc-period'
                     d = this.api.getIntegrationPeriod();
                 case 'avg-filt-size'
@@ -39,6 +47,14 @@ classdef ApiHardwareIOPlusFromKeithley6482 < InterfaceApiHardwareIOPlus
     
         function set(this, dDest) % set new destination and move to it
             switch this.cProp
+                
+                case 'offset-value'
+                    switch this.u8Channel
+                        case 1
+                           this.api.setChannel1OffsetValue(dDest);
+                        case 2
+                            this.api.setChannel2OffsetValue(dDest);
+                    end
                 case 'adc-period'
                     this.api.setIntegrationPeriod(dDest);
                 case 'avg-filt-size'
