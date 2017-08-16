@@ -711,12 +711,12 @@ classdef Keithley6482 < HandlePlus
             
             if this.lShowOffset
                 dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
-                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+                % dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
             end
             
             if this.lShowRange
                 dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
-                dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
+                % dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
             end
             
             this.hPanelSettings1 = uipanel( ...
@@ -947,12 +947,7 @@ classdef Keithley6482 < HandlePlus
             
             
             
-            % Kill the Apiv
-            if ~isempty(this.apiv) && ...
-                isvalid(this.apiv)
-                delete(this.apiv);
-                this.setApiv([]); % This is calling the setter
-            end
+            
             
             this.hoData.turnOn();
             this.hoData2.turnOn();
@@ -960,6 +955,13 @@ classdef Keithley6482 < HandlePlus
             this.turnOnOffset();
             this.turnOnRange();
             this.turnOnSettings();
+            
+            % Kill the Apiv
+            if ~isempty(this.apiv) && ...
+                isvalid(this.apiv)
+                delete(this.apiv);
+                this.setApiv([]); % This is calling the setter
+            end
             
             
         end
@@ -976,7 +978,7 @@ classdef Keithley6482 < HandlePlus
         end
         
         function turnOnOffset1(this)
-            if ~this.lShowRange
+            if ~this.lShowOffset
                 return
             end
             
@@ -985,7 +987,7 @@ classdef Keithley6482 < HandlePlus
         end
         
         function turnOnOffset2(this)
-            if ~this.lShowRange
+            if ~this.lShowOffset
                 return
             end
             
@@ -1981,16 +1983,16 @@ classdef Keithley6482 < HandlePlus
         % @return {double 1x1} d - the height of the panel
         function d = getHeight(this)
            
-            d = 55;
+            d = this.dTopPanels;
             
             if this.lShowOffset
                 d = d + this.dHeightPanelOffset + this.dHeightPanelPad;
-                d = d + this.dHeightPanelOffset + this.dHeightPanelPad;
+                % d = d + this.dHeightPanelOffset + this.dHeightPanelPad;
             end
             
             if this.lShowRange
                 d = d + this.dHeightPanelRange + this.dHeightPanelPad;
-                d = d + this.dHeightPanelRange + this.dHeightPanelPad;
+                % d = d + this.dHeightPanelRange + this.dHeightPanelPad;
             end
             
             if this.lShowSettings

@@ -1,3 +1,9 @@
+# 1.0.0-alpha.49
+
+### Keithley6482
+
+- Fixed bug with turnOnOffset1() and turnonOffset2().  Both were referencing this.lShowRange to check if the HardwareIO* instances should be turned on rather than checking this.lShowOffset.
+
 # 1.0.0-alpha.48
 
 ### Keithley6482
