@@ -45,7 +45,7 @@ classdef Keithley6482 < HandlePlus
         dWidthPadData = 0;
         
         dWidthHioName = 90;
-        dWidthHioNameData = 50;
+        dWidthHioNameData = 70;
         dWidthHioVal = 70;
         dWidthHioStores = 90;
         dWidthHioDest = 90;
@@ -534,13 +534,13 @@ classdef Keithley6482 < HandlePlus
             
             if this.lShowDataChannel1
                 % dLeft = dLeft + this.dWidthPadData;
-                dLeft = 150;
+                dLeft = 130;
                 this.hoData.build(this.hPanel, dLeft, dTop);
                 % dTop = dTop + this.dSepVert2 - 5;
             end
             
             if this.lShowDataChannel2
-                dLeft = 440;
+                dLeft = 420;
                 this.hoData2.build(this.hPanel, dLeft, dTop);
             end
                                     
