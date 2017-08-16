@@ -303,6 +303,10 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
         function d = read(this, u8Ch)
             % this.dCount = this.dCount + 1;
             % tic
+            % READ is a shortcut for performing two operations:
+            % 1. INIT (this fills the sample buffer with new data)
+            % 2. FETCH (this reads the sample buffer data)
+            
            cCommand = sprintf(':FORM:ELEM CURR%u', u8Ch);
            fprintf(this.s, cCommand);
            cCommand = ':read?';
@@ -344,6 +348,69 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
             fprintf(this.s, cCommand);
             c = fscanf(this.s);
             c = this.stateText(c);
+        end
+        
+        % When CALC3 is enabled, the returned value will include the offset
+        function c = getChannel1CalcResult(this)
+           % See Appendix B of the manual to learn about data flow.  Need 
+           % to send the INIT command to place new data in the sample
+           % buffer which subsequently feeds the result to the CALC system so a new CALC
+           % value is waiting.  Note that the READ command is identical to 
+           % INIT + FETCH
+           cCommand = 'INIT';
+           fprintf(this.s, cCommand);
+           cCommand = ':CALC3:DATA?';
+           fprintf(this.s, cCommand);
+           c = fscanf(this.s);
+        end
+        
+        
+        
+        % Sets the offset to the current reading
+        function setChannel2OffsetValueToCurrendReading(this)
+           cCommand = ':CALC4:NULL:ACQ';
+           fprintf(this.s, cCommand);
+        end
+        
+        
+        % @param {double 1x1} dVal - the desired offset
+        function setChannel2OffsetValue(this, dVal)
+            cCommand = sprintf(':CALC4:NULL:OFFS %1.3e', dVal);
+            fprintf(this.s, cCommand);
+        end
+        
+        % @param {char 1xm} cVal - the state: "ON" of "OFF"
+        function setChannel2OffsetState(this, cVal)
+            cCommand = sprintf(':CALC4:NULL:STAT %s', cVal);
+            fprintf(this.s, cCommand);
+        end
+        
+        function d = getChannel2OffsetValue(this)
+            cCommand = ':CALC4:NULL:OFFS?';
+            fprintf(this.s, cCommand);
+            d = str2double(fscanf(this.s));
+        end
+        
+        % @return {char 1xm} "ON" or "OFF"
+        function c = getChannel2OffsetState(this)
+            cCommand = ':CALC4:NULL:STAT?';
+            fprintf(this.s, cCommand);
+            c = fscanf(this.s);
+            c = this.stateText(c);
+        end
+        
+        % When CALC3 is enabled, the returned value will include the offset
+        function c = getChannel2CalcResult(this)
+           % See Appendix B of the manual to learn about data flow.  Need 
+           % to send the INIT command to place new data in the sample
+           % buffer which subsequently feeds the result to the CALC system so a new CALC
+           % value is waiting.  Note that the READ command is identical to 
+           % INIT + FETCH
+           cCommand = 'INIT';
+           fprintf(this.s, cCommand);
+           cCommand = ':CALC4:DATA?';
+           fprintf(this.s, cCommand);
+           c = fscanf(this.s);
         end
         
         
