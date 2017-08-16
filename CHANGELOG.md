@@ -1,3 +1,9 @@
+# 1.0.0-alpha.48
+
+### Keithley6482
+
+- Now has a two-column layout for the two channels
+
 # 1.0.0-alpha.47
 
 ### ApiKeithley6482

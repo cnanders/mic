@@ -22,7 +22,7 @@ classdef TestKeithley6482 < HandlePlus
             this.keithley6482 = Keithley6482(...
                 'clock', this.clock, ...
                 'lShowSettings', false, ...
-                'lShowRange', false ...
+                'lShowRange', true ...
             );
         
             % Set the Api
@@ -37,7 +37,7 @@ classdef TestKeithley6482 < HandlePlus
         
         function build(this)
             
-            this.h = figure('Position', [20, 20, 295, 655]);
+            this.h = figure('Position', [20, 20, 600, 655]);
             this.keithley6482.build(this.h, 0, 0);
             
         end

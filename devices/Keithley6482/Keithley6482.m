@@ -6,13 +6,13 @@ classdef Keithley6482 < HandlePlus
     properties (Constant)
 
         dHeight = 270;   % height of the UIElement
-        dWidth = 300;   % width of the UIElement
+        dWidth = 590;   % width of the UIElement
         dWidthBtn = 24;
         dHeightBtn = 24;
         dSepVert = 42;
         dSepVert2 = 25;
         dSepSection = 10;
-        dWidthPanel = 255;
+        dWidthPanel = 280;
          
         cTooltipApiOff = 'Connect to the real Api / hardware';
         cTooltipApiOn = 'Disconnect the real Api / hardware (go into virtual mode)';
@@ -21,6 +21,9 @@ classdef Keithley6482 < HandlePlus
         dHeightPanelRange = 75
         dHeightPanelSettings = 200
         dHeightPanelPad = 10
+        dWidthPanelPad = 10
+        
+        dTopPanels = 45;
     end
             
     properties
@@ -530,12 +533,14 @@ classdef Keithley6482 < HandlePlus
             dTop = 8;
             
             if this.lShowDataChannel1
-                dLeft = dLeft + this.dWidthPadData;
+                % dLeft = dLeft + this.dWidthPadData;
+                dLeft = 150;
                 this.hoData.build(this.hPanel, dLeft, dTop);
-                dTop = dTop + this.dSepVert2 - 5;
+                % dTop = dTop + this.dSepVert2 - 5;
             end
             
             if this.lShowDataChannel2
+                dLeft = 440;
                 this.hoData2.build(this.hPanel, dLeft, dTop);
             end
                                     
@@ -557,7 +562,8 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            dTop = 55;
+            dTop = this.dTopPanels;
+            dLeft = this.dWidthPanelPad;
             
             this.hPanelOffset1 = uipanel( ...
                 'Parent', this.hPanel, ...
@@ -566,7 +572,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelOffset], this.hPanel) ...
+                'Position', MicUtils.lt2lb([dLeft dTop this.dWidthPanel this.dHeightPanelOffset], this.hPanel) ...
             );
             drawnow
             
@@ -590,9 +596,11 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            dTop = 55;
-            dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+            dTop = this.dTopPanels;
+            % dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
 
+            dLeft = this.dWidthPanelPad;
+            dLeft = dLeft + this.dWidthPanel + this.dWidthPanelPad;
             
             this.hPanelOffset2 = uipanel( ...
                 'Parent', this.hPanel, ...
@@ -601,7 +609,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelOffset], this.hPanel) ...
+                'Position', MicUtils.lt2lb([dLeft dTop this.dWidthPanel this.dHeightPanelOffset], this.hPanel) ...
             );
             drawnow
             
@@ -625,11 +633,13 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            dTop = 55;
+            dTop = this.dTopPanels;
             if this.lShowOffset
                 dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
-                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+                % dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
             end
+            
+            dLeft = this.dWidthPanelPad;
             
             this.hPanelRange1 = uipanel( ...
                 'Parent', this.hPanel, ...
@@ -638,7 +648,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelRange], this.hPanel) ...
+                'Position', MicUtils.lt2lb([dLeft dTop this.dWidthPanel this.dHeightPanelRange], this.hPanel) ...
             );
             drawnow
             
@@ -657,14 +667,17 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            dTop = 55;
+            dTop = this.dTopPanels;
             
             if this.lShowOffset
                 dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
-                dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
+                % dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
             end
             
-            dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
+            % dTop = dTop + this.dHeightPanelRange + this.dHeightPanelPad;
+            
+            dLeft = this.dWidthPanelPad;
+            dLeft = dLeft + this.dWidthPanel + this.dWidthPanelPad;
             
             this.hPanelRange2 = uipanel( ...
                 'Parent', this.hPanel, ...
@@ -673,7 +686,7 @@ classdef Keithley6482 < HandlePlus
                 'Clipping', 'on', ...
                 'BorderWidth', 1, ... 
                 'BackgroundColor', this.dBackgroundColor, ...
-                'Position', MicUtils.lt2lb([10 dTop this.dWidth - 20 this.dHeightPanelRange], this.hPanel) ...
+                'Position', MicUtils.lt2lb([dLeft dTop this.dWidthPanel this.dHeightPanelRange], this.hPanel) ...
             );
             drawnow
             
@@ -694,7 +707,7 @@ classdef Keithley6482 < HandlePlus
                 return
             end
             
-            dTop = 55;
+            dTop = this.dTopPanels;
             
             if this.lShowOffset
                 dTop = dTop + this.dHeightPanelOffset + this.dHeightPanelPad;
