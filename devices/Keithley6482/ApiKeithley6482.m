@@ -313,6 +313,41 @@ classdef ApiKeithley6482 < InterfaceKeithley6482
            d = str2double(c);
         end
         
+        % Sets the offset to the current reading
+        function setChannel1OffsetValueToCurrendReading(this)
+           cCommand = ':CALC3:NULL:ACQ';
+           fprintf(this.s, cCommand);
+        end
+        
+        
+        % @param {double 1x1} dVal - the desired offset
+        function setChannel1OffsetValue(this, dVal)
+            cCommand = sprintf(':CALC3:NULL:OFFS %1.3e', dVal);
+            fprintf(this.s, cCommand);
+        end
+        
+        % @param {char 1xm} cVal - the state: "ON" of "OFF"
+        function setChannel1OffsetState(this, cVal)
+            cCommand = sprintf(':CALC3:NULL:STAT %s', cVal);
+            fprintf(this.s, cCommand);
+        end
+        
+        function d = getChannel1OffsetValue(this)
+            cCommand = ':CALC3:NULL:OFFS?';
+            fprintf(this.s, cCommand);
+            d = str2double(fscanf(this.s));
+        end
+        
+        % @return {char 1xm} "ON" or "OFF"
+        function c = getChannel1OffsetState(this)
+            cCommand = ':CALC3:NULL:STAT?';
+            fprintf(this.s, cCommand);
+            c = fscanf(this.s);
+            c = this.stateText(c);
+        end
+        
+        
+        
         
         
     end
