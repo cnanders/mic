@@ -250,9 +250,9 @@ classdef ApivKeithley6482 < InterfaceKeithley6482
         % When CALC3 is enabled, the returned value will include the offset
         function d = getChannel1CalcResult(this)
            switch lower(this.ceOffsetState{1})
-               case "on"
+               case 'on'
                    d = this.read(1) - this.dOffsetValue(1);
-               case "off"
+               case 'off'
                    d = this.read(1);
            end
         end
@@ -288,9 +288,9 @@ classdef ApivKeithley6482 < InterfaceKeithley6482
         % When CALC3 is enabled, the returned value will include the offset
         function d = getChannel2CalcResult(this)
            switch lower(this.ceOffsetState{2})
-               case "on"
+               case 'on'
                    d = this.read(2) - this.dOffsetValue(2);
-               case "off"
+               case 'off'
                    d = this.read(2);
            end
         end
